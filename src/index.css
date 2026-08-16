@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-cinzel: 'Cinzel', serif;
+    --font-serif: 'Cormorant Garamond', 'Cinzel', serif;
+    --font-sans: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-signature: 'Great Vibes', cursive;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #050505;
+    color: #EAEAEA;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-cinzel {
+    font-family: var(--font-cinzel);
+  }
+
+  .font-signature {
+    font-family: var(--font-signature);
+  }
+}
+
+/* Custom luxury 3D gold gradients and utility classes */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFF0D0 0%, #D4B06A 30%, #F0D28F 60%, #B88E3E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-3d-text {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F4D393 40%, #C99D42 80%, #7A5B1D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #D4B06A 0%, #F0D28F 50%, #C9A35E 100%);
+}
+
+.gold-gradient-bg-hover:hover {
+  background: linear-gradient(135deg, #E2C17A 0%, #FDF0D5 50%, #D4B06A 100%);
+}
+
+.gold-border {
+  border-color: rgba(212, 176, 106, 0.15);
+}
+
+.gold-border-glow {
+  border: 1px solid rgba(212, 176, 106, 0.2);
+  box-shadow: 0 0 25px -5px rgba(212, 176, 106, 0.12);
+}
+
+.gold-border-glow:hover {
+  border-color: rgba(212, 176, 106, 0.45);
+  box-shadow: 0 0 35px -2px rgba(212, 176, 106, 0.22);
+}
+
+.card-dark {
+  background: linear-gradient(135deg, #0B0B0B 0%, #101010 50%, #151515 100%);
+  border: 1px solid rgba(212, 176, 106, 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-dark:hover {
+  border-color: rgba(212, 176, 106, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(212, 176, 106, 0.15);
+  transform: translateY(-2px);
+}
+
+.gold-glow-subtle {
+  box-shadow: 0 0 50px -10px rgba(212, 176, 106, 0.1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1A1A1A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4B06A;
+}
+
+

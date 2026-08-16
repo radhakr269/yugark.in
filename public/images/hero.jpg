@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#050505"/>
+  <circle cx="600" cy="315" r="300" fill="#D4B06A" opacity="0.05" filter="blur(50px)"/>
+  <text x="600" y="300" font-family="serif" font-size="48" font-weight="bold" fill="#F0D28F" text-anchor="middle">YUGARK</text>
+  <text x="600" y="360" font-family="sans-serif" font-size="20" fill="#D4B06A" text-anchor="middle" letter-spacing="4">DIGITAL GROWTH AGENCY</text>
+</svg>
