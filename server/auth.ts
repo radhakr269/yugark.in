@@ -95,21 +95,20 @@ export function verifyAdminToken(token: string): AdminSession | null {
   }
 }
 
-export function requireAdminAuth(req: Request, res: Response, next: NextFunction): void {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({
-      error: 'Unauthorized: Admin authentication token is required.'
-    });
-    return;
+export function extractAdminSession(req: any): AdminSession | null {
+  const authHeader = req.headers?.authorization || req.headers?.Authorization;
+  if (!authHeader || typeof authHeader !== 'string' || !authHeader.startsWith('Bearer ')) {
+    return null;
   }
-
   const token = authHeader.split(' ')[1];
-  const session = verifyAdminToken(token);
+  return verifyAdminToken(token);
+}
 
+export function requireAdminAuth(req: Request, res: Response, next: NextFunction): void {
+  const session = extractAdminSession(req);
   if (!session) {
     res.status(401).json({
-      error: 'Unauthorized: Invalid or expired session. Please log in again.'
+      error: 'Unauthorized: Admin authentication token is required or expired.'
     });
     return;
   }

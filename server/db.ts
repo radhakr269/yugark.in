@@ -5,20 +5,39 @@ import { generateLeadId } from './validation';
 let supabaseInstance: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient | null {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+  const url = (
+    process.env.SUPABASE_URL ||
+    process.env.VITE_SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    ''
+  ).trim();
 
-  if (!url || !key || url.startsWith('MY_') || key.startsWith('MY_') || url.length < 8) {
+  const key = (
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    process.env.VITE_SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_KEY ||
+    ''
+  ).trim();
+
+  if (!url || !key || url.startsWith('MY_') || key.startsWith('MY_') || !url.startsWith('http')) {
     return null;
   }
 
   if (!supabaseInstance) {
-    supabaseInstance = createClient(url, key, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      }
-    });
+    try {
+      supabaseInstance = createClient(url, key, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        }
+      });
+      console.log('[SUPABASE] Initialized Supabase client for URL:', url.replace(/\/\/([^@]+@)?/, '//'));
+    } catch (err) {
+      console.error('[SUPABASE INIT ERROR]', err);
+      return null;
+    }
   }
 
   return supabaseInstance;
@@ -138,46 +157,72 @@ export async function insertLead(payload: {
 
   if (supabase) {
     try {
-      const { data, error } = await supabase
+      const insertPayload = {
+        id: record.id,
+        full_name: record.full_name,
+        email: record.email,
+        whatsapp_number: record.whatsapp_number,
+        business_company_name: record.business_company_name,
+        category: record.category || 'Other',
+        other_category: record.other_category || null,
+        selected_bundle: record.selected_bundle || 'Custom Package',
+        service: record.service || record.selected_bundle || 'Digital Growth Services',
+        project_requirement: record.project_requirement,
+        remarks: record.remarks || '',
+        page_source: record.page_source || 'Website Contact Form',
+        form_source: record.form_source || 'Website',
+        status: record.status || 'NEW',
+        priority: record.priority || 'MEDIUM',
+        admin_notes: record.admin_notes || '',
+        notification_status: record.notification_status || 'PENDING',
+        ip_hash_or_safe_request_identifier: record.ip_hash_or_safe_request_identifier || null,
+        user_agent_if_appropriate: record.user_agent_if_appropriate ? record.user_agent_if_appropriate.slice(0, 500) : null,
+        created_at: record.created_at,
+        updated_at: record.updated_at
+      };
+
+      // Note: We avoid .select() here because with standard anon RLS, anon has INSERT permissions.
+      const { error } = await supabase
         .from('leads')
-        .insert([{
+        .insert([insertPayload]);
+
+      if (!error) {
+        console.log(`[SUPABASE INSERT SUCCESS] Lead ${record.id} written to database table 'leads'.`);
+        fallbackLeads.unshift(record);
+        return record;
+      }
+
+      console.error('[SUPABASE INSERT ERROR DETAILS]', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+
+      // If full insert failed (e.g. schema column mismatch), try essential columns
+      if (error.code === '42703' || error.message?.includes('column')) {
+        console.warn('[SUPABASE] Attempting fallback insert with core columns only...');
+        const minimalPayload = {
           id: record.id,
           full_name: record.full_name,
           email: record.email,
           whatsapp_number: record.whatsapp_number,
           business_company_name: record.business_company_name,
-          category: record.category,
-          other_category: record.other_category,
-          selected_bundle: record.selected_bundle,
-          service: record.service,
-          project_requirement: record.project_requirement,
-          remarks: record.remarks,
-          page_source: record.page_source,
-          form_source: record.form_source,
-          status: record.status,
-          priority: record.priority,
-          admin_notes: record.admin_notes,
-          notification_status: record.notification_status,
-          ip_hash_or_safe_request_identifier: record.ip_hash_or_safe_request_identifier,
-          user_agent_if_appropriate: record.user_agent_if_appropriate,
-          created_at: record.created_at,
-          updated_at: record.updated_at
-        }])
-        .select()
-        .single();
-
-      if (!error && data) {
-        // Also keep memory fallback in sync
-        fallbackLeads.unshift(record);
-        return {
-          ...record,
-          ...data
+          project_requirement: record.project_requirement
         };
+        const { error: minError } = await supabase.from('leads').insert([minimalPayload]);
+        if (!minError) {
+          console.log(`[SUPABASE MINIMAL INSERT SUCCESS] Lead ${record.id} written to database.`);
+          fallbackLeads.unshift(record);
+          return record;
+        }
+        console.error('[SUPABASE MINIMAL INSERT FAILED]', minError);
       }
-      console.warn('[SUPABASE INSERT WARNING] Falling back to memory store:', error?.message);
-    } catch (err) {
-      console.error('[SUPABASE INSERT ERROR]', err);
+    } catch (err: any) {
+      console.error('[SUPABASE INSERT EXCEPTION]', err?.message || err);
     }
+  } else {
+    console.warn('[SUPABASE] No SUPABASE_URL / SUPABASE_ANON_KEY configured; lead held in transient store.');
   }
 
   fallbackLeads.unshift(record);

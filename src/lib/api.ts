@@ -28,47 +28,90 @@ export async function submitLead(formData: ContactFormData): Promise<SubmitLeadR
     const res = await fetch('/api/leads', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
       },
       body: JSON.stringify(formData)
     });
 
-    const data = await res.json();
+    let data: any = null;
+    const contentType = res.headers.get('content-type') || '';
+
+    if (contentType.includes('application/json')) {
+      try {
+        data = await res.json();
+      } catch (jsonParseErr) {
+        console.error('[API CLIENT] Error parsing JSON response:', jsonParseErr);
+      }
+    } else {
+      const textOutput = await res.text();
+      console.warn('[API CLIENT] Non-JSON API response:', res.status, textOutput.slice(0, 200));
+      if (!res.ok) {
+        return {
+          success: false,
+          error: `Server error (${res.status}): ${textOutput.slice(0, 160) || res.statusText || 'Unexpected server response'}`
+        };
+      }
+    }
+
     if (!res.ok) {
+      const errMessage =
+        data?.error ||
+        `Server returned error ${res.status}: ${res.statusText || 'Unable to process enquiry'}`;
+
       return {
         success: false,
-        error: data.error || 'Failed to submit enquiry. Please try again.',
-        errors: data.errors
+        error: errMessage,
+        errors: data?.errors
+      };
+    }
+
+    if (data && data.success) {
+      return {
+        success: true,
+        leadId: data.leadId,
+        message: data.message || 'Your enquiry has been received successfully.'
       };
     }
 
     return {
-      success: true,
-      leadId: data.leadId,
-      message: data.message
+      success: false,
+      error: data?.error || 'Failed to submit enquiry. Please check your details and try again.'
     };
   } catch (err: any) {
-    console.error('[API CLIENT ERROR]', err);
+    console.error('[API CLIENT EXCEPTION]', err);
+    const isOffline = typeof navigator !== 'undefined' && !navigator.onLine;
     return {
       success: false,
-      error: 'Network connection issue. Please check your internet or connect with us on WhatsApp directly.'
+      error: isOffline
+        ? 'You appear to be offline. Please check your internet connection.'
+        : `Connection error: ${err?.message || 'Unable to reach backend service'}. You can also message us directly on WhatsApp.`
     };
   }
 }
 
-export async function adminLogin(email: string, passwordOrPin: string): Promise<{ success: boolean; token?: string; error?: string }> {
+export async function adminLogin(
+  email: string,
+  passwordOrPin: string
+): Promise<{ success: boolean; token?: string; error?: string }> {
   try {
     const res = await fetch('/api/admin/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({ email, password: passwordOrPin, pin: passwordOrPin })
     });
 
-    const data = await res.json();
-    if (!res.ok || !data.success) {
+    let data: any = null;
+    try {
+      data = await res.json();
+    } catch {
+      // non-json response
+    }
+
+    if (!res.ok || !data?.success) {
       return {
         success: false,
-        error: data.error || 'Invalid admin credentials.'
+        error: data?.error || `Authentication failed (${res.status}). Please check credentials.`
       };
     }
 
@@ -78,8 +121,9 @@ export async function adminLogin(email: string, passwordOrPin: string): Promise<
     }
 
     return { success: true, token: data.token };
-  } catch (err) {
-    return { success: false, error: 'Failed to connect to authentication service.' };
+  } catch (err: any) {
+    console.error('[ADMIN LOGIN CLIENT ERROR]', err);
+    return { success: false, error: 'Failed to connect to authentication server.' };
   }
 }
 
@@ -125,7 +169,10 @@ export async function fetchAdminStats() {
   const res = await fetch('/api/admin/stats', {
     headers: { Authorization: `Bearer ${token}` }
   });
-  if (!res.ok) throw new Error('Failed to load stats');
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || `Failed to load stats (${res.status})`);
+  }
   return res.json();
 }
 
@@ -158,7 +205,10 @@ export async function fetchAdminLeads(params: FetchLeadsParams = {}) {
     headers: { Authorization: `Bearer ${token}` }
   });
 
-  if (!res.ok) throw new Error('Failed to load leads');
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || `Failed to load leads (${res.status})`);
+  }
   return res.json();
 }
 
@@ -166,28 +216,37 @@ export async function fetchAdminLeadById(id: string) {
   const token = getAdminToken();
   if (!token) throw new Error('Unauthenticated');
 
-  const res = await fetch(`/api/admin/leads/${id}`, {
+  const res = await fetch(`/api/admin/leads?id=${encodeURIComponent(id)}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
 
-  if (!res.ok) throw new Error('Lead not found');
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || `Lead not found (${res.status})`);
+  }
   return res.json();
 }
 
-export async function updateAdminLead(id: string, updates: { status?: LeadStatus; priority?: LeadPriority; admin_notes?: string }) {
+export async function updateAdminLead(
+  id: string,
+  updates: { status?: LeadStatus; priority?: LeadPriority; admin_notes?: string }
+) {
   const token = getAdminToken();
   if (!token) throw new Error('Unauthenticated');
 
-  const res = await fetch(`/api/admin/leads/${id}`, {
+  const res = await fetch('/api/admin/leads', {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify(updates)
+    body: JSON.stringify({ id, ...updates })
   });
 
-  if (!res.ok) throw new Error('Failed to update lead');
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || `Failed to update lead (${res.status})`);
+  }
   return res.json();
 }
 
@@ -195,12 +254,19 @@ export async function deleteAdminLead(id: string) {
   const token = getAdminToken();
   if (!token) throw new Error('Unauthenticated');
 
-  const res = await fetch(`/api/admin/leads/${id}`, {
+  const res = await fetch('/api/admin/leads', {
     method: 'DELETE',
-    headers: { Authorization: `Bearer ${token}` }
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ id })
   });
 
-  if (!res.ok) throw new Error('Failed to delete lead');
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || `Failed to delete lead (${res.status})`);
+  }
   return res.json();
 }
 

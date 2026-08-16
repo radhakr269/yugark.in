@@ -286,9 +286,14 @@ app.get('/api/admin/leads/:id', requireAdminAuth, async (req: Request, res: Resp
 // ==========================================
 // ADMIN DASHBOARD: Update Status / Priority / Notes
 // ==========================================
-app.patch('/api/admin/leads/:id', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
+const handlePatchLead = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = (req.params.id || req.body?.id || (req.query.id as string) || '').trim();
+    if (!id) {
+      res.status(400).json({ error: 'Missing lead ID to update.' });
+      return;
+    }
+
     const { status, priority, admin_notes } = req.body || {};
 
     const validStatuses: LeadStatus[] = ['NEW', 'CONTACTED', 'IN_PROGRESS', 'QUALIFIED', 'CONVERTED', 'CLOSED', 'SPAM'];
@@ -320,14 +325,22 @@ app.patch('/api/admin/leads/:id', requireAdminAuth, async (req: Request, res: Re
     console.error('[ADMIN PATCH LEAD ERROR]', err);
     res.status(500).json({ error: 'Failed to update lead record.' });
   }
-});
+};
+
+app.patch('/api/admin/leads', requireAdminAuth, handlePatchLead);
+app.patch('/api/admin/leads/:id', requireAdminAuth, handlePatchLead);
 
 // ==========================================
 // ADMIN DASHBOARD: Delete Lead
 // ==========================================
-app.delete('/api/admin/leads/:id', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
+const handleDeleteLead = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const id = (req.params.id || req.body?.id || (req.query.id as string) || '').trim();
+    if (!id) {
+      res.status(400).json({ error: 'Missing lead ID to delete.' });
+      return;
+    }
+
     const deleted = await deleteLead(id);
 
     if (!deleted) {
@@ -340,6 +353,9 @@ app.delete('/api/admin/leads/:id', requireAdminAuth, async (req: Request, res: R
     console.error('[ADMIN DELETE LEAD ERROR]', err);
     res.status(500).json({ error: 'Failed to delete lead.' });
   }
-});
+};
+
+app.delete('/api/admin/leads', requireAdminAuth, handleDeleteLead);
+app.delete('/api/admin/leads/:id', requireAdminAuth, handleDeleteLead);
 
 export default app;
