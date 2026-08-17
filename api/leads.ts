@@ -5,9 +5,9 @@ import {
   checkDuplicateSubmission,
   recordSubmission,
   hashIdentifier
-} from '../server/validation';
-import { insertLead, updateLeadNotificationStatus } from '../server/db';
-import { sendLeadNotificationEmail } from '../server/email';
+} from '../server/validation.js';
+import { insertLead, updateLeadNotificationStatus } from '../server/db.js';
+import { sendLeadNotificationEmail } from '../server/email.js';
 
 // Helper to parse JSON body across Vercel and Node environments
 async function parseBody(req: any): Promise<any> {
