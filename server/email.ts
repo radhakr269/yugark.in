@@ -1,31 +1,53 @@
-import { Resend } from 'resend';
 import type { LeadRecord } from './types';
 
-let resendClient: Resend | null = null;
-
-function getResend(): Resend | null {
+function getResendApiKey(): string | null {
   const apiKey = process.env.RESEND_API_KEY?.trim();
 
   if (!apiKey || apiKey.startsWith('MY_') || apiKey.length < 5) {
     return null;
   }
 
-  if (!resendClient) {
-    resendClient = new Resend(apiKey);
-  }
-
-  return resendClient;
+  return apiKey;
 }
 
 export function getAdminEmail(): string {
   return process.env.ADMIN_EMAIL?.trim() || 'business@yugark.in';
 }
 
+function getFromAddress(): string {
+  return (
+    process.env.EMAIL_FROM?.trim() ||
+    'YUGARK Studio <business@yugark.in>'
+  );
+}
+
+function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+function extractEmailAddress(value: string): string {
+  const angleMatch = value.match(/<([^<>]+)>/);
+  return (angleMatch?.[1] || value).trim();
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+interface ResendApiResponse {
+  id?: string;
+  name?: string;
+  message?: string;
+  error?: string;
+  statusCode?: number;
+}
+
 export async function sendLeadNotificationEmail(
   lead: LeadRecord
 ): Promise<{ success: boolean; error?: string }> {
   const adminEmail = getAdminEmail();
-  const resend = getResend();
+  const apiKey = getResendApiKey();
+  const fromAddress = getFromAddress();
 
   const formattedDate = new Date(lead.created_at).toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata',
@@ -371,8 +393,8 @@ Direct WhatsApp: https://wa.me/${whatsappDigits}
 </html>
 `;
 
-  // Do NOT report fake success when Resend is not configured.
-  if (!resend) {
+  // API key missing हो तो साफ error दें।
+  if (!apiKey) {
     console.warn(
       `[EMAIL NOTICE] RESEND_API_KEY is not configured. Email not sent to ${adminEmail} for lead ${lead.id}.`
     );
@@ -383,34 +405,160 @@ Direct WhatsApp: https://wa.me/${whatsappDigits}
     };
   }
 
+  // Email configuration को API call से पहले validate करें।
+  const senderEmail = extractEmailAddress(fromAddress);
+
+  if (!isValidEmail(adminEmail)) {
+    console.error(
+      '[EMAIL CONFIG ERROR] ADMIN_EMAIL is invalid.'
+    );
+
+    return {
+      success: false,
+      error: 'ADMIN_EMAIL is invalid'
+    };
+  }
+
+  if (!isValidEmail(senderEmail)) {
+    console.error(
+      '[EMAIL CONFIG ERROR] EMAIL_FROM is invalid.'
+    );
+
+    return {
+      success: false,
+      error: 'EMAIL_FROM is invalid'
+    };
+  }
+
+  // API key को कभी log नहीं किया जा रहा है।
+  console.log('[EMAIL CONFIG]', {
+    leadId: lead.id,
+    adminEmail,
+    fromAddress,
+    hasResendApiKey: true
+  });
+
+  const requestBody = {
+    from: fromAddress,
+    to: [adminEmail],
+    reply_to: lead.email,
+    subject,
+    text: textContent,
+    html: htmlContent
+  };
+
+  // Resend REST API को सीधे call किया जा रहा है।
+  // इससे असली HTTP status और error Vercel Logs में दिखाई देगा।
+  const sendOnce = async (): Promise<{
+    ok: boolean;
+    status: number;
+    data: ResendApiResponse;
+  }> => {
+    const controller = new AbortController();
+
+    const timeout =
+      setTimeout(
+        () => controller.abort(),
+        10000
+      );
+
+    try {
+      const response =
+        await fetch(
+          'https://api.resend.com/emails',
+          {
+            method: 'POST',
+
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              'Content-Type': 'application/json',
+              'User-Agent': 'YUGARK-Lead-System/1.0'
+            },
+
+            body:
+              JSON.stringify(requestBody),
+
+            signal:
+              controller.signal
+          }
+        );
+
+      let data: ResendApiResponse = {};
+
+      try {
+        data =
+          (await response.json())
+          as ResendApiResponse;
+      } catch {
+        data = {
+          message:
+            `Resend returned HTTP ${response.status} with a non-JSON response`
+        };
+      }
+
+      return {
+        ok: response.ok,
+        status: response.status,
+        data
+      };
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
+
   try {
-    const fromAddress =
-      process.env.EMAIL_FROM?.trim() ||
-      'YUGARK Studio <notifications@resend.dev>';
+    let response =
+      await sendOnce();
 
-    const result = await resend.emails.send({
-      from: fromAddress,
-      to: [adminEmail],
-      replyTo: lead.email,
-      subject,
-      text: textContent,
-      html: htmlContent
-    });
+    // Temporary Resend/server error आए तो एक बार retry करें।
+    if (
+      !response.ok &&
+      [500, 502, 503, 504]
+        .includes(response.status)
+    ) {
+      console.warn(
+        `[EMAIL RETRY] Resend returned HTTP ${response.status} for lead ${lead.id}. Retrying once.`
+      );
 
-    if (result.error) {
+      await sleep(750);
+
+      response =
+        await sendOnce();
+    }
+
+    if (!response.ok) {
+      const errorMessage =
+        response.data.message ||
+        response.data.error ||
+        `Resend API returned HTTP ${response.status}`;
+
       console.error(
-        '[EMAIL ERROR] Resend failed:',
-        result.error
+        '[EMAIL ERROR] Resend API request failed:',
+        {
+          leadId: lead.id,
+          status: response.status,
+          name: response.data.name,
+          message: errorMessage
+        }
       );
 
       return {
         success: false,
-        error: result.error.message
+        error: errorMessage
       };
     }
 
     console.log(
-      `[EMAIL SUCCESS] Lead ${lead.id} notification sent to ${adminEmail}.`
+      '[EMAIL SUCCESS]',
+      {
+        leadId: lead.id,
+        resendEmailId:
+          response.data.id,
+        sentTo:
+          adminEmail,
+        from:
+          fromAddress
+      }
     );
 
     return {
@@ -418,14 +566,24 @@ Direct WhatsApp: https://wa.me/${whatsappDigits}
     };
 
   } catch (err: any) {
+    const message =
+      err?.name === 'AbortError'
+        ? 'Resend request timed out after 10 seconds'
+        : err?.message ||
+          'Unknown email error';
+
     console.error(
       '[EMAIL EXCEPTION] Failed sending lead notification email:',
-      err
+      {
+        leadId: lead.id,
+        name: err?.name,
+        message
+      }
     );
 
     return {
       success: false,
-      error: err?.message || 'Unknown email error'
+      error: message
     };
   }
 }
