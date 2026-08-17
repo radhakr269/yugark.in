@@ -1,11 +1,12 @@
 import crypto from 'crypto';
-import { CreateLeadPayload } from './types';
+import type { CreateLeadPayload } from './types';
 
 // In-memory rate limiter cache
 interface RateLimitEntry {
   count: number;
   resetAt: number;
 }
+
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
 // Duplicate submission cache (60 seconds window)
@@ -13,6 +14,7 @@ interface DuplicateEntry {
   leadId: string;
   timestamp: number;
 }
+
 const duplicateMap = new Map<string, DuplicateEntry>();
 
 // Lead counter for generating IDs in fallback mode or sequential format
@@ -23,50 +25,90 @@ export function generateLeadId(): string {
   const randomSuffix = Math.floor(1000 + Math.random() * 9000);
   leadCounter += 1;
   const countStr = String(leadCounter).padStart(4, '0');
+
   return `YG-${currentYear}-${countStr}`;
 }
 
 export function hashIdentifier(str: string): string {
-  return crypto.createHash('sha256').update(str || 'anonymous').digest('hex').slice(0, 16);
+  return crypto
+    .createHash('sha256')
+    .update(str || 'anonymous')
+    .digest('hex')
+    .slice(0, 16);
 }
 
-export function checkRateLimit(ip: string, maxRequests = 10, windowMs = 15 * 60 * 1000): { allowed: boolean; retryAfter?: number } {
+export function checkRateLimit(
+  ip: string,
+  maxRequests = 10,
+  windowMs = 15 * 60 * 1000
+): { allowed: boolean; retryAfter?: number } {
   const now = Date.now();
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
+    rateLimitMap.set(ip, {
+      count: 1,
+      resetAt: now + windowMs
+    });
+
     return { allowed: true };
   }
 
   if (entry.count >= maxRequests) {
     const retryAfter = Math.ceil((entry.resetAt - now) / 1000);
-    return { allowed: false, retryAfter };
+
+    return {
+      allowed: false,
+      retryAfter
+    };
   }
 
   entry.count += 1;
+
   return { allowed: true };
 }
 
-export function checkDuplicateSubmission(payload: CreateLeadPayload): { isDuplicate: boolean; existingLeadId?: string } {
-  const key = `${payload.email?.toLowerCase().trim()}_${payload.phone?.trim()}_${payload.businessName?.toLowerCase().trim()}_${payload.projectRequirement?.slice(0, 30).trim()}`;
+export function checkDuplicateSubmission(
+  payload: CreateLeadPayload
+): { isDuplicate: boolean; existingLeadId?: string } {
+  const key =
+    `${payload.email?.toLowerCase().trim()}_` +
+    `${payload.phone?.trim()}_` +
+    `${payload.businessName?.toLowerCase().trim()}_` +
+    `${payload.projectRequirement?.slice(0, 30).trim()}`;
+
   const now = Date.now();
   const entry = duplicateMap.get(key);
 
-  if (entry && now - entry.timestamp < 60000) { // 60 seconds
-    return { isDuplicate: true, existingLeadId: entry.leadId };
+  if (entry && now - entry.timestamp < 60000) {
+    return {
+      isDuplicate: true,
+      existingLeadId: entry.leadId
+    };
   }
 
   return { isDuplicate: false };
 }
 
-export function recordSubmission(payload: CreateLeadPayload, leadId: string): void {
-  const key = `${payload.email?.toLowerCase().trim()}_${payload.phone?.trim()}_${payload.businessName?.toLowerCase().trim()}_${payload.projectRequirement?.slice(0, 30).trim()}`;
-  duplicateMap.set(key, { leadId, timestamp: Date.now() });
+export function recordSubmission(
+  payload: CreateLeadPayload,
+  leadId: string
+): void {
+  const key =
+    `${payload.email?.toLowerCase().trim()}_` +
+    `${payload.phone?.trim()}_` +
+    `${payload.businessName?.toLowerCase().trim()}_` +
+    `${payload.projectRequirement?.slice(0, 30).trim()}`;
+
+  duplicateMap.set(key, {
+    leadId,
+    timestamp: Date.now()
+  });
 
   // Clean old duplicate entries periodically
   if (duplicateMap.size > 500) {
     const now = Date.now();
+
     for (const [k, v] of duplicateMap.entries()) {
       if (now - v.timestamp > 120000) {
         duplicateMap.delete(k);
@@ -86,74 +128,150 @@ export function validateLeadSubmission(body: any): ValidationResult {
   const errors: Record<string, string> = {};
 
   if (!body || typeof body !== 'object') {
-    return { isValid: false, errors: { form: 'Invalid request body' } };
+    return {
+      isValid: false,
+      errors: {
+        form: 'Invalid request body'
+      }
+    };
   }
 
   // Honeypot detection
-  if (body.website_url_hp && String(body.website_url_hp).trim().length > 0) {
-    return { isValid: false, errors: {}, isSpam: true };
+  if (
+    body.website_url_hp &&
+    String(body.website_url_hp).trim().length > 0
+  ) {
+    return {
+      isValid: false,
+      errors: {},
+      isSpam: true
+    };
   }
 
-  const fullName = String(body.fullName || body.full_name || '').trim();
-  const email = String(body.email || '').trim().toLowerCase();
-  const phone = String(body.phone || body.whatsapp_number || '').trim();
-  const businessName = String(body.businessName || body.business_company_name || '').trim();
-  const businessCategory = String(body.businessCategory || body.category || 'Other').trim();
-  const otherCategory = body.otherCategory ? String(body.otherCategory).trim() : undefined;
-  const selectedService = String(body.selectedService || body.service || 'Website Development').trim();
-  const selectedBundle = String(body.selectedBundle || 'Package 1 — Website Development').trim();
-  const projectRequirement = String(body.projectRequirement || body.project_requirement || '').trim();
-  const remarks = body.remarks ? String(body.remarks).trim() : '';
-  const pageSource = String(body.pageSource || body.page_source || 'Contact Form').trim();
-  const formSource = String(body.formSource || body.form_source || 'Website Contact Form').trim();
+  const fullName = String(
+    body.fullName || body.full_name || ''
+  ).trim();
+
+  const email = String(
+    body.email || ''
+  )
+    .trim()
+    .toLowerCase();
+
+  const phone = String(
+    body.phone || body.whatsapp_number || ''
+  ).trim();
+
+  const businessName = String(
+    body.businessName || body.business_company_name || ''
+  ).trim();
+
+  const businessCategory = String(
+    body.businessCategory || body.category || 'Other'
+  ).trim();
+
+  const otherCategory = body.otherCategory
+    ? String(body.otherCategory).trim()
+    : undefined;
+
+  const selectedService = String(
+    body.selectedService ||
+      body.service ||
+      'Website Development'
+  ).trim();
+
+  const selectedBundle = String(
+    body.selectedBundle ||
+      'Package 1 — Website Development'
+  ).trim();
+
+  const projectRequirement = String(
+    body.projectRequirement ||
+      body.project_requirement ||
+      ''
+  ).trim();
+
+  const remarks = body.remarks
+    ? String(body.remarks).trim()
+    : '';
+
+  const pageSource = String(
+    body.pageSource ||
+      body.page_source ||
+      'Contact Form'
+  ).trim();
+
+  const formSource = String(
+    body.formSource ||
+      body.form_source ||
+      'Website Contact Form'
+  ).trim();
 
   // Validate Name
   if (!fullName) {
     errors.fullName = 'Full Name is required';
   } else if (fullName.length < 2) {
-    errors.fullName = 'Full Name must be at least 2 characters';
+    errors.fullName =
+      'Full Name must be at least 2 characters';
   } else if (fullName.length > 100) {
-    errors.fullName = 'Full Name must not exceed 100 characters';
+    errors.fullName =
+      'Full Name must not exceed 100 characters';
   }
 
   // Validate Email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   if (!email) {
-    errors.email = 'Valid email address is required';
+    errors.email =
+      'Valid email address is required';
   } else if (!emailRegex.test(email)) {
-    errors.email = 'Please provide a valid email address';
+    errors.email =
+      'Please provide a valid email address';
   } else if (email.length > 150) {
-    errors.email = 'Email must not exceed 150 characters';
+    errors.email =
+      'Email must not exceed 150 characters';
   }
 
   // Validate Phone / WhatsApp
   const phoneDigits = phone.replace(/[^0-9+]/g, '');
+
   if (!phone) {
-    errors.phone = 'WhatsApp / Phone number is required';
+    errors.phone =
+      'WhatsApp / Phone number is required';
   } else if (phoneDigits.length < 7) {
-    errors.phone = 'Please provide a valid contact number (min 7 digits)';
+    errors.phone =
+      'Please provide a valid contact number (min 7 digits)';
   } else if (phone.length > 30) {
-    errors.phone = 'Phone number is too long';
+    errors.phone =
+      'Phone number is too long';
   }
 
   // Validate Business Name
   if (!businessName) {
-    errors.businessName = 'Business or company name is required';
+    errors.businessName =
+      'Business or company name is required';
   } else if (businessName.length > 150) {
-    errors.businessName = 'Business name must not exceed 150 characters';
+    errors.businessName =
+      'Business name must not exceed 150 characters';
   }
 
   // Validate Project Requirement
   if (!projectRequirement) {
-    errors.projectRequirement = 'Please describe your project requirement';
+    errors.projectRequirement =
+      'Please describe your project requirement';
   } else if (projectRequirement.length < 3) {
-    errors.projectRequirement = 'Project description must be at least 3 characters';
+    errors.projectRequirement =
+      'Project description must be at least 3 characters';
   } else if (projectRequirement.length > 4000) {
-    errors.projectRequirement = 'Project description must not exceed 4000 characters';
+    errors.projectRequirement =
+      'Project description must not exceed 4000 characters';
   }
 
   if (Object.keys(errors).length > 0) {
-    return { isValid: false, errors };
+    return {
+      isValid: false,
+      errors
+    };
   }
 
   return {
