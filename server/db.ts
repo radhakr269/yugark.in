@@ -1,6 +1,6 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { LeadRecord, AdminStats, LeadStatus, LeadPriority, NotificationStatus } from './types';
-import { generateLeadId } from './validation';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { LeadRecord, AdminStats, LeadStatus, LeadPriority, NotificationStatus } from './types';
+import { generateLeadId } from './validation.js';
 
 let supabaseInstance: SupabaseClient | null = null;
 
@@ -17,6 +17,7 @@ export function getSupabase(): SupabaseClient | null {
     process.env.SUPABASE_ANON_KEY ||
     process.env.VITE_SUPABASE_ANON_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.SUPABASE_KEY ||
     ''
   ).trim();
