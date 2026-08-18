@@ -1,5 +1,5 @@
-import { extractAdminSession } from '../../server/auth';
-import { getAdminStats } from '../../server/db';
+import { extractAdminSession } from '../../server/auth.js';
+import { getAdminStats } from '../../server/db.js';
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Content-Type', 'application/json');
