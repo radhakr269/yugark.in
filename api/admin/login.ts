@@ -1,4 +1,4 @@
-import { verifyAdminCredentials, createAdminToken } from '../../server/auth';
+import { verifyAdminCredentials, createAdminToken } from '../../server/auth.js'
 
 async function parseBody(req: any): Promise<any> {
   if (req.body) {
