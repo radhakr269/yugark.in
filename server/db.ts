@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { LeadRecord, AdminStats, LeadStatus, LeadPriority, NotificationStatus } from './types';
+import type { LeadRecord, AdminStats, LeadStatus, LeadPriority, NotificationStatus } from './types.js';
 import { generateLeadId } from './validation.js';
 
 let supabaseInstance: SupabaseClient | null = null;
