@@ -1,7 +1,6 @@
-import { extractAdminSession } from '../../server/auth';
-import { getLeads, getLeadById, updateLead, deleteLead } from '../../server/db';
-import { LeadStatus, LeadPriority } from '../../server/types';
-
+import { extractAdminSession } from '../../server/auth.js';
+import { getLeads, getLeadById, updateLead, deleteLead } from '../../server/db.js';
+import type { LeadStatus, LeadPriority } from '../../server/types.js';
 async function parseBody(req: any): Promise<any> {
   if (req.body) {
     if (typeof req.body === 'string') {
