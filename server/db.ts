@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import * as XLSX from 'xlsx';
 import type { LeadRecord, AdminStats, LeadStatus, LeadPriority, NotificationStatus } from './types.js';
 import { generateLeadId } from './validation.js';
 
@@ -518,26 +519,74 @@ function calculateStats(leads: { status: LeadStatus; created_at: string }[]): Ad
   };
 }
 
+function formatSubmissionDateTime(dateStr: string | Date): string {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch {
+    return String(dateStr);
+  }
+}
+
+export async function exportLeadsToExcelBuffer(): Promise<Buffer> {
+  const { data } = await getLeads({ limit: 5000, sortBy: 'created_at', sortOrder: 'desc' });
+
+  // Only include columns actually submitted in the website lead form + submission Date & Time
+  const rows = data.map((lead) => ({
+    'Submission Date & Time': formatSubmissionDateTime(lead.created_at),
+    'Full Name': lead.full_name || '',
+    'Email Address': lead.email || '',
+    'Phone / WhatsApp Number': lead.whatsapp_number || '',
+    'Business / Company Name': lead.business_company_name || '',
+    'Business Category': lead.other_category ? `${lead.category} (${lead.other_category})` : (lead.category || ''),
+    'Selected Service / Package': lead.selected_bundle || lead.service || '',
+    'Project Requirement': lead.project_requirement || '',
+    'Remarks / Notes': lead.remarks || ''
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+
+  // Set friendly column widths for Microsoft Excel
+  worksheet['!cols'] = [
+    { wch: 24 }, // Submission Date & Time
+    { wch: 22 }, // Full Name
+    { wch: 26 }, // Email Address
+    { wch: 22 }, // Phone / WhatsApp Number
+    { wch: 26 }, // Business / Company Name
+    { wch: 24 }, // Business Category
+    { wch: 38 }, // Selected Service / Package
+    { wch: 45 }, // Project Requirement
+    { wch: 30 }  // Remarks / Notes
+  ];
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Website Leads');
+
+  const excelBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+  return Buffer.isBuffer(excelBuffer) ? excelBuffer : Buffer.from(excelBuffer);
+}
+
 export async function exportLeadsToCSV(): Promise<string> {
-  const { data } = await getLeads({ limit: 1000, sortBy: 'created_at', sortOrder: 'desc' });
+  const { data } = await getLeads({ limit: 5000, sortBy: 'created_at', sortOrder: 'desc' });
 
   const headers = [
-    'Lead ID',
-    'Submission Date',
+    'Submission Date & Time',
     'Full Name',
-    'Email',
-    'WhatsApp Number',
-    'Company / Business',
-    'Category',
-    'Selected Bundle',
-    'Service',
+    'Email Address',
+    'Phone / WhatsApp Number',
+    'Business / Company Name',
+    'Business Category',
+    'Selected Service / Package',
     'Project Requirement',
-    'Remarks',
-    'Page Source',
-    'Status',
-    'Priority',
-    'Admin Notes',
-    'Notification Status'
+    'Remarks / Notes'
   ];
 
   const escapeCSV = (val: string | undefined | null) => {
@@ -547,22 +596,15 @@ export async function exportLeadsToCSV(): Promise<string> {
   };
 
   const rows = data.map(lead => [
-    escapeCSV(lead.id),
-    escapeCSV(new Date(lead.created_at).toLocaleString('en-IN')),
+    escapeCSV(formatSubmissionDateTime(lead.created_at)),
     escapeCSV(lead.full_name),
     escapeCSV(lead.email),
     escapeCSV(lead.whatsapp_number),
     escapeCSV(lead.business_company_name),
-    escapeCSV(lead.category),
-    escapeCSV(lead.selected_bundle),
-    escapeCSV(lead.service),
+    escapeCSV(lead.other_category ? `${lead.category} (${lead.other_category})` : lead.category),
+    escapeCSV(lead.selected_bundle || lead.service),
     escapeCSV(lead.project_requirement),
-    escapeCSV(lead.remarks),
-    escapeCSV(lead.page_source),
-    escapeCSV(lead.status),
-    escapeCSV(lead.priority),
-    escapeCSV(lead.admin_notes),
-    escapeCSV(lead.notification_status)
+    escapeCSV(lead.remarks)
   ]);
 
   return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');

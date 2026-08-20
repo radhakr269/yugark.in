@@ -76,6 +76,11 @@ export default function Navbar() {
     { name: 'Contact', path: '/contact' },
   ];
 
+  // Do not render floating public website navbar on the admin dashboard to avoid layout overlay
+  if (location.pathname === '/admin') {
+    return null;
+  }
+
   return (
     <>
       <header

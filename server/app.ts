@@ -13,6 +13,7 @@ import {
   updateLead,
   deleteLead,
   getAdminStats,
+  exportLeadsToExcelBuffer,
   exportLeadsToCSV,
   updateLeadNotificationStatus
 } from './db';
@@ -248,18 +249,21 @@ app.get('/api/admin/leads', requireAdminAuth, async (req: Request, res: Response
 });
 
 // ==========================================
-// ADMIN DASHBOARD: Export CSV
+// ADMIN DASHBOARD: Export Excel (.xlsx)
 // ==========================================
 app.get('/api/admin/export', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
   try {
-    const csvData = await exportLeadsToCSV();
-    const filename = `yugark_leads_${new Date().toISOString().slice(0, 10)}.csv`;
-    res.setHeader('Content-Type', 'text/csv');
+    const excelBuffer = await exportLeadsToExcelBuffer();
+    const filename = `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.send(csvData);
+    res.send(excelBuffer);
   } catch (err) {
-    console.error('[ADMIN CSV EXPORT ERROR]', err);
-    res.status(500).json({ error: 'Failed to generate CSV export.' });
+    console.error('[ADMIN EXCEL EXPORT ERROR]', err);
+    res.status(500).json({ error: 'Failed to generate Excel export.' });
   }
 });
 

@@ -270,22 +270,104 @@ export async function deleteAdminLead(id: string) {
   return res.json();
 }
 
-export async function downloadLeadsCSV() {
+export async function downloadLeadsExcel() {
   const token = getAdminToken();
-  if (!token) throw new Error('Unauthenticated');
 
-  const res = await fetch('/api/admin/export', {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  // 1. Primary Method: Call backend endpoint /api/admin/export (which queries and exports all leads in DB)
+  if (token) {
+    try {
+      const res = await fetch('/api/admin/export', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-  if (!res.ok) throw new Error('Failed to export CSV');
-  const blob = await res.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `yugark_leads_${new Date().toISOString().slice(0, 10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  window.URL.revokeObjectURL(url);
-  document.body.removeChild(a);
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        return;
+      }
+    } catch (err) {
+      console.warn('[API EXPORT NETWORK ISSUE, ATTEMPTING FALLBACK TO FULL FETCH]', err);
+    }
+  }
+
+  // 2. Client-side fallback only: Fetch ALL leads (never export only the current paginated page)
+  let allLeads: any[] | null = null;
+  if (token) {
+    try {
+      const allData = await fetchAdminLeads({ limit: 5000 });
+      if (allData?.leads && allData.leads.length > 0) {
+        allLeads = allData.leads;
+      }
+    } catch (fetchErr) {
+      console.warn('[FAILED TO FETCH ALL LEADS FOR FALLBACK]', fetchErr);
+    }
+  }
+
+  // If running in local client-only storage mode
+  if (!allLeads || allLeads.length === 0) {
+    try {
+      const { getStoredEnquiries } = await import('./enquiryStore');
+      const stored = getStoredEnquiries();
+      if (stored && stored.length > 0) {
+        allLeads = stored;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // If all leads were retrieved, generate .xlsx file
+  if (allLeads && allLeads.length > 0) {
+    const XLSX = await import('xlsx');
+    const rows = allLeads.map((lead: any) => ({
+      'Submission Date & Time': new Date(lead.created_at || lead.createdAt || Date.now()).toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }),
+      'Full Name': lead.full_name || lead.fullName || '',
+      'Email Address': lead.email || '',
+      'Phone / WhatsApp Number': lead.whatsapp_number || lead.phone || '',
+      'Business / Company Name': lead.business_company_name || lead.businessName || '',
+      'Business Category': lead.other_category || lead.otherCategory
+        ? `${lead.category || lead.businessCategory} (${lead.other_category || lead.otherCategory})`
+        : (lead.category || lead.businessCategory || ''),
+      'Selected Service / Package': lead.selected_bundle || lead.selectedBundle || lead.service || lead.selectedService || '',
+      'Project Requirement': lead.project_requirement || lead.projectRequirement || '',
+      'Remarks / Notes': lead.remarks || ''
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet['!cols'] = [
+      { wch: 24 }, // Submission Date & Time
+      { wch: 22 }, // Full Name
+      { wch: 26 }, // Email Address
+      { wch: 22 }, // Phone / WhatsApp Number
+      { wch: 26 }, // Business / Company Name
+      { wch: 24 }, // Business Category
+      { wch: 38 }, // Selected Service / Package
+      { wch: 45 }, // Project Requirement
+      { wch: 30 }  // Remarks / Notes
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Website Leads');
+    XLSX.writeFile(workbook, `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  } else {
+    // If fetching all leads fails, show an error instead of exporting partial paginated page
+    throw new Error('Failed to export leads. Could not retrieve full leads dataset from the server.');
+  }
 }
+
+export const downloadLeadsCSV = downloadLeadsExcel;

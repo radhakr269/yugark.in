@@ -1,10 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Mail, ArrowUpRight, MapPin, Linkedin, Twitter, Youtube } from 'lucide-react';
 import Logo from './Logo';
 import { WHATSAPP_LINK, WhatsAppIcon } from './WhatsAppButton';
 
 export default function Footer() {
+  const location = useLocation();
   const currentYear = new Date().getFullYear();
+
+  // Do not render marketing footer on admin dashboard
+  if (location.pathname === '/admin') {
+    return null;
+  }
 
   return (
     <footer className="bg-[#050505] border-t border-[#D4B06A]/20 pt-16 pb-12 text-[#9A9A9A] text-sm relative overflow-hidden">
