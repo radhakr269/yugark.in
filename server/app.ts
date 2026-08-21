@@ -15,10 +15,16 @@ import {
   getAdminStats,
   exportLeadsToExcelBuffer,
   exportLeadsToCSV,
-  updateLeadNotificationStatus,
   getDistinctFilterOptions
 } from './db';
-import { sendLeadNotificationEmail } from './email';
+import {
+  dispatchLeadAutomations,
+  retryLeadChannel
+} from './services/AutomationDispatcher';
+import {
+  SERVICE_CONFIG,
+  detectServiceConfig
+} from './config/serviceConfig';
 import {
   verifyAdminCredentials,
   createAdminToken,
@@ -37,7 +43,7 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'YUGARK Digital Studio API'
+    service: 'YUGARK Digital Studio API & Automation Engine'
   });
 });
 
@@ -52,7 +58,7 @@ app.post('/api/leads', async (req: Request, res: Response): Promise<void> => {
     const ipHash = hashIdentifier(clientIp);
 
     // 1. Rate Limiting Check
-    const rateCheck = checkRateLimit(clientIp, 12, 15 * 60 * 1000);
+    const rateCheck = checkRateLimit(clientIp, 15, 15 * 60 * 1000);
     if (!rateCheck.allowed) {
       res.status(429).json({
         success: false,
@@ -61,12 +67,11 @@ app.post('/api/leads', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // 2. Server-side Validation
+    // 2. Server-side Validation & Sanitization
     const validation = validateLeadSubmission(req.body);
 
     // Honeypot spam trap
     if (validation.isSpam) {
-      // Record quietly as spam in DB without notifying admin or erroring
       const spamLead = await insertLead({
         fullName: req.body.fullName || 'Bot Submission',
         email: req.body.email || 'bot@honeypot.local',
@@ -108,7 +113,10 @@ app.post('/api/leads', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // 4. Insert Lead into Database (Primary durable record)
+    // 4. Detect Package / Service Configuration
+    const detectedConfig = detectServiceConfig(sanitized.selectedBundle || sanitized.selectedService);
+
+    // 5. Insert Lead into Database (Primary durable record)
     const lead = await insertLead({
       fullName: sanitized.fullName,
       email: sanitized.email,
@@ -116,12 +124,18 @@ app.post('/api/leads', async (req: Request, res: Response): Promise<void> => {
       businessName: sanitized.businessName,
       businessCategory: sanitized.businessCategory,
       otherCategory: sanitized.otherCategory,
-      selectedService: sanitized.selectedService,
-      selectedBundle: sanitized.selectedBundle,
+      selectedService: detectedConfig.serviceName,
+      selectedBundle: sanitized.selectedBundle || detectedConfig.serviceName,
       projectRequirement: sanitized.projectRequirement,
+      budget: sanitized.budget,
+      timeline: sanitized.timeline,
+      preferredContactMethod: sanitized.preferredContactMethod,
       remarks: sanitized.remarks,
       pageSource: sanitized.pageSource,
       formSource: sanitized.formSource,
+      consentEmail: sanitized.consentEmail,
+      consentWhatsApp: sanitized.consentWhatsApp,
+      consentSMS: sanitized.consentSMS,
       ipHash,
       userAgent
     });
@@ -129,31 +143,27 @@ app.post('/api/leads', async (req: Request, res: Response): Promise<void> => {
     // Record for duplicate detection
     recordSubmission(sanitized, lead.id);
 
-    // 5. Send Transactional Email Notification to Admin (Non-blocking resilience)
-    // If email fails, the lead is safely retained in the database with status EMAIL_FAILED.
-    sendLeadNotificationEmail(lead)
-      .then(async (emailRes) => {
-        if (emailRes.success) {
-          await updateLeadNotificationStatus(lead.id, 'EMAIL_SENT');
-        } else {
-          console.error(`[EMAIL RETRY LOG] Lead ${lead.id} email notification failed:`, emailRes.error);
-          await updateLeadNotificationStatus(lead.id, 'EMAIL_FAILED');
-        }
-      })
-      .catch(async (err) => {
-        console.error(`[EMAIL ASYNC ERROR] Lead ${lead.id}:`, err);
-        await updateLeadNotificationStatus(lead.id, 'EMAIL_FAILED');
-      });
+    // 6. Asynchronously trigger package-specific multichannel automation (Non-blocking resilience)
+    // Runs Email, WhatsApp, SMS, and Studio notifications in parallel without blocking client response.
+    dispatchLeadAutomations(lead).catch((err) => {
+      console.error(`[AUTOMATION DISPATCH UNCAUGHT] Lead ${lead.id}:`, err);
+    });
 
-    // 6. Return Success Response with Generated Reference ID
+    // 7. Return Success Response with Generated Reference ID and Detected Package
     res.status(201).json({
       success: true,
       leadId: lead.id,
-      message: 'Your enquiry has been received successfully. Our executive team will contact you shortly.',
+      package: {
+        serviceId: detectedConfig.serviceId,
+        serviceName: detectedConfig.serviceName,
+        category: detectedConfig.category
+      },
+      message: 'Your enquiry has been received successfully. Confirmation email and WhatsApp message are being processed.',
       lead: {
         id: lead.id,
         fullName: lead.full_name,
         businessName: lead.business_company_name,
+        packageName: detectedConfig.serviceName,
         createdAt: lead.created_at
       }
     });
@@ -161,7 +171,7 @@ app.post('/api/leads', async (req: Request, res: Response): Promise<void> => {
     console.error('[API LEADS EXCEPTION]', err);
     res.status(500).json({
       success: false,
-      error: 'Something went wrong while submitting your enquiry. Please try again or reach out on WhatsApp.'
+      error: 'Something went wrong while submitting your enquiry. Please try again or reach out directly on WhatsApp.'
     });
   }
 });
@@ -222,6 +232,26 @@ app.get('/api/admin/stats', requireAdminAuth, async (req: Request, res: Response
 });
 
 // ==========================================
+// ADMIN DASHBOARD: Service Config & Templates List
+// ==========================================
+app.get('/api/admin/config/services', requireAdminAuth, (req: Request, res: Response): void => {
+  const services = Object.values(SERVICE_CONFIG).map(s => ({
+    serviceId: s.serviceId,
+    serviceName: s.serviceName,
+    category: s.category,
+    tagline: s.tagline,
+    emailSubject: s.emailSubject,
+    emailHeadline: s.emailHeadline,
+    whatsappTemplateId: s.whatsappTemplateId,
+    ctaText: s.ctaText,
+    ctaUrl: s.ctaUrl,
+    followUpStepsCount: s.followUpSequence.length
+  }));
+
+  res.json({ success: true, services });
+});
+
+// ==========================================
 // ADMIN DASHBOARD: Filter Options (Dynamic)
 // ==========================================
 app.get('/api/admin/filter-options', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
@@ -247,6 +277,7 @@ app.get('/api/admin/leads', requireAdminAuth, async (req: Request, res: Response
       category,
       source,
       service,
+      channelStatus,
       fromDate,
       toDate,
       page,
@@ -263,6 +294,7 @@ app.get('/api/admin/leads', requireAdminAuth, async (req: Request, res: Response
       category: category ? String(category) : undefined,
       source: source ? String(source) : undefined,
       service: service ? String(service) : undefined,
+      channelStatus: channelStatus ? String(channelStatus) : undefined,
       fromDate: fromDate ? String(fromDate) : undefined,
       toDate: toDate ? String(toDate) : undefined,
       page: page ? Number(page) : 1,
@@ -329,7 +361,7 @@ app.get('/api/admin/export', requireAdminAuth, async (req: Request, res: Respons
 });
 
 // ==========================================
-// ADMIN DASHBOARD: Single Lead Details
+// ADMIN DASHBOARD: Single Lead Details with Follow-up Sequence
 // ==========================================
 app.get('/api/admin/leads/:id', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
   try {
@@ -341,10 +373,48 @@ app.get('/api/admin/leads/:id', requireAdminAuth, async (req: Request, res: Resp
       return;
     }
 
-    res.json({ success: true, lead });
+    const serviceConfig = detectServiceConfig(lead.service || lead.selected_bundle);
+
+    res.json({
+      success: true,
+      lead,
+      serviceConfig: {
+        serviceId: serviceConfig.serviceId,
+        serviceName: serviceConfig.serviceName,
+        category: serviceConfig.category,
+        tagline: serviceConfig.tagline,
+        deliverables: serviceConfig.emailDeliverables,
+        followUpSequence: serviceConfig.followUpSequence
+      }
+    });
   } catch (err) {
     console.error('[ADMIN GET LEAD BY ID ERROR]', err);
     res.status(500).json({ error: 'Failed to retrieve lead details.' });
+  }
+});
+
+// ==========================================
+// ADMIN DASHBOARD: Retry Communication Channel
+// ==========================================
+app.post('/api/admin/leads/:id/retry-communication', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { channel } = req.body || {};
+
+    const validChannels = ['email', 'whatsapp', 'sms', 'internal_notification', 'all'];
+    if (!channel || !validChannels.includes(channel)) {
+      res.status(400).json({
+        success: false,
+        error: `Invalid channel. Must be one of: ${validChannels.join(', ')}`
+      });
+      return;
+    }
+
+    const result = await retryLeadChannel(id, channel as any);
+    res.json(result);
+  } catch (err: any) {
+    console.error('[ADMIN RETRY COMMUNICATION ERROR]', err);
+    res.status(500).json({ success: false, error: err?.message || 'Failed to retry communication.' });
   }
 });
 
@@ -361,7 +431,7 @@ const handlePatchLead = async (req: Request, res: Response): Promise<void> => {
 
     const { status, priority, admin_notes } = req.body || {};
 
-    const validStatuses: LeadStatus[] = ['NEW', 'CONTACTED', 'IN_PROGRESS', 'QUALIFIED', 'CONVERTED', 'CLOSED', 'SPAM'];
+    const validStatuses: LeadStatus[] = ['NEW', 'CONTACTED', 'IN_PROGRESS', 'QUALIFIED', 'PROPOSAL_SENT', 'WON', 'LOST', 'CONVERTED', 'CLOSED', 'SPAM'];
     const validPriorities: LeadPriority[] = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
 
     if (status && !validStatuses.includes(status)) {

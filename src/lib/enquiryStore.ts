@@ -15,7 +15,7 @@ const INITIAL_SEED_ENQUIRIES: EnquiryRecord[] = [
     selectedBundle: 'Package 2 (Website + 5 Reels)',
     projectRequirement: 'We are launching our second outlet in Bandra and need a fast mobile website with digital menu and 5 promotional reels for Instagram launch.',
     remarks: 'Preferred launch date in 10 days. Wants WhatsApp table booking button.',
-    status: 'New',
+    status: 'NEW',
     notes: 'Urgent requirement. Followed up on WhatsApp.'
   },
   {
@@ -29,7 +29,7 @@ const INITIAL_SEED_ENQUIRIES: EnquiryRecord[] = [
     selectedService: 'Website Development + Short Ad Video',
     selectedBundle: 'Package 1 (Website Development)',
     projectRequirement: 'Need a professional doctor profile and appointment booking website with patient review integration.',
-    status: 'In Discussion',
+    status: 'IN_PROGRESS',
     notes: 'Shared sample healthcare template layout. Client reviewing.'
   },
   {
@@ -43,7 +43,7 @@ const INITIAL_SEED_ENQUIRIES: EnquiryRecord[] = [
     selectedService: 'Monthly Growth Package',
     selectedBundle: 'Package 3 (Website + Complete Content)',
     projectRequirement: 'Opening high-end gym in South Delhi. Need complete launch kit with website and monthly reels package.',
-    status: 'Converted',
+    status: 'CONVERTED',
     notes: 'Advance received. Website wireframe submitted.'
   }
 ];
@@ -84,7 +84,7 @@ export function addEnquiry(formData: ContactFormData): EnquiryRecord {
     selectedBundle: formData.selectedBundle,
     projectRequirement: formData.projectRequirement,
     remarks: formData.remarks,
-    status: 'New',
+    status: 'NEW',
     notes: ''
   };
 

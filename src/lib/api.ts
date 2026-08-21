@@ -1,4 +1,4 @@
-import { ContactFormData, LeadStatus, LeadPriority } from '../types';
+import { ContactFormData, LeadStatus, LeadPriority, ServiceConfigItem, EnquiryRecord } from '../types';
 
 const TOKEN_KEY = 'yugark_admin_token';
 
@@ -18,9 +18,21 @@ export function clearAdminToken(): void {
 export interface SubmitLeadResponse {
   success: boolean;
   leadId?: string;
+  package?: {
+    serviceId: string;
+    serviceName: string;
+    category: string;
+  };
   message?: string;
   error?: string;
   errors?: Record<string, string>;
+  lead?: {
+    id: string;
+    fullName: string;
+    businessName: string;
+    packageName?: string;
+    createdAt: string;
+  };
 }
 
 export async function submitLead(formData: ContactFormData): Promise<SubmitLeadResponse> {
@@ -70,7 +82,9 @@ export async function submitLead(formData: ContactFormData): Promise<SubmitLeadR
       return {
         success: true,
         leadId: data.leadId,
-        message: data.message || 'Your enquiry has been received successfully.'
+        package: data.package,
+        message: data.message || 'Your enquiry has been received successfully.',
+        lead: data.lead
       };
     }
 
@@ -184,6 +198,7 @@ export interface FetchLeadsParams {
   category?: string;
   source?: string;
   service?: string;
+  channelStatus?: string;
   fromDate?: string;
   toDate?: string;
   page?: number;
@@ -226,6 +241,7 @@ export async function fetchAdminLeads(params: FetchLeadsParams = {}) {
   if (params.category && params.category !== 'All') query.set('category', params.category);
   if (params.source && params.source !== 'All') query.set('source', params.source);
   if (params.service && params.service !== 'All') query.set('service', params.service);
+  if (params.channelStatus && params.channelStatus !== 'All') query.set('channelStatus', params.channelStatus);
   if (params.fromDate) query.set('fromDate', params.fromDate);
   if (params.toDate) query.set('toDate', params.toDate);
   if (params.page) query.set('page', String(params.page));
@@ -248,7 +264,7 @@ export async function fetchAdminLeadById(id: string) {
   const token = getAdminToken();
   if (!token) throw new Error('Unauthenticated');
 
-  const res = await fetch(`/api/admin/leads?id=${encodeURIComponent(id)}`, {
+  const res = await fetch(`/api/admin/leads/${encodeURIComponent(id)}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
 
@@ -257,6 +273,44 @@ export async function fetchAdminLeadById(id: string) {
     throw new Error(data.error || `Lead not found (${res.status})`);
   }
   return res.json();
+}
+
+export async function fetchServiceConfigs(): Promise<{ success: boolean; services: ServiceConfigItem[] }> {
+  const token = getAdminToken();
+  if (!token) throw new Error('Unauthenticated');
+
+  const res = await fetch('/api/admin/config/services', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || `Failed to fetch service templates (${res.status})`);
+  }
+  return res.json();
+}
+
+export async function retryCommunicationChannel(
+  id: string,
+  channel: 'email' | 'whatsapp' | 'sms' | 'internal_notification' | 'all'
+): Promise<{ success: boolean; message?: string; error?: string; results?: any }> {
+  const token = getAdminToken();
+  if (!token) throw new Error('Unauthenticated');
+
+  const res = await fetch(`/api/admin/leads/${encodeURIComponent(id)}/retry-communication`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ channel })
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.success) {
+    throw new Error(data.error || `Failed to retry ${channel} dispatch.`);
+  }
+  return data;
 }
 
 export async function updateAdminLead(
@@ -306,7 +360,6 @@ export async function downloadLeadsExcel(params: FetchLeadsParams = {}) {
   const token = getAdminToken();
   if (!token) throw new Error('Unauthenticated: Please log in to download leads.');
 
-  // 1. Primary Method: Fetch server-side streaming Excel export matching the exact active filters
   const queryParams: FetchLeadsParams = {
     limit: 10000,
     sortBy: params.sortBy || 'created_at',
