@@ -1,5 +1,6 @@
 import SEO from '../components/SEO';
 import Hero from '../components/Hero';
+import StudioTicker from '../components/StudioTicker';
 import FounderSection from '../components/FounderSection';
 import WhyYugark from '../components/WhyYugark';
 import ServicesGrid from '../components/ServicesGrid';
@@ -24,6 +25,9 @@ export default function Home() {
       <main className="bg-[#050505]">
         {/* Hero Section */}
         <Hero />
+
+        {/* Cinematic Studio Marquee Ticker */}
+        <StudioTicker />
 
         {/* Founder Section */}
         <FounderSection />

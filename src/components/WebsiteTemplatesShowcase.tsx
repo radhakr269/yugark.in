@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   Utensils,
@@ -35,6 +36,7 @@ const iconMap: Record<string, any> = {
 };
 
 export default function WebsiteTemplatesShowcase() {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeModalTemplate, setActiveModalTemplate] = useState<BusinessTemplate | null>(null);
 
@@ -93,10 +95,10 @@ export default function WebsiteTemplatesShowcase() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-gradient-to-r from-[#D4B06A] to-[#C9A35E] text-black font-bold shadow-lg shadow-[#D4B06A]/20'
-                  : 'bg-[#0E0E0E] text-neutral-400 border border-neutral-800 hover:text-white hover:border-[#D4B06A]/40'
+                  ? 'bg-gradient-to-r from-[#D4B06A] to-[#C9A35E] text-black font-bold shadow-lg shadow-[#D4B06A]/20 scale-[1.02]'
+                  : 'bg-[#0E0E0E]/80 backdrop-blur-sm text-neutral-400 border border-neutral-800 hover:text-white hover:border-[#D4B06A]/40 hover:bg-[#151515]'
               }`}
             >
               {cat} {cat === 'All' ? `(${BUSINESS_TEMPLATES.length})` : ''}
@@ -115,8 +117,8 @@ export default function WebsiteTemplatesShowcase() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="group relative rounded-2xl bg-[#0A0A0A] border border-neutral-800 hover:border-[#D4B06A]/40 transition-all duration-300 flex flex-col overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-[#D4B06A]/5"
+                transition={{ duration: 0.4, delay: idx * 0.04 }}
+                className="group relative rounded-2xl bg-[#0A0A0A]/75 backdrop-blur-md border border-neutral-800 hover:border-[#D4B06A]/50 transition-all duration-300 flex flex-col overflow-hidden shadow-xl hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.9),0_0_20px_rgba(212,176,106,0.12)] hover:-translate-y-1.5"
               >
                 {/* Visual Preview Container with Browser Chrome */}
                 <div className="relative bg-[#121212] overflow-hidden">
@@ -152,10 +154,10 @@ export default function WebsiteTemplatesShowcase() {
                     </div>
 
                     {/* Interactive Overlay button on hover */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-4">
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-4">
                       <button
-                        onClick={() => setActiveModalTemplate(template)}
-                        className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#D4B06A] to-[#C9A35E] text-black font-bold text-xs flex items-center gap-1.5 shadow-xl hover:scale-105 transition-transform"
+                        onClick={() => navigate(`/templates/${template.id}`)}
+                        className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#D4B06A] to-[#C9A35E] text-black font-bold text-xs flex items-center gap-1.5 shadow-xl hover:scale-105 transition-transform active:scale-95 cursor-pointer"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         <span>Preview Template</span>
@@ -175,7 +177,9 @@ export default function WebsiteTemplatesShowcase() {
                     </div>
 
                     <h3 className="text-lg font-serif font-medium text-white group-hover:text-[#F0D28F] transition-colors">
-                      {template.demoName || `${template.industry} Template`}
+                      <Link to={`/templates/${template.id}`} className="hover:underline">
+                        {template.demoName || `${template.industry} Template`}
+                      </Link>
                     </h3>
 
                     <p className="text-xs text-neutral-400 font-sans font-light line-clamp-2">
@@ -184,7 +188,7 @@ export default function WebsiteTemplatesShowcase() {
                   </div>
 
                   {/* Blueprint Inclusions Preview */}
-                  <div className="pt-2 border-t border-neutral-800 space-y-1.5 text-xs text-neutral-300">
+                  <div className="pt-2 border-t border-neutral-800/80 space-y-1.5 text-xs text-neutral-300">
                     {template.websiteIncludes.slice(0, 2).map((inc, i) => (
                       <div key={i} className="flex items-start gap-1.5 truncate">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[#D4B06A] shrink-0 mt-0.5" />
@@ -194,7 +198,7 @@ export default function WebsiteTemplatesShowcase() {
                   </div>
 
                   {/* Card Bottom: Price + Action Buttons */}
-                  <div className="pt-3 border-t border-neutral-800 flex items-center justify-between gap-2">
+                  <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between gap-2">
                     <div>
                       <span className="block text-[9px] uppercase tracking-wider text-neutral-500">
                         Launch Package
@@ -206,8 +210,8 @@ export default function WebsiteTemplatesShowcase() {
 
                     <div className="flex items-center gap-1.5">
                       <button
-                        onClick={() => setActiveModalTemplate(template)}
-                        className="px-3 py-1.5 rounded-lg bg-[#141414] border border-neutral-700 hover:border-[#D4B06A]/50 text-white text-xs font-medium flex items-center gap-1 transition-colors"
+                        onClick={() => navigate(`/templates/${template.id}`)}
+                        className="px-3 py-1.5 rounded-lg bg-[#141414]/90 border border-neutral-700 hover:border-[#D4B06A]/50 text-white text-xs font-medium flex items-center gap-1 transition-all duration-200 hover:bg-[#1F1F1F] active:scale-95 cursor-pointer"
                       >
                         <Eye className="w-3 h-3 text-[#D4B06A]" />
                         <span>View</span>
@@ -217,7 +221,7 @@ export default function WebsiteTemplatesShowcase() {
                         href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20Radha%20Krishna%20Sir,%20I%20am%20interested%20in%20the%20${encodeURIComponent(template.industry)}%20Website%20Template%20(₹12,999).%20Please%20guide%20me.`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg bg-[#25D366] text-black hover:brightness-110 transition-transform"
+                        className="p-1.5 rounded-lg bg-[#25D366] text-black hover:brightness-110 active:scale-95 transition-all"
                         title="Chat on WhatsApp"
                       >
                         <WhatsAppIcon className="w-4 h-4" />

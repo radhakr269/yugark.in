@@ -108,7 +108,7 @@ export default function Footer() {
               {[
                 { name: 'Home', path: '/' },
                 { name: 'Services', path: '/services' },
-                { name: 'Website Templates', path: '/#templates' },
+                { name: 'Website Templates', path: '/templates' },
                 { name: 'Work / Portfolio', path: '/work' },
                 { name: '6-Step Process', path: '/process' },
                 { name: 'About Founder & Studio', path: '/about' },

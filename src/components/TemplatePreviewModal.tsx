@@ -45,7 +45,7 @@ export default function TemplatePreviewModal({
   return (
     <AnimatePresence>
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-xl overflow-y-auto"
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
         }}
@@ -54,11 +54,11 @@ export default function TemplatePreviewModal({
           initial={{ opacity: 0, scale: 0.96, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 15 }}
-          transition={{ duration: 0.25 }}
-          className="relative w-full max-w-5xl bg-[#090909] border border-[#D4B06A]/30 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] gold-border-glow"
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          className="relative w-full max-w-5xl bg-[#090909]/92 backdrop-blur-2xl border border-[#D4B06A]/35 rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(212,176,106,0.15)] overflow-hidden flex flex-col max-h-[92vh]"
         >
           {/* Top Modal Header Bar */}
-          <div className="flex items-center justify-between px-4 sm:px-6 py-4 bg-[#0F0F0F] border-b border-neutral-800">
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 bg-[#0F0F0F]/85 backdrop-blur-md border-b border-neutral-800">
             <div className="flex items-center gap-3">
               <span className="px-2.5 py-0.5 rounded-full bg-[#D4B06A]/10 text-[#D4B06A] border border-[#D4B06A]/30 text-[10px] uppercase font-bold tracking-wider">
                 {template.liveBadge || 'Demo Template'}
@@ -78,9 +78,9 @@ export default function TemplatePreviewModal({
               <div className="hidden sm:flex items-center bg-black/60 rounded-lg p-1 border border-neutral-800">
                 <button
                   onClick={() => setDeviceView('desktop')}
-                  className={`p-1.5 rounded-md text-xs flex items-center gap-1.5 transition-colors ${
+                  className={`p-1.5 rounded-md text-xs flex items-center gap-1.5 transition-colors cursor-pointer ${
                     deviceView === 'desktop'
-                      ? 'bg-[#D4B06A] text-black font-semibold'
+                      ? 'bg-[#D4B06A] text-black font-semibold shadow-sm'
                       : 'text-neutral-400 hover:text-white'
                   }`}
                   title="Desktop Preview"
@@ -91,9 +91,9 @@ export default function TemplatePreviewModal({
 
                 <button
                   onClick={() => setDeviceView('mobile')}
-                  className={`p-1.5 rounded-md text-xs flex items-center gap-1.5 transition-colors ${
+                  className={`p-1.5 rounded-md text-xs flex items-center gap-1.5 transition-colors cursor-pointer ${
                     deviceView === 'mobile'
-                      ? 'bg-[#D4B06A] text-black font-semibold'
+                      ? 'bg-[#D4B06A] text-black font-semibold shadow-sm'
                       : 'text-neutral-400 hover:text-white'
                   }`}
                   title="Mobile Preview"
@@ -105,7 +105,7 @@ export default function TemplatePreviewModal({
 
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white transition-colors"
+                className="p-2 rounded-lg bg-neutral-900/90 border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700 transition-all active:scale-95 cursor-pointer"
                 aria-label="Close Preview"
               >
                 <X className="w-5 h-5" />
@@ -200,7 +200,7 @@ export default function TemplatePreviewModal({
               </div>
 
               {/* Price & Delivery Badge */}
-              <div className="p-4 rounded-xl bg-[#121212] border border-[#D4B06A]/30 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-[#121212]/90 backdrop-blur-sm border border-[#D4B06A]/30 flex items-center justify-between shadow-md">
                 <div>
                   <span className="block text-[10px] text-neutral-400 uppercase font-medium">
                     Grand Opening Price
@@ -255,7 +255,7 @@ export default function TemplatePreviewModal({
                   href={orderWhatsAppUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 rounded-xl bg-[#25D366] text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:brightness-110 active:scale-98 transition-all"
+                  className="w-full py-3.5 rounded-xl bg-[#25D366] text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:brightness-110 active:scale-95 transition-all"
                 >
                   <WhatsAppIcon className="w-4 h-4" />
                   <span>Order This Template (₹12,999)</span>
@@ -266,7 +266,7 @@ export default function TemplatePreviewModal({
                     onClose();
                     window.location.href = `/contact?template=${template.id}`;
                   }}
-                  className="w-full py-3 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-[#D4B06A]/50 text-white font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
+                  className="w-full py-3 rounded-xl bg-neutral-900/90 border border-neutral-800 hover:border-[#D4B06A]/50 hover:bg-neutral-800 text-white font-medium text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
                 >
                   <span>Request Custom Modifications</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#D4B06A]" />
@@ -277,7 +277,7 @@ export default function TemplatePreviewModal({
           </div>
 
           {/* Footer note */}
-          <div className="px-6 py-3 bg-[#060606] border-t border-neutral-800 text-[11px] text-neutral-500 flex items-center justify-between">
+          <div className="px-6 py-3 bg-[#060606]/90 border-t border-neutral-800 text-[11px] text-neutral-500 flex items-center justify-between">
             <span>YUGARK Digital Studio • Demo Architecture</span>
             <span>All templates custom-coded with React & Tailwind</span>
           </div>

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SERVICES_DATA } from '../data';
-import { ArrowUpRight, Globe, BarChart3, Bot, Megaphone, PenTool, Compass, Layers, Video, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Globe, BarChart3, Bot, Megaphone, PenTool, Compass, Layers, Video, Sparkles, Image, Youtube, Film } from 'lucide-react';
 import { motion } from 'motion/react';
+import { PillarWebVisual, PillarCreativeVisual, PillarGrowthVisual } from './PillarsVisuals';
 
 const iconMap: Record<string, any> = {
   Globe,
@@ -12,7 +13,10 @@ const iconMap: Record<string, any> = {
   PenTool,
   Compass,
   Video,
-  Sparkles
+  Sparkles,
+  Image,
+  Youtube,
+  Film
 };
 
 export default function ServicesGrid() {
@@ -27,8 +31,16 @@ export default function ServicesGrid() {
       icon: Layers,
       accentColor: '#D4B06A',
       badgeClass: 'bg-[#D4B06A]/10 text-[#F0D28F] border-[#D4B06A]/30',
-      services: ['Custom Website Engineering', 'UI/UX & Interactive Design', 'High-Converting Landing Pages', 'E-commerce & WhatsApp Catalogs'],
-      serviceIds: ['website-development']
+      glowBorder: 'border-[#D4B06A]/30 hover:border-[#D4B06A]/70',
+      visual: <PillarWebVisual />,
+      services: [
+        'Custom Website Engineering',
+        'UI/UX & Interactive Design',
+        'High-Converting Landing Pages',
+        'E-commerce & WhatsApp Catalogs'
+      ],
+      serviceIds: ['website-development'],
+      exploreLink: '/services/website-development'
     },
     {
       id: 'creative',
@@ -36,10 +48,18 @@ export default function ServicesGrid() {
       title: 'Content & Creative',
       tagline: 'High-retention video reels, graphics & multi-channel storytelling.',
       icon: Video,
-      accentColor: '#8B5CF6',
+      accentColor: '#A855F7',
       badgeClass: 'bg-violet-500/10 text-violet-300 border-violet-500/30',
-      services: ['Promotional Short Videos & Reels', 'Long-Form Brand & Explainer Videos', 'Branded Social Posts & Carousels', 'AI Creative Visual Production'],
-      serviceIds: ['short-ad-video', 'long-video', 'individual-post', 'monthly-reels', 'youtube-content', 'monthly-posts']
+      glowBorder: 'border-violet-500/30 hover:border-violet-500/70',
+      visual: <PillarCreativeVisual />,
+      services: [
+        'Promotional Short Videos & Reels',
+        'Long-Form Brand & Explainer Videos',
+        'Branded Social Posts & Carousels',
+        'AI Creative Visual Production'
+      ],
+      serviceIds: ['short-ad-video', 'long-video', 'individual-post', 'monthly-reels', 'youtube-content', 'monthly-posts'],
+      exploreLink: '/services/ai-content-video'
     },
     {
       id: 'growth',
@@ -49,8 +69,16 @@ export default function ServicesGrid() {
       icon: Sparkles,
       accentColor: '#38BDF8',
       badgeClass: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
-      services: ['Meta & Instagram Paid Advertising', 'Technical & Local Search SEO', 'Content Strategy & Editorial Plans', 'CRM & Instant WhatsApp Lead Routing'],
-      serviceIds: ['social-media-management', 'social-media-advertising', 'content-strategy', 'digital-growth-strategy']
+      glowBorder: 'border-cyan-500/30 hover:border-cyan-500/70',
+      visual: <PillarGrowthVisual />,
+      services: [
+        'Meta & Instagram Paid Advertising',
+        'Technical & Local Search SEO',
+        'Content Strategy & Editorial Plans',
+        'CRM & Instant WhatsApp Lead Routing'
+      ],
+      serviceIds: ['social-media-management', 'social-media-advertising', 'content-strategy', 'digital-growth-strategy'],
+      exploreLink: '/services/social-media-advertising'
     }
   ];
 
@@ -68,173 +96,222 @@ export default function ServicesGrid() {
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-violet-600/5 blur-[160px] rounded-full pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-[500px] h-[500px] bg-cyan-600/5 blur-[150px] rounded-full pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-24">
         
-        {/* Section Header */}
-        <div className="max-w-3xl mb-14 space-y-4">
-          <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-[#D4B06A]">
-            CORE CAPABILITIES
-          </span>
-          <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1]">
-            Three pillars of digital growth.
-          </h2>
-          <p className="text-base sm:text-lg text-neutral-300 font-sans font-light">
-            A simplified, unified structure designed to elevate your brand authority and drive compounding business revenue.
-          </p>
-        </div>
+        {/* ========================================================= */}
+        {/* PART 1: 3 CORE STUDIO PILLARS WITH 3D NEON VISUALS        */}
+        {/* ========================================================= */}
+        <div className="space-y-12">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121216]/90 border border-[#D4B06A]/30 shadow-[0_0_15px_rgba(212,176,106,0.1)]">
+              <span className="text-xs text-[#F0D28F]">⬡</span>
+              <span className="font-sans text-[11px] uppercase tracking-[0.25em] font-bold text-[#F0D28F]">
+                CORE STUDIO CAPABILITIES
+              </span>
+            </div>
+            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1] font-bold">
+              Three pillars of digital growth.
+            </h2>
+            <p className="text-base sm:text-lg text-neutral-300 font-sans font-light max-w-2xl mx-auto">
+              A simplified, unified structure designed to elevate your brand authority and drive compounding business revenue.
+            </p>
+          </div>
 
-        {/* 3 Service Pillars Showcase */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-16">
-          {pillars.map((pillar) => {
-            const PillarIcon = pillar.icon;
-            const isSelected = selectedPillar === pillar.id;
+          {/* 3 Large Service Pillar Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            {pillars.map((pillar) => {
+              const PillarIcon = pillar.icon;
+              const isSelected = selectedPillar === pillar.id;
 
-            return (
-              <div
-                key={pillar.id}
-                onClick={() => setSelectedPillar(isSelected ? 'all' : pillar.id as any)}
-                className={`p-8 rounded-2xl border transition-all duration-300 flex flex-col justify-between cursor-pointer group ${
-                  isSelected
-                    ? 'bg-[#101010] border-[#D4B06A] shadow-2xl scale-[1.02]'
-                    : 'bg-[#0B0B0B] border-white/10 hover:border-white/20 hover:bg-[#0E0E0E]'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <span className={`text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${pillar.badgeClass}`}>
-                      {pillar.pillarNumber}
-                    </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#141414] border border-white/10 flex items-center justify-center text-white group-hover:border-[#D4B06A] group-hover:text-[#F0D28F] transition-colors">
-                      <PillarIcon className="w-5 h-5" />
+              return (
+                <motion.div
+                  key={pillar.id}
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className={`group relative p-6 sm:p-8 rounded-3xl bg-[#09090D]/85 backdrop-blur-2xl border ${pillar.glowBorder} transition-all duration-300 flex flex-col justify-between hover:-translate-y-2 shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(0,0,0,0.5)] ${
+                    isSelected ? 'ring-2 ring-[#D4B06A]/60 shadow-[0_0_35px_rgba(212,176,106,0.25)]' : ''
+                  }`}
+                >
+                  {/* Top Edge Metallic Accent */}
+                  <div className="absolute top-0 left-8 right-8 h-[1.5px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-80" />
+                  
+                  <div className="space-y-6">
+                    {/* 3D Visual Stage at Card Top */}
+                    <div className="w-full">
+                      {pillar.visual}
+                    </div>
+
+                    {/* Pillar Badge & Icon */}
+                    <div className="flex items-center justify-between pt-2">
+                      <span className={`text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${pillar.badgeClass}`}>
+                        {pillar.pillarNumber}
+                      </span>
+                      <div className="w-10 h-10 rounded-xl bg-[#14141A] border border-white/10 flex items-center justify-center text-neutral-300 group-hover:border-[#D4B06A] group-hover:text-[#F0D28F] group-hover:scale-105 transition-all duration-300 shadow-inner">
+                        <PillarIcon className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    {/* Title & Tagline */}
+                    <div>
+                      <h3 className="font-serif text-2xl sm:text-[26px] text-white font-bold mb-2.5 group-hover:text-[#F0D28F] transition-colors">
+                        {pillar.title}
+                      </h3>
+                      <p className="text-sm text-neutral-300 font-sans font-light leading-relaxed">
+                        {pillar.tagline}
+                      </p>
+                    </div>
+
+                    {/* 4 Feature Bullets */}
+                    <div className="space-y-2.5 pt-4 border-t border-white/5">
+                      {pillar.services.map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-3 text-xs text-neutral-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#D4B06A] shadow-[0_0_6px_#D4B06A]" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <h3 className="font-serif text-2xl text-white font-medium mb-3 group-hover:text-[#F0D28F] transition-colors">
-                    {pillar.title}
-                  </h3>
-
-                  <p className="text-sm text-neutral-300 font-sans font-light leading-relaxed mb-6">
-                    {pillar.tagline}
-                  </p>
-
-                  <div className="space-y-2.5 pt-4 border-t border-white/5">
-                    {pillar.services.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2.5 text-xs text-neutral-300">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4B06A]" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
+                  {/* Bottom Action CTA */}
+                  <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-between">
+                    <Link
+                      to={pillar.exploreLink}
+                      className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-[#D4B06A] group-hover:text-[#F0D28F] transition-colors"
+                    >
+                      <span>Explore Services</span>
+                      <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </Link>
+                    
+                    <button
+                      onClick={() => setSelectedPillar(isSelected ? 'all' : pillar.id as any)}
+                      className="text-[11px] font-mono text-neutral-400 hover:text-white px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                    >
+                      {isSelected ? 'Reset Filter' : 'Filter Grid'}
+                    </button>
                   </div>
-                </div>
-
-                <div className="pt-6 mt-6 border-t border-white/5 flex items-center justify-between text-xs uppercase tracking-widest font-semibold text-[#D4B06A] group-hover:text-[#F0D28F]">
-                  <span>{isSelected ? 'Viewing Category Details' : 'Filter Detailed Services'}</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </div>
-              </div>
-            );
-          })}
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Category Filter Pills & Indicator */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-white/10">
-          <div className="flex items-center gap-2">
-            <span className="text-xs uppercase tracking-widest text-neutral-400 font-medium">
-              Detailed Ecosystem:
-            </span>
-            <span className="text-xs font-serif text-[#F0D28F]">
-              {selectedPillar === 'all' ? 'All Services' : pillars.find(p => p.id === selectedPillar)?.title} ({filteredServices.length})
-            </span>
-          </div>
+        {/* ========================================================= */}
+        {/* PART 2: OUR PREMIUM SERVICES GRID (MATCHING REFERENCE)     */}
+        {/* ========================================================= */}
+        <div className="space-y-10 pt-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/10">
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#121216] border border-[#D4B06A]/30">
+                <span className="text-xs text-[#F0D28F]">⬡</span>
+                <span className="font-sans text-[11px] uppercase tracking-[0.25em] font-bold text-[#F0D28F]">
+                  OUR PREMIUM SERVICES
+                </span>
+              </div>
+              <h3 className="font-serif text-3xl sm:text-4xl text-white font-bold">
+                End-to-End Digital Solutions
+              </h3>
+              <p className="text-sm sm:text-base text-neutral-300 font-light max-w-xl">
+                Precision-engineered deliverables to build authority, capture inquiries, and scale revenue.
+              </p>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setSelectedPillar('all')}
-              className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all cursor-pointer ${
-                selectedPillar === 'all'
-                  ? 'bg-[#D4B06A] text-black'
-                  : 'bg-[#141414] text-neutral-300 hover:text-white border border-white/10'
-              }`}
-            >
-              View All
-            </button>
-            {pillars.map(p => (
+            {/* Filter Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
               <button
-                key={p.id}
-                onClick={() => setSelectedPillar(p.id as any)}
-                className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-widest font-semibold transition-all cursor-pointer hidden sm:inline-block ${
-                  selectedPillar === p.id
-                    ? 'bg-[#D4B06A] text-black'
-                    : 'bg-[#141414] text-neutral-300 hover:text-white border border-white/10'
+                onClick={() => setSelectedPillar('all')}
+                className={`px-4 py-2 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-200 cursor-pointer ${
+                  selectedPillar === 'all'
+                    ? 'bg-[#D4B06A] text-black shadow-[0_0_15px_rgba(212,176,106,0.3)]'
+                    : 'bg-[#14141A]/90 text-neutral-300 hover:text-white border border-white/10 hover:border-white/20'
                 }`}
               >
-                {p.pillarNumber}
+                All Services
               </button>
-            ))}
+              {pillars.map(p => (
+                <button
+                  key={p.id}
+                  onClick={() => setSelectedPillar(p.id as any)}
+                  className={`px-4 py-2 rounded-full text-xs uppercase tracking-widest font-bold transition-all duration-200 cursor-pointer whitespace-nowrap ${
+                    selectedPillar === p.id
+                      ? 'bg-[#D4B06A] text-black shadow-[0_0_15px_rgba(212,176,106,0.3)]'
+                      : 'bg-[#14141A]/90 text-neutral-300 hover:text-white border border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  {p.pillarNumber}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Detailed Service Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {filteredServices.map((service, index) => {
-            const IconComponent = iconMap[service.iconName] || Globe;
-            return (
-              <motion.div
-                key={service.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group relative p-8 rounded-2xl bg-[#0B0B0B] border border-white/5 hover:border-[#D4B06A]/40 transition-all duration-300 flex flex-col justify-between hover:bg-[#101010] hover:-translate-y-1 shadow-2xl"
-              >
-                <div>
-                  {/* Service Icon */}
-                  <div className="w-12 h-12 rounded-xl bg-[#141414] border border-[#D4B06A]/20 flex items-center justify-center text-[#D4B06A] group-hover:border-[#D4B06A] group-hover:bg-[#D4B06A] group-hover:text-black transition-colors mb-6">
-                    <IconComponent className="w-5 h-5" />
+          {/* Detailed Service Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {filteredServices.map((service, index) => {
+              const IconComponent = iconMap[service.iconName] || Globe;
+              return (
+                <motion.div
+                  key={service.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: index * 0.04 }}
+                  className="group relative p-8 rounded-3xl bg-[#09090D]/80 backdrop-blur-xl border border-white/10 hover:border-[#D4B06A]/45 transition-all duration-300 flex flex-col justify-between hover:bg-[#101016]/90 hover:-translate-y-1.5 shadow-[0_20px_40px_rgba(0,0,0,0.85)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_25px_rgba(212,176,106,0.12)]"
+                >
+                  {/* Subtle top shimmer */}
+                  <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-[#D4B06A]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <div>
+                    {/* Service Icon */}
+                    <div className="w-12 h-12 rounded-2xl bg-[#14141C] border border-[#D4B06A]/25 flex items-center justify-center text-[#D4B06A] group-hover:border-[#D4B06A] group-hover:bg-[#D4B06A] group-hover:text-black group-hover:scale-105 transition-all duration-300 mb-6 shadow-md">
+                      <IconComponent className="w-5 h-5" />
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-serif text-2xl text-white mb-2 font-bold group-hover:text-[#F0D28F] transition-colors">
+                      {service.title}
+                    </h3>
+
+                    {/* Pricing / Model Badge */}
+                    {service.priceDisplay && (
+                      <span className="inline-block text-[11px] text-[#F0D28F] bg-[#D4B06A]/10 border border-[#D4B06A]/25 px-3 py-1 rounded-full mb-4 font-mono font-medium">
+                        {service.priceDisplay}
+                      </span>
+                    )}
+
+                    {/* Short Description */}
+                    <p className="text-sm text-neutral-300 font-light leading-relaxed mb-6">
+                      {service.shortDesc}
+                    </p>
+
+                    {/* Feature Bullet Points */}
+                    <ul className="space-y-2.5 mb-8 text-xs text-neutral-300">
+                      {service.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start space-x-2.5">
+                          <span className="text-[#D4B06A] font-bold mt-0.5">•</span>
+                          <span className="leading-snug">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {/* Title */}
-                  <h3 className="font-serif text-2xl text-white mb-2 font-medium group-hover:text-[#F0D28F] transition-colors">
-                    {service.title}
-                  </h3>
-
-                  {/* Pricing / Model Badge */}
-                  {service.priceDisplay && (
-                    <span className="inline-block text-[11px] text-[#F0D28F] bg-[#D4B06A]/10 border border-[#D4B06A]/20 px-2.5 py-0.5 rounded mb-4 font-mono">
-                      {service.priceDisplay}
-                    </span>
-                  )}
-
-                  {/* Short Description */}
-                  <p className="text-sm text-neutral-300 font-light leading-relaxed mb-6">
-                    {service.shortDesc}
-                  </p>
-
-                  {/* Feature Bullet Points */}
-                  <ul className="space-y-2.5 mb-8 text-xs text-neutral-300">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start space-x-2">
-                        <span className="text-[#D4B06A] font-bold mt-0.5">•</span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Learn More Link */}
-                <Link
-                  to={service.link}
-                  className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-widest text-[#D4B06A] group-hover:text-[#F0D28F] font-semibold transition-colors pt-4 border-t border-white/5 group-hover:border-white/10"
-                >
-                  <span>Explore Service Details</span>
-                  <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Link>
-              </motion.div>
-            );
-          })}
+                  {/* Learn More Link */}
+                  <Link
+                    to={service.link}
+                    className="inline-flex items-center justify-between text-xs uppercase tracking-widest text-[#D4B06A] group-hover:text-[#F0D28F] font-bold transition-colors pt-4 border-t border-white/10"
+                  >
+                    <span>Explore Service Details</span>
+                    <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
 
       </div>
     </section>
   );
 }
+
 

@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import SEO from '../components/SEO';
 import ContactForm from '../components/ContactForm';
 import WhatsAppButton, { WHATSAPP_LINK, WhatsAppIcon } from '../components/WhatsAppButton';
@@ -14,15 +15,22 @@ export default function Contact() {
       <main className="pt-32 pb-24 bg-[#050505]">
         {/* Header */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center space-y-6">
-          <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-[#D4B06A]">
-            LET'S BUILD TOGETHER
-          </span>
-          <h1 className="font-serif text-4xl sm:text-6xl text-white tracking-tight leading-[1.1]">
-            Start Your Digital Project.
-          </h1>
-          <p className="text-base sm:text-lg text-neutral-300 font-sans font-light max-w-2xl mx-auto leading-relaxed">
-            Share your business goals and requirements below. Founder Mr. Radha Krishna and the studio team will review your inquiry and provide a tailored plan.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-4"
+          >
+            <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-[#D4B06A]">
+              LET'S BUILD TOGETHER
+            </span>
+            <h1 className="font-serif text-4xl sm:text-6xl text-white tracking-tight leading-[1.1]">
+              Start Your Digital Project.
+            </h1>
+            <p className="text-base sm:text-lg text-neutral-300 font-sans font-light max-w-2xl mx-auto leading-relaxed">
+              Share your business goals and requirements below. Founder Mr. Radha Krishna and the studio team will review your inquiry and provide a tailored plan.
+            </p>
+          </motion.div>
         </section>
 
         {/* Form & Direct Contact Info */}
@@ -35,8 +43,15 @@ export default function Contact() {
             </div>
 
             {/* Direct Details Sidebar */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="p-8 rounded-3xl bg-[#090909] border border-neutral-800 space-y-6 shadow-xl">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="lg:col-span-4 space-y-6"
+            >
+              <div className="p-8 rounded-3xl bg-[#09090E]/85 backdrop-blur-2xl border border-white/10 hover:border-[#D4B06A]/45 space-y-6 shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_30px_rgba(212,176,106,0.12)] transition-all duration-300 relative overflow-hidden">
+                {/* Top Metallic Glare Line */}
+                <div className="absolute top-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-[#F0D28F]/40 to-transparent" />
                 <div className="flex items-center space-x-2 text-[#D4B06A] text-xs font-semibold uppercase tracking-wider">
                   <Sparkles className="w-4 h-4" />
                   <span>Direct Communication</span>
@@ -116,7 +131,7 @@ export default function Contact() {
                 </div>
               </div>
 
-            </div>
+            </motion.div>
 
           </div>
         </section>

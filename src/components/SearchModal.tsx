@@ -186,7 +186,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         title: `Template: ${tpl.industry} (${tpl.demoName || 'Demo'})`,
         description: `${tpl.tagline} | Deliverables: ${tpl.websiteIncludes.join(', ')} | Launch Offer: ₹12,999`,
         category: 'Templates',
-        link: '/#templates',
+        link: `/templates/${tpl.id}`,
         tags: [
           tpl.industry, 
           tpl.demoName || '', 
@@ -348,23 +348,23 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   return (
     <AnimatePresence>
       <div 
-        className="fixed inset-0 z-50 flex items-start justify-center pt-12 sm:pt-20 px-3 sm:px-4 bg-black/85 backdrop-blur-md"
+        className="fixed inset-0 z-50 flex items-start justify-center pt-12 sm:pt-20 px-3 sm:px-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200"
         onClick={(e) => {
           if (e.target === e.currentTarget) handleClose();
         }}
       >
         <motion.div
-          initial={{ opacity: 0, y: -20, scale: 0.98 }}
+          initial={{ opacity: 0, y: -16, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.98 }}
-          transition={{ duration: 0.2 }}
-          className="relative w-full max-w-2xl bg-[#0A0A0A] border border-[#D4B06A]/30 rounded-2xl shadow-2xl overflow-hidden gold-border-glow flex flex-col max-h-[85vh]"
+          exit={{ opacity: 0, y: -16, scale: 0.98 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          className="relative w-full max-w-2xl bg-[#0A0A0A]/92 backdrop-blur-2xl border border-[#D4B06A]/35 rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(212,176,106,0.15)] overflow-hidden flex flex-col max-h-[85vh]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top Header with Form, Search Button, and Clear Close Button */}
           <form 
             onSubmit={handleSearchSubmit}
-            className="relative flex items-center gap-2 px-3 sm:px-5 py-3.5 border-b border-[#D4B06A]/20 bg-[#0F0F0F]"
+            className="relative flex items-center gap-2 px-3 sm:px-5 py-3.5 border-b border-[#D4B06A]/20 bg-[#0F0F0F]/85 backdrop-blur-md"
           >
             <Search className="w-5 h-5 text-[#D4B06A] shrink-0 ml-1" />
             
@@ -389,7 +389,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   setExecutedQuery('');
                   inputRef.current?.focus();
                 }}
-                className="text-neutral-400 hover:text-white p-1 text-xs uppercase font-medium shrink-0"
+                className="text-neutral-400 hover:text-white p-1 text-xs uppercase font-medium shrink-0 active:scale-95"
                 title="Clear input"
               >
                 <X className="w-4 h-4" />
@@ -399,7 +399,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* Explicit SEARCH Button */}
             <button
               type="submit"
-              className="px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4B06A] to-[#C9A35E] hover:brightness-110 text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 shrink-0 shadow-md active:scale-95"
+              className="px-3.5 sm:px-4 py-2 rounded-xl gold-gradient-bg gold-gradient-bg-hover text-black font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 shrink-0 shadow-md active:scale-95 cursor-pointer"
             >
               <Search className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Search</span>
@@ -409,7 +409,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             <button
               type="button"
               onClick={handleClose}
-              className="px-3 py-2 text-neutral-300 hover:text-white bg-neutral-900 hover:bg-neutral-800 border border-neutral-700/80 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-colors"
+              className="px-3 py-2 text-neutral-300 hover:text-white bg-neutral-900/90 hover:bg-neutral-800 border border-neutral-700/80 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 transition-all active:scale-95 cursor-pointer"
               aria-label="Close search interface"
             >
               <X className="w-4 h-4 text-[#D4B06A]" />
@@ -418,17 +418,17 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           </form>
 
           {/* Category Filter Pills */}
-          <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 border-b border-neutral-900 overflow-x-auto no-scrollbar bg-[#080808]">
+          <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 border-b border-neutral-900 overflow-x-auto no-scrollbar bg-[#080808]/90">
             {['All', 'Services', 'Pricing', 'Templates', 'About', 'Work', 'Process', 'FAQ'].map(
               (cat) => (
                 <button
                   key={cat}
                   type="button"
                   onClick={() => setActiveCategory(cat)}
-                  className={`text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded-full whitespace-nowrap transition-all ${
+                  className={`text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 cursor-pointer ${
                     activeCategory === cat
-                      ? 'bg-[#D4B06A] text-black font-bold'
-                      : 'text-neutral-400 hover:text-white bg-neutral-900/80 border border-neutral-800'
+                      ? 'bg-[#D4B06A] text-black font-bold shadow-[0_0_12px_rgba(212,176,106,0.35)]'
+                      : 'text-neutral-400 hover:text-white bg-neutral-900/80 border border-neutral-800 hover:border-neutral-700'
                   }`}
                 >
                   {cat}
@@ -441,7 +441,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
             {!effectiveQuery ? (
               <div className="text-center py-8 sm:py-10 space-y-3">
-                <Sparkles className="w-8 h-8 text-[#D4B06A] mx-auto opacity-60" />
+                <Sparkles className="w-8 h-8 text-[#D4B06A] mx-auto opacity-60 animate-pulse" />
                 <p className="text-sm text-neutral-200 font-medium">
                   Search pages, services, pricing, templates, process & leadership
                 </p>
@@ -465,7 +465,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         setInputValue(preset);
                         setExecutedQuery(preset);
                       }}
-                      className="text-xs text-[#D4B06A] bg-[#14120C] border border-[#D4B06A]/20 px-3 py-1 rounded-lg hover:bg-[#D4B06A]/20 hover:border-[#D4B06A]/40 transition-colors capitalize font-medium"
+                      className="text-xs text-[#D4B06A] bg-[#14120C]/90 border border-[#D4B06A]/25 px-3 py-1 rounded-lg hover:bg-[#D4B06A]/20 hover:border-[#D4B06A]/50 transition-all capitalize font-medium cursor-pointer active:scale-95"
                     >
                       {preset}
                     </button>
@@ -496,7 +496,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                   <div
                     key={item.id}
                     onClick={() => handleSelectResult(item.link)}
-                    className="group p-3.5 sm:p-4 bg-[#0F0F0F] hover:bg-[#141414] border border-neutral-800/80 hover:border-[#D4B06A]/40 rounded-xl cursor-pointer transition-all flex items-start justify-between gap-3 sm:gap-4"
+                    className="group p-3.5 sm:p-4 bg-[#0F0F0F]/80 hover:bg-[#161616]/95 border border-neutral-800/80 hover:border-[#D4B06A]/45 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg flex items-start justify-between gap-3 sm:gap-4"
                   >
                     <div className="space-y-1 text-left">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -520,13 +520,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           </div>
 
           {/* Footer Bar */}
-          <div className="px-4 sm:px-6 py-2.5 bg-[#080808] border-t border-neutral-900 text-[11px] text-neutral-400 flex justify-between items-center">
+          <div className="px-4 sm:px-6 py-2.5 bg-[#080808]/90 border-t border-neutral-900 text-[11px] text-neutral-400 flex justify-between items-center">
             <span>YUGARK Digital Studio Search</span>
             <div className="flex items-center gap-2">
               <button 
                 type="button" 
                 onClick={handleClose} 
-                className="text-[#D4B06A] hover:underline font-semibold"
+                className="text-[#D4B06A] hover:underline font-semibold cursor-pointer"
               >
                 Close (ESC)
               </button>

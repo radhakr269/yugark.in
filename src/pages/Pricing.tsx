@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import SEO from '../components/SEO';
 import { PRICING_PACKAGES, INDIVIDUAL_SERVICES, PRICING_PLANS } from '../data';
 import { Check, HelpCircle, Sparkles, Clock, Calculator, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
@@ -120,19 +121,25 @@ export default function Pricing() {
         {activeTab === 'packages' && (
           <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-              {PRICING_PACKAGES.map((pkg) => {
+              {PRICING_PACKAGES.map((pkg, pIdx) => {
                 const savings = pkg.regularPrice - pkg.launchPrice;
                 return (
-                  <div
+                  <motion.div
                     key={pkg.id}
-                    className={`relative p-8 sm:p-10 rounded-3xl bg-[#0A0A0A] border flex flex-col justify-between transition-all duration-300 ${
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45, delay: pIdx * 0.08 }}
+                    className={`relative p-8 sm:p-10 rounded-3xl bg-[#09090E]/85 backdrop-blur-2xl border flex flex-col justify-between transition-all duration-300 overflow-hidden ${
                       pkg.isPopular
-                        ? 'border-[#D4B06A] shadow-2xl gold-border-glow lg:-translate-y-2'
-                        : 'border-neutral-800 hover:border-[#D4B06A]/40'
+                        ? 'border-[#D4B06A] shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(212,176,106,0.22)] lg:-translate-y-2'
+                        : 'border-white/10 hover:border-[#D4B06A]/45 hover:-translate-y-1 shadow-[0_20px_45px_rgba(0,0,0,0.85)]'
                     }`}
                   >
+                    {/* Top Edge Metallic Glare Line */}
+                    <div className="absolute top-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-[#F0D28F]/40 to-transparent" />
+
                     {pkg.isPopular && (
-                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full gold-gradient-bg text-black text-[10px] font-extrabold uppercase tracking-widest shadow-lg">
+                      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#D4B06A] via-[#F0D28F] to-[#C9A35E] text-black text-[10px] font-extrabold uppercase tracking-widest shadow-lg z-20">
                         ⭐ {pkg.popularBadge || 'MOST POPULAR'}
                       </div>
                     )}
@@ -202,7 +209,7 @@ export default function Pricing() {
                         <span>Book on WhatsApp</span>
                       </a>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>

@@ -68,7 +68,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Services', path: '/services' },
-    { name: 'Templates', path: '/#templates' },
+    { name: 'Templates', path: '/templates' },
     { name: 'Work', path: '/work' },
     { name: 'Process', path: '/process' },
     { name: 'About', path: '/about' },
@@ -86,8 +86,8 @@ export default function Navbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled || isMobileMenuOpen
-            ? 'bg-[#050505]/95 backdrop-blur-md border-b border-[#D4B06A]/15 py-3.5 shadow-2xl'
-            : 'bg-gradient-to-b from-[#050505]/90 to-transparent py-5'
+            ? 'bg-[#050505]/85 backdrop-blur-xl border-b border-[#D4B06A]/20 py-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.8)]'
+            : 'bg-gradient-to-b from-[#050505]/80 via-[#050505]/40 to-transparent backdrop-blur-[6px] border-b border-white/5 py-4 sm:py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,43 +96,51 @@ export default function Navbar() {
             <Link 
               to="/" 
               onClick={closeMobileMenu}
-              className="flex items-center group relative z-50"
+              className="flex items-center group relative z-50 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
             >
               <Logo size="md" variant="default" />
             </Link>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-7">
+            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.substring(1));
                 return (
                   <Link
                     key={link.name}
                     to={link.path}
-                    className={`text-xs uppercase tracking-widest transition-colors duration-200 ${
+                    className={`relative py-1 text-xs uppercase tracking-[0.18em] transition-all duration-200 group ${
                       isActive
-                        ? 'text-[#D4B06A] font-bold border-b border-[#D4B06A] pb-0.5'
-                        : 'text-[#9A9A9A] hover:text-[#D4B06A]'
+                        ? 'text-[#F0D28F] font-semibold'
+                        : 'text-[#9A9A9A] hover:text-[#F0D28F]'
                     }`}
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    {/* Hover & Active Underline Indicator */}
+                    <span 
+                      className={`absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-[#D4B06A] to-[#F0D28F] transition-all duration-300 ease-out ${
+                        isActive
+                          ? 'w-full opacity-100 shadow-[0_0_8px_rgba(212,176,106,0.6)]'
+                          : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-100'
+                      }`}
+                    />
                   </Link>
                 );
               })}
             </nav>
 
             {/* Right Side Actions: Search Bar & CTAs */}
-            <div className="hidden lg:flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-3.5">
               {/* Search Trigger Button */}
               <button
                 onClick={() => setSearchModalOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#121212] border border-[#D4B06A]/20 hover:border-[#D4B06A]/50 text-neutral-400 hover:text-white transition-all text-xs"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#121212]/80 backdrop-blur-sm border border-[#D4B06A]/20 hover:border-[#D4B06A]/60 hover:bg-[#1A1A1A]/90 text-neutral-400 hover:text-white transition-all duration-200 text-xs shadow-sm hover:shadow-[0_0_15px_rgba(212,176,106,0.1)] active:scale-95"
                 title="Search website (Cmd+K)"
                 type="button"
               >
                 <Search className="w-3.5 h-3.5 text-[#D4B06A]" />
                 <span className="text-[11px] font-sans">Search...</span>
-                <kbd className="hidden xl:inline-block px-1.5 py-0.5 bg-neutral-900 border border-neutral-800 rounded text-[9px] text-neutral-400">
+                <kbd className="hidden xl:inline-block px-1.5 py-0.5 bg-neutral-900 border border-neutral-800 rounded text-[9px] text-neutral-400 font-mono">
                   ⌘K
                 </kbd>
               </button>
@@ -142,7 +150,7 @@ export default function Navbar() {
                 href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-[#128C7E]/20 text-[#25D366] hover:bg-[#25D366] hover:text-black transition-all border border-[#25D366]/30 flex items-center justify-center"
+                className="p-2 rounded-full bg-[#128C7E]/20 text-[#25D366] hover:bg-[#25D366] hover:text-black hover:shadow-[0_0_15px_rgba(37,211,102,0.4)] transition-all duration-200 border border-[#25D366]/30 flex items-center justify-center active:scale-95"
                 title="Chat on WhatsApp (+91 9125205132)"
               >
                 <WhatsAppIcon className="w-4 h-4" />
@@ -151,7 +159,7 @@ export default function Navbar() {
               {/* Start Project CTA */}
               <Link
                 to="/contact"
-                className="bg-gradient-to-r from-[#D4B06A] to-[#C9A35E] text-black px-5 py-2 rounded-full text-xs uppercase tracking-widest font-bold hover:brightness-110 transition-all shadow-md"
+                className="gold-gradient-bg gold-gradient-bg-hover text-black px-5 py-2 rounded-full text-xs uppercase tracking-widest font-bold shadow-md active:scale-95"
               >
                 Start Project
               </Link>
