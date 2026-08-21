@@ -1,5 +1,5 @@
-import { extractAdminSession } from '../../server/auth';
-import { exportLeadsToExcelBuffer } from '../../server/db';
+import { extractAdminSession } from '../../server/auth.js';
+import { exportLeadsToExcelBuffer } from '../../server/db.js';
 
 export default async function handler(req: any, res: any) {
   const session = extractAdminSession(req);
@@ -12,7 +12,20 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const excelBuffer = await exportLeadsToExcelBuffer(req.query || {});
+    const query = req.query || {};
+    const excelBuffer = await exportLeadsToExcelBuffer({
+      search: query.search ? String(query.search) : undefined,
+      client: query.client ? String(query.client) : undefined,
+      status: query.status && query.status !== 'All' ? String(query.status) : undefined,
+      priority: query.priority && query.priority !== 'All' ? String(query.priority) : undefined,
+      category: query.category && query.category !== 'All' ? String(query.category) : undefined,
+      source: query.source && query.source !== 'All' ? String(query.source) : undefined,
+      service: query.service && query.service !== 'All' ? String(query.service) : undefined,
+      fromDate: query.fromDate ? String(query.fromDate) : undefined,
+      toDate: query.toDate ? String(query.toDate) : undefined,
+      sortBy: (query.sortBy as any) || 'created_at',
+      sortOrder: query.sortOrder === 'asc' ? 'asc' : 'desc'
+    });
     const filename = `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
     res.setHeader(
       'Content-Type',
@@ -31,3 +44,4 @@ export default async function handler(req: any, res: any) {
     });
   }
 }
+
