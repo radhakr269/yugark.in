@@ -50,46 +50,46 @@ export default function Hero3DCore({ className = '' }: Hero3DCoreProps) {
   ];
 
   return (
-    <div className={`relative flex items-center justify-center min-h-[380px] sm:min-h-[480px] w-full select-none ${className}`}>
+    <div className={`relative flex items-center justify-center min-h-[380px] sm:min-h-[480px] lg:min-h-[520px] w-full select-none ${className}`}>
       
       {/* ---------------------------------------------------- */}
       {/* 1. ATMOSPHERIC VOLUMETRIC GLOWS & LIGHT FLARES      */}
       {/* ---------------------------------------------------- */}
-      <div className="absolute w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-[#D4B06A]/18 blur-[100px] pointer-events-none transform -translate-y-4" />
-      <div className="absolute w-80 sm:w-[420px] h-80 sm:h-[420px] rounded-full bg-violet-600/12 blur-[130px] pointer-events-none" />
-      <div className="absolute w-56 sm:w-72 h-56 sm:h-72 rounded-full bg-cyan-500/8 blur-[90px] pointer-events-none transform translate-x-12 translate-y-8" />
+      <div className="absolute w-72 sm:w-96 lg:w-[450px] h-72 sm:h-96 lg:h-[450px] rounded-full bg-[#D4B06A]/20 blur-[110px] pointer-events-none transform -translate-y-4" />
+      <div className="absolute w-80 sm:w-[420px] lg:w-[480px] h-80 sm:h-[420px] lg:h-[480px] rounded-full bg-violet-600/15 blur-[140px] pointer-events-none" />
+      <div className="absolute w-56 sm:w-72 h-56 sm:h-72 rounded-full bg-cyan-500/10 blur-[100px] pointer-events-none transform translate-x-12 translate-y-8" />
 
       {/* ---------------------------------------------------- */}
-      {/* 2. SUBTLE CONCENTRIC ORBITAL RINGS & SATELLITE NODES */}
+      {/* 2. CONCENTRIC ORBITAL RINGS & SATELLITE NODES        */}
       {/* ---------------------------------------------------- */}
 
-      {/* Outermost Orbital Ring with Traveling Node (Anticlockwise) */}
+      {/* Outermost Orbital Ring with Traveling Nodes (Anticlockwise) */}
       <motion.div
         animate={{ rotate: -360 }}
-        transition={{ duration: 36, repeat: Infinity, ease: 'linear' }}
-        className="absolute w-[310px] sm:w-[410px] h-[310px] sm:h-[410px] rounded-full border border-[#D4B06A]/25 border-dashed pointer-events-none"
+        transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
+        className="absolute w-[320px] sm:w-[430px] lg:w-[480px] h-[320px] sm:h-[430px] lg:h-[480px] rounded-full border border-[#D4B06A]/30 border-dashed pointer-events-none"
       >
         {/* Orbiting Satellite Node 1 (Gold) */}
-        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#F0D28F] shadow-[0_0_14px_#D4B06A]" />
-        {/* Orbiting Satellite Node 2 (Cyan subtle) */}
-        <div className="absolute -bottom-1 left-1/4 w-2 h-2 rounded-full bg-[#38BDF8] shadow-[0_0_10px_#38BDF8]" />
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[#FFF2D1] shadow-[0_0_16px_#D4B06A]" />
+        {/* Orbiting Satellite Node 2 (Cyan) */}
+        <div className="absolute -bottom-1.5 left-1/4 w-2.5 h-2.5 rounded-full bg-[#38BDF8] shadow-[0_0_12px_#38BDF8]" />
       </motion.div>
 
-      {/* Mid Orbital Ring (Tilted, Clockwise) */}
+      {/* Mid Orbital Ring (Tilted, Clockwise for Gyroscopic Counter-Motion) */}
       <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 44, repeat: Infinity, ease: 'linear' }}
-        className="absolute w-[260px] sm:w-[340px] h-[260px] sm:h-[340px] rounded-full border border-violet-400/20 pointer-events-none"
+        transition={{ duration: 42, repeat: Infinity, ease: 'linear' }}
+        className="absolute w-[270px] sm:w-[360px] lg:w-[400px] h-[270px] sm:h-[360px] lg:h-[400px] rounded-full border border-violet-400/25 pointer-events-none"
       >
         {/* Orbiting Satellite Node 3 (Violet) */}
-        <div className="absolute top-1/4 -right-1 w-2.5 h-2.5 rounded-full bg-[#C084FC] shadow-[0_0_12px_#A855F7]" />
+        <div className="absolute top-1/4 -right-1.5 w-3 h-3 rounded-full bg-[#C084FC] shadow-[0_0_14px_#A855F7]" />
       </motion.div>
 
-      {/* Inner Precision Tracking Ring (Anticlockwise with gold dots) */}
+      {/* Inner Precision Tracking Ring (Anticlockwise with gold nodes) */}
       <motion.div
         animate={{ rotate: -360 }}
-        transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
-        className="absolute w-[210px] sm:w-[270px] h-[210px] sm:h-[270px] rounded-full border border-[#D4B06A]/30 border-dotted pointer-events-none"
+        transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+        className="absolute w-[220px] sm:w-[290px] lg:w-[320px] h-[220px] sm:h-[290px] lg:h-[320px] rounded-full border border-[#D4B06A]/35 border-dotted pointer-events-none"
       />
 
       {/* ---------------------------------------------------- */}
@@ -115,7 +115,7 @@ export default function Hero3DCore({ className = '' }: Hero3DCoreProps) {
       {/* ---------------------------------------------------- */}
       <div className="relative z-10 flex flex-col items-center justify-center">
         
-        {/* Floating Rotating Disc Container */}
+        {/* Floating Rotating Disc Container (Continuous Anticlockwise Rotation) */}
         <motion.div
           animate={{ 
             y: [0, -10, 0],
@@ -123,25 +123,25 @@ export default function Hero3DCore({ className = '' }: Hero3DCoreProps) {
           }}
           transition={{ 
             y: { duration: 4.5, repeat: Infinity, ease: 'easeInOut' },
-            rotate: { duration: 32, repeat: Infinity, ease: 'linear' }
+            rotate: { duration: 30, repeat: Infinity, ease: 'linear' }
           }}
-          className="relative w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-gradient-to-b from-[#1C1813] via-[#0E0D0B] to-[#050505] p-1.5 border-2 border-[#D4B06A]/85 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_45px_rgba(212,176,106,0.35)] flex items-center justify-center group"
+          className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full bg-gradient-to-b from-[#221C14] via-[#100F0D] to-[#040404] p-2 border-2 border-[#D4B06A]/90 shadow-[0_30px_70px_rgba(0,0,0,0.98),0_0_55px_rgba(212,176,106,0.4)] flex items-center justify-center group"
         >
           {/* Outer Dashed Ring Inset */}
-          <div className="w-full h-full rounded-full border border-[#D4B06A]/40 border-dashed flex items-center justify-center p-3 relative overflow-hidden">
+          <div className="w-full h-full rounded-full border border-[#D4B06A]/45 border-dashed flex items-center justify-center p-3 sm:p-4 relative overflow-hidden">
             
             {/* Interior radial glare */}
-            <div className="absolute inset-0 bg-radial from-[#D4B06A]/10 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-radial from-[#D4B06A]/15 via-transparent to-transparent pointer-events-none" />
 
-            {/* High-Precision Metallic Gold 'Y' Emblem Vector */}
+            {/* High-Precision 3D/4D Volumetric Metallic Gold 'Y' Emblem Vector */}
             <svg
               viewBox="0 0 100 100"
-              className="w-28 h-28 sm:w-36 sm:h-36 filter drop-shadow-[0_6px_16px_rgba(212,176,106,0.65)] relative z-10"
+              className="w-32 h-32 sm:w-44 sm:h-44 lg:w-48 lg:h-48 filter drop-shadow-[0_8px_20px_rgba(212,176,106,0.75)] relative z-10"
             >
               <defs>
                 {/* Primary Gold Metal Gradient */}
                 <linearGradient id="heroCoreGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FFF7E6" />
+                  <stop offset="0%" stopColor="#FFF9E6" />
                   <stop offset="25%" stopColor="#F5D899" />
                   <stop offset="55%" stopColor="#D4B06A" />
                   <stop offset="85%" stopColor="#9E762E" />
@@ -150,9 +150,9 @@ export default function Hero3DCore({ className = '' }: Hero3DCoreProps) {
 
                 {/* Secondary Bevel Highlight Gradient */}
                 <linearGradient id="heroCoreBevel" x1="100%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" />
-                  <stop offset="50%" stopColor="#D4B06A" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#7A5617" stopOpacity="0.8" />
+                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.95" />
+                  <stop offset="50%" stopColor="#D4B06A" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="#7A5617" stopOpacity="0.85" />
                 </linearGradient>
 
                 {/* Disc Trim Gradient */}
@@ -164,47 +164,43 @@ export default function Hero3DCore({ className = '' }: Hero3DCoreProps) {
               </defs>
 
               {/* Decorative Concentric Circular Guideline */}
-              <circle cx="50" cy="50" r="45" fill="none" stroke="url(#heroCoreTrim)" strokeWidth="1.2" opacity="0.65" />
-              <circle cx="50" cy="50" r="41" fill="none" stroke="#D4B06A" strokeWidth="0.5" strokeDasharray="2 3" opacity="0.4" />
+              <circle cx="50" cy="50" r="45" fill="none" stroke="url(#heroCoreTrim)" strokeWidth="1.4" opacity="0.75" />
+              <circle cx="50" cy="50" r="41" fill="none" stroke="#D4B06A" strokeWidth="0.6" strokeDasharray="3 3" opacity="0.5" />
 
-              {/* Cardinal Tick Marks */}
-              <line x1="50" y1="3" x2="50" y2="7" stroke="#F0D28F" strokeWidth="1.5" />
-              <line x1="50" y1="93" x2="50" y2="97" stroke="#F0D28F" strokeWidth="1.5" />
-              <line x1="3" y1="50" x2="7" y2="50" stroke="#F0D28F" strokeWidth="1.5" />
-              <line x1="93" y1="50" x2="97" y2="50" stroke="#F0D28F" strokeWidth="1.5" />
-
-              {/* Main 3D Faceted 'Y' Emblem Path */}
-              {/* Left Branch */}
-              <polygon
-                points="26,22 50,49 46,51 22,25"
-                fill="url(#heroCoreBevel)"
-                opacity="0.9"
-              />
-              {/* Right Branch */}
-              <polygon
-                points="74,22 50,49 54,51 78,25"
-                fill="url(#heroCoreGold)"
-              />
-              {/* Central Solid Y Body */}
-              <path
-                d="M 27,23 L 46,50 L 46,77 C 46,79 48,80 50,80 C 52,80 54,79 54,77 L 54,50 L 73,23 C 75,20 71,17 67,20 L 50,44 L 33,20 C 29,17 25,20 27,23 Z"
-                fill="url(#heroCoreGold)"
-              />
+              {/* Main 3D Faceted 'Y' Emblem Body */}
+              <g filter="drop-shadow(0 4px 10px rgba(0,0,0,0.8))">
+                {/* Left Branch Bevel */}
+                <polygon
+                  points="26,22 50,49 46,51 22,25"
+                  fill="url(#heroCoreBevel)"
+                  opacity="0.95"
+                />
+                {/* Right Branch Bevel */}
+                <polygon
+                  points="74,22 50,49 54,51 78,25"
+                  fill="url(#heroCoreGold)"
+                />
+                {/* Central Solid Y Silhouette */}
+                <path
+                  d="M 27,23 L 46,50 L 46,77 C 46,79 48,80 50,80 C 52,80 54,79 54,77 L 54,50 L 73,23 C 75,20 71,17 67,20 L 50,44 L 33,20 C 29,17 25,20 27,23 Z"
+                  fill="url(#heroCoreGold)"
+                />
+              </g>
               
               {/* Center Diamond Light Node */}
               <polygon 
                 points="50,41 55,48 50,55 45,48" 
-                fill="#FFFDF7" 
-                filter="drop-shadow(0 0 6px #FFF)"
+                fill="#FFFFFF" 
+                filter="drop-shadow(0 0 8px #FFF)"
               />
             </svg>
           </div>
         </motion.div>
 
-        {/* Multi-Tiered Illuminated Horizon Pedestal (Stage Base) */}
-        <div className="w-56 sm:w-72 h-8 rounded-full bg-gradient-to-r from-transparent via-[#D4B06A]/75 to-transparent blur-xs mt-4 shadow-[0_0_30px_rgba(212,176,106,0.45)]" />
-        <div className="w-44 sm:w-56 h-2.5 rounded-full bg-[#F0D28F] shadow-[0_0_28px_#D4B06A]" />
-        <div className="w-32 sm:w-40 h-1.5 rounded-full bg-[#FFF1D0] shadow-[0_0_18px_#F0D28F] mt-0.5" />
+        {/* Multi-Tiered Illuminated Horizon Pedestal (Stage Base from Reference) */}
+        <div className="w-60 sm:w-80 lg:w-96 h-8 rounded-full bg-gradient-to-r from-transparent via-[#D4B06A]/80 to-transparent blur-xs mt-5 shadow-[0_0_35px_rgba(212,176,106,0.5)]" />
+        <div className="w-48 sm:w-64 lg:w-72 h-3 rounded-full bg-[#F0D28F] shadow-[0_0_30px_#D4B06A]" />
+        <div className="w-36 sm:w-48 lg:w-56 h-1.5 rounded-full bg-[#FFF1D0] shadow-[0_0_20px_#F0D28F] mt-0.5" />
       </div>
 
     </div>

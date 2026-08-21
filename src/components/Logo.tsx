@@ -15,55 +15,56 @@ export default function Logo({
 }: LogoProps) {
   // Dimension mapping
   const dimensions = {
-    sm: { icon: 32, text: 'text-lg', height: 32 },
-    md: { icon: 40, text: 'text-xl', height: 40 },
-    lg: { icon: 52, text: 'text-2xl', height: 52 },
-    xl: { icon: 68, text: 'text-4xl', height: 68 },
+    sm: { icon: 34, text: 'text-lg', height: 34 },
+    md: { icon: 44, text: 'text-xl', height: 44 },
+    lg: { icon: 56, text: 'text-2xl', height: 56 },
+    xl: { icon: 72, text: 'text-4xl', height: 72 },
   }[size];
 
   return (
-    <div className={`inline-flex items-center gap-3 select-none ${className}`}>
-      {/* 3D Metallic Emblem SVG */}
+    <div className={`inline-flex items-center gap-3.5 select-none ${className}`}>
+      {/* 3D/4D Volumetric Metallic Emblem SVG */}
       <svg
         width={dimensions.icon}
         height={dimensions.icon}
         viewBox="0 0 100 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="transform transition-transform duration-300 hover:scale-105"
+        className="transform transition-transform duration-300 hover:scale-105 filter drop-shadow-[0_4px_16px_rgba(212,176,106,0.35)]"
       >
         <defs>
           {/* Metallic Gold Primary Gradient */}
           <linearGradient id="goldMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#F5E0AA" />
-            <stop offset="30%" stopColor="#D4B06A" />
-            <stop offset="70%" stopColor="#B38A3E" />
-            <stop offset="100%" stopColor="#EAD293" />
+            <stop offset="0%" stopColor="#FFF2D1" />
+            <stop offset="25%" stopColor="#F5D899" />
+            <stop offset="55%" stopColor="#D4B06A" />
+            <stop offset="85%" stopColor="#9E762E" />
+            <stop offset="100%" stopColor="#F3DC9B" />
           </linearGradient>
 
           {/* 3D Outer Ring Glow Gradient */}
           <linearGradient id="ringGlow" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#D4B06A" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#FFF2D1" stopOpacity="1" />
-            <stop offset="100%" stopColor="#8A6723" stopOpacity="0.6" />
+            <stop offset="0%" stopColor="#D4B06A" stopOpacity="0.9" />
+            <stop offset="50%" stopColor="#FFF7E6" stopOpacity="1" />
+            <stop offset="100%" stopColor="#7A5617" stopOpacity="0.7" />
           </linearGradient>
 
           {/* Core Dark Radial Depth */}
-          <radialGradient id="coreDepth" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#1C1A14" />
-            <stop offset="70%" stopColor="#0D0C0A" />
-            <stop offset="100%" stopColor="#050505" />
+          <radialGradient id="coreDepth" cx="45%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="#221E16" />
+            <stop offset="60%" stopColor="#0E0D0A" />
+            <stop offset="100%" stopColor="#040404" />
           </radialGradient>
 
           {/* 3D Shadow Overlay */}
-          <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#000000" floodOpacity="0.8" />
-            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#D4B06A" floodOpacity="0.3" />
+          <filter id="dropShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="4" stdDeviation="5" floodColor="#000000" floodOpacity="0.95" />
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#D4B06A" floodOpacity="0.4" />
           </filter>
 
-          {/* Gold Inner Reflection */}
+          {/* Gold Inner Bevel Reflection */}
           <linearGradient id="innerReflection" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#D4B06A" stopOpacity="0.0" />
           </linearGradient>
         </defs>
@@ -75,7 +76,7 @@ export default function Logo({
           r="46"
           fill="url(#coreDepth)"
           stroke="url(#ringGlow)"
-          strokeWidth="2.5"
+          strokeWidth="2.8"
           filter="url(#dropShadow)"
         />
 
@@ -85,39 +86,30 @@ export default function Logo({
           cy="50"
           r="40"
           stroke="url(#goldMetallic)"
-          strokeWidth="0.75"
+          strokeWidth="0.85"
           strokeDasharray="4 2 1 2"
-          opacity="0.85"
-        />
-
-        {/* Inner Diamond/Star Poly Pattern */}
-        <path
-          d="M 50,14 L 54,42 L 82,42 L 59,58 L 68,84 L 50,68 L 32,84 L 41,58 L 18,42 L 46,42 Z"
-          fill="none"
-          stroke="url(#goldMetallic)"
-          strokeWidth="0.5"
-          opacity="0.3"
+          opacity="0.9"
         />
 
         {/* 3D Stylized Metallic 'Y' Motif */}
         <g filter="url(#dropShadow)">
-          {/* Left Wing of Y */}
+          {/* Main Solid Y Body */}
           <path
-            d="M 30,26 L 46,50 L 46,74 C 46,76 48,77 50,77 C 52,77 54,76 54,74 L 54,50 L 70,26 C 72,23 68,20 64,23 L 50,44 L 36,23 C 32,20 28,23 30,26 Z"
+            d="M 27,24 L 46,50 L 46,76 C 46,78 48,79 50,79 C 52,79 54,78 54,76 L 54,50 L 73,24 C 75,21 71,18 67,21 L 50,44 L 33,21 C 29,18 25,21 27,24 Z"
             fill="url(#goldMetallic)"
           />
           {/* Bevel Highlight Layer */}
           <path
-            d="M 50,44 L 64,23 C 66,21.5 68,21.5 69,23 C 70,24.5 69,26 67,29 L 52,50 L 52,74 C 52,75.5 51,76.5 50,76.5 Z"
+            d="M 50,44 L 67,21 C 69,19.5 71,19.5 72,21 C 73,22.5 72,24 70,27 L 53,50 L 53,76 C 53,77.5 52,78.5 50,78.5 Z"
             fill="url(#innerReflection)"
           />
         </g>
 
         {/* Center Radiant Diamond Gem Accent */}
         <polygon
-          points="50,42 53,48 50,54 47,48"
-          fill="#FFF4D6"
-          filter="url(#dropShadow)"
+          points="50,42 53.5,48 50,54 46.5,48"
+          fill="#FFF9E6"
+          filter="drop-shadow(0 0 4px #FFF)"
         />
       </svg>
 

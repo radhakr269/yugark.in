@@ -92,16 +92,18 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            {/* 3D Metallic Gold Logo */}
-            <Link 
-              to="/" 
-              onClick={closeMobileMenu}
-              className="flex items-center group relative z-50 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Logo size="md" variant="default" />
-            </Link>
+            {/* 3D Metallic Gold Logo with dedicated breathing room */}
+            <div className="flex-shrink-0 mr-8 xl:mr-16">
+              <Link 
+                to="/" 
+                onClick={closeMobileMenu}
+                className="flex items-center group relative z-50 transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Logo size="md" variant="default" />
+              </Link>
+            </div>
 
-            {/* Desktop Navigation Links */}
+            {/* Desktop Navigation Links with clean start & deliberate gap from logo */}
             <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path || (link.path.startsWith('/#') && location.hash === link.path.substring(1));
@@ -130,7 +132,7 @@ export default function Navbar() {
             </nav>
 
             {/* Right Side Actions: Search Bar & CTAs */}
-            <div className="hidden lg:flex items-center space-x-3.5">
+            <div className="hidden lg:flex items-center space-x-3.5 ml-4 xl:ml-8">
               {/* Search Trigger Button */}
               <button
                 onClick={() => setSearchModalOpen(true)}

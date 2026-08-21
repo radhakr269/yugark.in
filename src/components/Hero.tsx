@@ -238,25 +238,36 @@ export default function Hero() {
           {/* LEFT COLUMN: Editorial & Value Proposition */}
           <div className="lg:col-span-7 space-y-6 sm:space-y-7">
             
-            {/* Top Meta Brand Badge */}
-            <motion.div 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 border border-[#D4B06A]/40 bg-[#D4B06A]/10 px-3.5 py-1.5 rounded-full backdrop-blur-md shadow-[0_0_15px_rgba(212,176,106,0.15)]"
-            >
-              <span className="text-[#D4B06A] text-xs">⬡</span>
-              <span className="text-[11px] uppercase tracking-[0.25em] text-[#F0D28F] font-semibold">
-                YUGARK • DIGITAL STUDIO
-              </span>
-            </motion.div>
+            {/* Top Meta Brand Badge & Founder Name (Single Clean Line) */}
+            <div className="flex flex-wrap items-center gap-3">
+              <motion.div 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="inline-flex items-center gap-2 border border-[#D4B06A]/40 bg-[#D4B06A]/10 px-3.5 py-1.5 rounded-full backdrop-blur-md shadow-[0_0_15px_rgba(212,176,106,0.15)]"
+              >
+                <span className="text-[#D4B06A] text-xs">⬡</span>
+                <span className="text-[11px] uppercase tracking-[0.25em] text-[#F0D28F] font-semibold">
+                  YUGARK • DIGITAL STUDIO
+                </span>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.08 }}
+                className="text-xs uppercase tracking-[0.22em] text-[#D4B06A]/90 font-serif font-medium"
+              >
+                Radha Krishna
+              </motion.div>
+            </div>
 
             {/* Main Headline */}
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="font-serif text-4xl sm:text-6xl xl:text-7xl font-bold leading-[1.08] text-white tracking-tight"
+              className="font-serif text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.08] text-white tracking-tight"
             >
               Websites that make <br />
               <span className="bg-gradient-to-r from-[#D4B06A] via-[#F0D28F] to-[#C9A35E] bg-clip-text text-transparent font-serif">
@@ -264,12 +275,12 @@ export default function Hero() {
               </span>
             </motion.h1>
 
-            {/* Supporting Paragraph */}
+            {/* Supporting Paragraph (Concise and responsive) */}
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-neutral-300 text-base sm:text-lg max-w-xl leading-relaxed font-sans font-light"
+              className="text-neutral-300 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed font-sans font-light"
             >
               Premium websites, compelling content and digital growth solutions built to move your business forward.
             </motion.p>
@@ -279,11 +290,11 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-1"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1"
             >
               <Link
                 to="/contact"
-                className="bg-gradient-to-r from-[#D4B06A] via-[#E2C17A] to-[#C9A35E] text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:brightness-110 hover:-translate-y-0.5 active:scale-98 active:translate-y-0 transition-all duration-300 shadow-[0_10px_25px_rgba(212,176,106,0.3)] group cursor-pointer"
+                className="bg-gradient-to-r from-[#D4B06A] via-[#E2C17A] to-[#C9A35E] text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 hover:brightness-110 hover:-translate-y-0.5 active:scale-98 active:translate-y-0 transition-all duration-300 shadow-[0_10px_25px_rgba(212,176,106,0.3)] group cursor-pointer text-center"
               >
                 <span>Get my free website plan</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -291,7 +302,7 @@ export default function Hero() {
 
               <Link
                 to="/work"
-                className="px-8 py-4 rounded-full border border-white/20 bg-white/[0.03] backdrop-blur-sm text-white hover:border-[#D4B06A] hover:text-[#D4B06A] hover:bg-white/[0.06] hover:-translate-y-0.5 active:scale-98 active:translate-y-0 text-xs uppercase tracking-widest font-semibold text-center transition-all duration-200 cursor-pointer"
+                className="px-7 sm:px-8 py-3.5 sm:py-4 rounded-full border border-white/20 bg-white/[0.03] backdrop-blur-sm text-white hover:border-[#D4B06A] hover:text-[#D4B06A] hover:bg-white/[0.06] hover:-translate-y-0.5 active:scale-98 active:translate-y-0 text-xs uppercase tracking-widest font-semibold text-center transition-all duration-200 cursor-pointer"
               >
                 See our work
               </Link>
@@ -302,38 +313,38 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-neutral-800/80"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-5 border-t border-neutral-800/80"
             >
-              <div className="p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
-                <div className="flex items-center gap-1.5 text-sm text-[#F0D28F] font-bold font-serif">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
+                <div className="flex items-center gap-1.5 text-sm sm:text-base text-[#F0D28F] font-bold font-serif">
                   <Box className="w-3.5 h-3.5 text-[#D4B06A]" />
                   <span>100+</span>
                 </div>
-                <span className="text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Projects Delivered</span>
+                <span className="text-[9px] sm:text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Projects Delivered</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
-                <div className="flex items-center gap-1.5 text-sm text-[#F0D28F] font-bold font-serif">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
+                <div className="flex items-center gap-1.5 text-sm sm:text-base text-[#F0D28F] font-bold font-serif">
                   <Users className="w-3.5 h-3.5 text-[#D4B06A]" />
                   <span>50+</span>
                 </div>
-                <span className="text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Happy Clients</span>
+                <span className="text-[9px] sm:text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Happy Clients</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
-                <div className="flex items-center gap-1.5 text-sm text-[#F0D28F] font-bold font-serif">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
+                <div className="flex items-center gap-1.5 text-sm sm:text-base text-[#F0D28F] font-bold font-serif">
                   <Clock className="w-3.5 h-3.5 text-[#D4B06A]" />
                   <span>3+</span>
                 </div>
-                <span className="text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Years Experience</span>
+                <span className="text-[9px] sm:text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Years Experience</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
-                <div className="flex items-center gap-1.5 text-sm text-[#F0D28F] font-bold font-serif">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-[#0D0D0D]/80 border border-white/10 backdrop-blur-md hover:border-[#D4B06A]/40 transition-colors shadow-lg">
+                <div className="flex items-center gap-1.5 text-sm sm:text-base text-[#F0D28F] font-bold font-serif">
                   <Globe className="w-3.5 h-3.5 text-[#D4B06A]" />
                   <span>India</span>
                 </div>
-                <span className="text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Worldwide Service</span>
+                <span className="text-[9px] sm:text-[10px] text-neutral-400 block mt-1 uppercase tracking-wider">Worldwide Service</span>
               </div>
             </motion.div>
 
