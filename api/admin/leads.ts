@@ -59,9 +59,14 @@ export default async function handler(req: any, res: any) {
 
       const result = await getLeads({
         search: query.search ? String(query.search) : undefined,
+        client: query.client ? String(query.client) : undefined,
         status: query.status ? String(query.status) : undefined,
         priority: query.priority ? String(query.priority) : undefined,
         category: query.category ? String(query.category) : undefined,
+        source: query.source ? String(query.source) : undefined,
+        service: query.service ? String(query.service) : undefined,
+        fromDate: query.fromDate ? String(query.fromDate) : undefined,
+        toDate: query.toDate ? String(query.toDate) : undefined,
         page: query.page ? Number(query.page) : 1,
         limit: query.limit ? Number(query.limit) : 20,
         sortBy: (query.sortBy as any) || 'created_at',
@@ -76,7 +81,7 @@ export default async function handler(req: any, res: any) {
       console.error('[API ADMIN GET LEADS ERROR]', err);
       return res.status(500).json({
         success: false,
-        error: 'Failed to fetch lead records.'
+        error: err?.message || 'Failed to fetch lead records.'
       });
     }
   }

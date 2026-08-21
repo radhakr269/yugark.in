@@ -8,6 +8,7 @@ import {
   checkAdminSession,
   fetchAdminStats,
   fetchAdminLeads,
+  fetchAdminFilterOptions,
   updateAdminLead,
   deleteAdminLead,
   downloadLeadsExcel
@@ -30,6 +31,7 @@ import {
   X,
   Send,
   AlertTriangle,
+  AlertCircle,
   Flame,
   ChevronLeft,
   ChevronRight,
@@ -38,7 +40,11 @@ import {
   Layers,
   FileText,
   FileSpreadsheet,
-  Phone
+  Phone,
+  SlidersHorizontal,
+  RotateCcw,
+  Sparkles,
+  Check
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { WhatsAppIcon } from '../components/WhatsAppButton';
@@ -82,6 +88,7 @@ export default function Admin() {
   const [leads, setLeads] = useState<LeadItem[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [isLoadingLeads, setIsLoadingLeads] = useState<boolean>(false);
+  const [loadError, setLoadError] = useState<string>('');
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [selectedLead, setSelectedLead] = useState<LeadItem | null>(null);
   const [noteDraft, setNoteDraft] = useState<string>('');
@@ -89,15 +96,58 @@ export default function Admin() {
 
   // Filters, search & pagination
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [clientFilter, setClientFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [priorityFilter, setPriorityFilter] = useState<string>('All');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
+  const [sourceFilter, setSourceFilter] = useState<string>('All');
+  const [serviceFilter, setServiceFilter] = useState<string>('All');
+  const [fromDate, setFromDate] = useState<string>('');
+  const [toDate, setToDate] = useState<string>('');
+  const [datePreset, setDatePreset] = useState<string>('all');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState<boolean>(false);
+  const [dynamicOptions, setDynamicOptions] = useState<{
+    categories: string[];
+    sources: string[];
+    services: string[];
+  }>({
+    categories: [],
+    sources: [],
+    services: []
+  });
+
   const [sortBy, setSortBy] = useState<string>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(15);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalLeadsCount, setTotalLeadsCount] = useState<number>(0);
+
+  // Active filter count
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (searchQuery.trim()) count++;
+    if (clientFilter.trim()) count++;
+    if (statusFilter !== 'All') count++;
+    if (priorityFilter !== 'All') count++;
+    if (categoryFilter !== 'All') count++;
+    if (sourceFilter !== 'All') count++;
+    if (serviceFilter !== 'All') count++;
+    if (fromDate) count++;
+    if (toDate) count++;
+    return count;
+  }, [searchQuery, clientFilter, statusFilter, priorityFilter, categoryFilter, sourceFilter, serviceFilter, fromDate, toDate]);
+
+  // Load distinct filter options on mount
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchAdminFilterOptions().then((opts) => {
+        if (opts && (opts.categories?.length || opts.sources?.length || opts.services?.length)) {
+          setDynamicOptions(opts);
+        }
+      });
+    }
+  }, [isAuthenticated]);
 
   // Verify session on mount
   useEffect(() => {
@@ -123,42 +173,121 @@ export default function Admin() {
   const loadData = useCallback(async () => {
     if (!isAuthenticated) return;
     setIsLoadingLeads(true);
+    setLoadError('');
     try {
       const [leadsRes, statsRes] = await Promise.all([
         fetchAdminLeads({
           search: searchQuery,
+          client: clientFilter,
           status: statusFilter,
           priority: priorityFilter,
           category: categoryFilter,
+          source: sourceFilter,
+          service: serviceFilter,
+          fromDate,
+          toDate,
           sortBy,
           sortOrder,
           page,
           limit
         }),
-        fetchAdminStats()
+        fetchAdminStats().catch(() => ({ success: false, stats: null }))
       ]);
 
-      if (leadsRes.success) {
+      if (leadsRes && leadsRes.success) {
         setLeads(leadsRes.data || []);
         setTotalPages(leadsRes.totalPages || 1);
-        setTotalLeadsCount(leadsRes.total || 0);
+        setTotalLeadsCount(leadsRes.total ?? 0);
+      } else if (leadsRes && leadsRes.error) {
+        setLoadError(leadsRes.error);
       }
 
-      if (statsRes.success) {
+      if (statsRes && statsRes.success) {
         setStats(statsRes.stats);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('[ADMIN LOAD DATA ERROR]', err);
+      setLoadError(err?.message || 'Failed to load leads from database.');
     } finally {
       setIsLoadingLeads(false);
     }
-  }, [isAuthenticated, searchQuery, statusFilter, priorityFilter, categoryFilter, sortBy, sortOrder, page, limit]);
+  }, [
+    isAuthenticated,
+    searchQuery,
+    clientFilter,
+    statusFilter,
+    priorityFilter,
+    categoryFilter,
+    sourceFilter,
+    serviceFilter,
+    fromDate,
+    toDate,
+    sortBy,
+    sortOrder,
+    page,
+    limit
+  ]);
 
   useEffect(() => {
     if (isAuthenticated) {
       loadData();
     }
   }, [isAuthenticated, loadData]);
+
+  const handleDatePreset = (preset: string) => {
+    setDatePreset(preset);
+    setPage(1);
+    const now = new Date();
+    const formatYMD = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+
+    if (preset === 'all') {
+      setFromDate('');
+      setToDate('');
+    } else if (preset === 'today') {
+      const todayStr = formatYMD(now);
+      setFromDate(todayStr);
+      setToDate(todayStr);
+    } else if (preset === 'yesterday') {
+      const yest = new Date(now);
+      yest.setDate(yest.getDate() - 1);
+      const yestStr = formatYMD(yest);
+      setFromDate(yestStr);
+      setToDate(yestStr);
+    } else if (preset === 'last7') {
+      const d7 = new Date(now);
+      d7.setDate(d7.getDate() - 6);
+      setFromDate(formatYMD(d7));
+      setToDate(formatYMD(now));
+    } else if (preset === 'thisMonth') {
+      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      setFromDate(formatYMD(firstDay));
+      setToDate(formatYMD(now));
+    } else if (preset === 'lastMonth') {
+      const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      setFromDate(formatYMD(firstDayLastMonth));
+      setToDate(formatYMD(lastDayLastMonth));
+    }
+  };
+
+  const handleResetAllFilters = () => {
+    setSearchQuery('');
+    setClientFilter('');
+    setStatusFilter('All');
+    setPriorityFilter('All');
+    setCategoryFilter('All');
+    setSourceFilter('All');
+    setServiceFilter('All');
+    setFromDate('');
+    setToDate('');
+    setDatePreset('all');
+    setPage(1);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,7 +370,19 @@ export default function Admin() {
   const handleExportExcel = async () => {
     setIsExporting(true);
     try {
-      await downloadLeadsExcel();
+      await downloadLeadsExcel({
+        search: searchQuery,
+        client: clientFilter,
+        status: statusFilter,
+        priority: priorityFilter,
+        category: categoryFilter,
+        source: sourceFilter,
+        service: serviceFilter,
+        fromDate,
+        toDate,
+        sortBy,
+        sortOrder
+      });
     } catch (err: any) {
       console.error('Failed to export Excel file', err);
       alert(err?.message || 'Could not download Excel file. Please verify network connection and try again.');
@@ -446,7 +587,7 @@ export default function Admin() {
                 onClick={handleExportExcel}
                 disabled={isExporting}
                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl gold-gradient-bg text-black font-bold text-xs uppercase tracking-wider hover:brightness-110 active:scale-[0.98] transition-all shadow-md min-h-[40px] cursor-pointer disabled:opacity-60"
-                title="Download all leads in Microsoft Excel (.xlsx) format"
+                title={activeFilterCount > 0 ? `Download ${totalLeadsCount} filtered live leads in Excel (.xlsx) format` : "Download all leads in Microsoft Excel (.xlsx) format"}
               >
                 {isExporting ? (
                   <>
@@ -456,7 +597,7 @@ export default function Admin() {
                 ) : (
                   <>
                     <FileSpreadsheet className="w-4 h-4" />
-                    <span>Download Excel</span>
+                    <span>{activeFilterCount > 0 ? `Export Filtered (${totalLeadsCount})` : 'Download Excel'}</span>
                   </>
                 )}
               </button>
@@ -487,6 +628,23 @@ export default function Admin() {
       {/* Main Admin Body */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-6 sm:pt-8 space-y-6 sm:space-y-8">
         
+        {/* Live Database Error Banner if any */}
+        {loadError && (
+          <div className="p-4 rounded-2xl bg-red-950/40 border border-red-800/60 text-red-300 flex items-start gap-3 text-xs">
+            <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+            <div className="flex-1 space-y-1">
+              <div className="font-semibold text-red-200">Database Connection Notice</div>
+              <p className="text-red-300/90">{loadError}</p>
+            </div>
+            <button
+              onClick={loadData}
+              className="px-2.5 py-1 rounded-lg bg-red-900/60 hover:bg-red-800 text-red-200 text-[11px] font-medium transition-colors shrink-0"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-4">
           <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0A0A0A] border border-neutral-800 space-y-1">
@@ -529,11 +687,13 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* Filter, Search & Controls Bar */}
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0A0A0A] border border-neutral-800 space-y-3 sm:space-y-4">
+        {/* Filter, Search & Advanced Controls Hub */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-[#0A0A0A] border border-neutral-800 space-y-4">
+          
+          {/* Header Row: Search Input & Action Buttons */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
             
-            {/* Search Input */}
+            {/* Universal Search Input */}
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-neutral-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
@@ -543,46 +703,108 @@ export default function Admin() {
                   setSearchQuery(e.target.value);
                   setPage(1);
                 }}
-                placeholder="Search Lead ID, Name, Email, WhatsApp, Business..."
-                className="w-full pl-9 pr-8 py-2.5 bg-[#121212] border border-neutral-800 focus:border-[#D4B06A] rounded-xl text-xs sm:text-sm text-white placeholder-neutral-600 focus:outline-none min-h-[42px]"
+                placeholder="Search by Lead ID, Client Name, Email, Phone, Company, Requirements..."
+                className="w-full pl-9 pr-8 py-2.5 bg-[#121212] border border-neutral-800 focus:border-[#D4B06A] rounded-xl text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none min-h-[42px]"
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => {
+                    setSearchQuery('');
+                    setPage(1);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white p-1"
+                  title="Clear search"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
 
-            {/* Quick Filters */}
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
+            {/* Quick Controls & Filter Toggles */}
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+              {/* Advanced Filters Toggle Button */}
+              <button
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-medium transition-all cursor-pointer min-h-[42px] ${
+                  showAdvancedFilters || activeFilterCount > 0
+                    ? 'bg-[#18150e] border-[#D4B06A]/60 text-[#F0D28F]'
+                    : 'bg-[#121212] border-neutral-800 text-neutral-300 hover:border-neutral-700'
+                }`}
+                title="Toggle advanced filter controls"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5 text-[#D4B06A]" />
+                <span>Filters</span>
+                {activeFilterCount > 0 && (
+                  <span className="w-5 h-5 rounded-full gold-gradient-bg text-black font-bold text-[10px] flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Reset All Filters Button (Visible when filters are active) */}
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={handleResetAllFilters}
+                  className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-xs text-neutral-400 hover:text-white transition-all cursor-pointer min-h-[42px]"
+                  title="Reset all search queries and active filters"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Reset</span>
+                </button>
+              )}
+
+              {/* Quick Filtered Export Button */}
+              <button
+                onClick={handleExportExcel}
+                disabled={isExporting}
+                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#161616] border border-neutral-700 hover:border-[#D4B06A] text-[#F0D28F] text-xs font-semibold hover:bg-neutral-900 transition-all cursor-pointer min-h-[42px] disabled:opacity-60"
+                title="Download filtered leads spreadsheet"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#D4B06A]" />
+                <span className="hidden xs:inline">Export XLSX</span>
+                <span className="text-[11px] font-mono text-neutral-400">({totalLeadsCount})</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Primary Quick Filters Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+            {/* Status Filter */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider block">
+                Status
+              </label>
               <select
                 value={statusFilter}
                 onChange={(e) => {
                   setStatusFilter(e.target.value);
                   setPage(1);
                 }}
-                className="px-2.5 sm:px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[42px]"
+                className="w-full px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[38px]"
               >
-                <option value="All">All Statuses</option>
-                <option value="NEW">NEW</option>
-                <option value="CONTACTED">CONTACTED</option>
-                <option value="IN_PROGRESS">IN PROGRESS</option>
-                <option value="QUALIFIED">QUALIFIED</option>
-                <option value="CONVERTED">CONVERTED</option>
-                <option value="CLOSED">CLOSED</option>
-                <option value="SPAM">SPAM</option>
+                <option value="All">All Statuses ({stats?.total ?? totalLeadsCount})</option>
+                <option value="NEW">NEW ({stats?.newLeads ?? 0})</option>
+                <option value="CONTACTED">CONTACTED ({stats?.contacted ?? 0})</option>
+                <option value="IN_PROGRESS">IN PROGRESS ({stats?.inProgress ?? 0})</option>
+                <option value="QUALIFIED">QUALIFIED ({stats?.qualified ?? 0})</option>
+                <option value="CONVERTED">CONVERTED ({stats?.converted ?? 0})</option>
+                <option value="CLOSED">CLOSED ({stats?.closed ?? 0})</option>
+                <option value="SPAM">SPAM ({stats?.spam ?? 0})</option>
               </select>
+            </div>
 
+            {/* Priority Filter */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider block">
+                Priority
+              </label>
               <select
                 value={priorityFilter}
                 onChange={(e) => {
                   setPriorityFilter(e.target.value);
                   setPage(1);
                 }}
-                className="px-2.5 sm:px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[42px]"
+                className="w-full px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[38px]"
               >
                 <option value="All">All Priorities</option>
                 <option value="URGENT">URGENT</option>
@@ -590,14 +812,20 @@ export default function Admin() {
                 <option value="MEDIUM">MEDIUM</option>
                 <option value="LOW">LOW</option>
               </select>
+            </div>
 
+            {/* Category Filter */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider block">
+                Business Category
+              </label>
               <select
                 value={categoryFilter}
                 onChange={(e) => {
                   setCategoryFilter(e.target.value);
                   setPage(1);
                 }}
-                className="px-2.5 sm:px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[42px]"
+                className="w-full px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[38px]"
               >
                 <option value="All">All Categories</option>
                 <option value="Restaurant & Café">Restaurant & Café</option>
@@ -610,22 +838,296 @@ export default function Admin() {
                 <option value="Hotel & Hospitality">Hotel & Hospitality</option>
                 <option value="Corporate & B2B">Corporate & B2B</option>
                 <option value="Local Business / Other">Local Business / Other</option>
+                {dynamicOptions.categories
+                  .filter((cat) => ![
+                    'Restaurant & Café',
+                    'Gym & Fitness',
+                    'Real Estate',
+                    'Healthcare & Clinic',
+                    'Coaching & Education',
+                    'E-commerce & Retail',
+                    'Salon & Beauty',
+                    'Hotel & Hospitality',
+                    'Corporate & B2B',
+                    'Local Business / Other'
+                  ].includes(cat))
+                  .map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
               </select>
+            </div>
 
+            {/* Sort Field & Order */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-medium text-neutral-400 uppercase tracking-wider block">
+                Sort Ordering
+              </label>
               <select
                 value={`${sortBy}_${sortOrder}`}
                 onChange={(e) => {
                   const [field, order] = e.target.value.split('_');
                   setSortBy(field);
                   setSortOrder(order as 'asc' | 'desc');
+                  setPage(1);
                 }}
-                className="px-2.5 sm:px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[42px]"
+                className="w-full px-3 py-2 bg-[#121212] border border-neutral-800 text-xs text-neutral-200 rounded-xl focus:border-[#D4B06A] focus:outline-none min-h-[38px]"
               >
                 <option value="created_at_desc">Newest First</option>
                 <option value="created_at_asc">Oldest First</option>
                 <option value="priority_desc">Priority (High to Low)</option>
-                <option value="full_name_asc">Name (A-Z)</option>
+                <option value="full_name_asc">Client Name (A-Z)</option>
+                <option value="business_company_name_asc">Company (A-Z)</option>
               </select>
+            </div>
+          </div>
+
+          {/* Expandable Advanced Filters Drawer */}
+          {showAdvancedFilters && (
+            <div className="p-4 rounded-xl bg-[#0F0F0F] border border-neutral-800/80 space-y-4 pt-3 transition-all animate-fadeIn">
+              
+              {/* Date Presets Row */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-neutral-300 flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-[#D4B06A]" />
+                    <span>Submission Date Presets</span>
+                  </span>
+                  {(fromDate || toDate) && (
+                    <span className="text-[10px] text-[#D4B06A] font-mono">
+                      {fromDate || 'Start'} → {toDate || 'Present'}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {[
+                    { id: 'all', label: 'All Time' },
+                    { id: 'today', label: 'Today' },
+                    { id: 'yesterday', label: 'Yesterday' },
+                    { id: 'last7', label: 'Last 7 Days' },
+                    { id: 'thisMonth', label: 'This Month' },
+                    { id: 'lastMonth', label: 'Last Month' }
+                  ].map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() => handleDatePreset(preset.id)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                        datePreset === preset.id
+                          ? 'bg-[#D4B06A] text-black font-semibold'
+                          : 'bg-[#181818] border border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom Date Range & Specific Field Filters */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2 border-t border-neutral-800/60">
+                {/* From Date */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-medium text-neutral-400 block">
+                    From Date
+                  </label>
+                  <input
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) => {
+                      setFromDate(e.target.value);
+                      setDatePreset('custom');
+                      setPage(1);
+                    }}
+                    className="w-full px-2.5 py-1.5 bg-[#141414] border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:border-[#D4B06A] focus:outline-none min-h-[36px]"
+                  />
+                </div>
+
+                {/* To Date */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-medium text-neutral-400 block">
+                    To Date
+                  </label>
+                  <input
+                    type="date"
+                    value={toDate}
+                    onChange={(e) => {
+                      setToDate(e.target.value);
+                      setDatePreset('custom');
+                      setPage(1);
+                    }}
+                    className="w-full px-2.5 py-1.5 bg-[#141414] border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:border-[#D4B06A] focus:outline-none min-h-[36px]"
+                  />
+                </div>
+
+                {/* Client / Business Filter */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-medium text-neutral-400 block">
+                    Client / Company Filter
+                  </label>
+                  <input
+                    type="text"
+                    value={clientFilter}
+                    onChange={(e) => {
+                      setClientFilter(e.target.value);
+                      setPage(1);
+                    }}
+                    placeholder="Specific name or business..."
+                    className="w-full px-2.5 py-1.5 bg-[#141414] border border-neutral-800 rounded-lg text-xs text-neutral-200 placeholder-neutral-600 focus:border-[#D4B06A] focus:outline-none min-h-[36px]"
+                  />
+                </div>
+
+                {/* Source Filter */}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-medium text-neutral-400 block">
+                    Lead Acquisition Source
+                  </label>
+                  <select
+                    value={sourceFilter}
+                    onChange={(e) => {
+                      setSourceFilter(e.target.value);
+                      setPage(1);
+                    }}
+                    className="w-full px-2.5 py-1.5 bg-[#141414] border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:border-[#D4B06A] focus:outline-none min-h-[36px]"
+                  >
+                    <option value="All">All Lead Sources</option>
+                    <option value="Hero">Hero CTA</option>
+                    <option value="Calculator">Pricing Calculator</option>
+                    <option value="Contact">Contact Page</option>
+                    <option value="Footer">Footer Form</option>
+                    <option value="WhatsApp">WhatsApp</option>
+                    <option value="Studio">Studio Consultation</option>
+                    {dynamicOptions.sources
+                      .filter((s) => !['Hero', 'Calculator', 'Contact', 'Footer', 'WhatsApp', 'Studio'].includes(s))
+                      .map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Service Filter */}
+              <div className="pt-2 border-t border-neutral-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex-1 w-full sm:w-auto space-y-1">
+                  <label className="text-[10px] font-medium text-neutral-400 block">
+                    Selected Service or Package
+                  </label>
+                  <select
+                    value={serviceFilter}
+                    onChange={(e) => {
+                      setServiceFilter(e.target.value);
+                      setPage(1);
+                    }}
+                    className="w-full sm:max-w-md px-2.5 py-1.5 bg-[#141414] border border-neutral-800 rounded-lg text-xs text-neutral-200 focus:border-[#D4B06A] focus:outline-none min-h-[36px]"
+                  >
+                    <option value="All">All Services & Packages</option>
+                    <option value="Website">Website Development</option>
+                    <option value="SEO">Local SEO & Google Maps</option>
+                    <option value="Marketing">Performance Marketing</option>
+                    <option value="Studio">Complete Digital Studio</option>
+                    {dynamicOptions.services
+                      .filter((srv) => !['Website', 'SEO', 'Marketing', 'Studio'].includes(srv))
+                      .map((srv) => (
+                        <option key={srv} value={srv}>{srv}</option>
+                      ))}
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <button
+                    onClick={handleResetAllFilters}
+                    className="px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs text-neutral-300 transition-colors cursor-pointer"
+                  >
+                    Clear All Filters
+                  </button>
+                  <button
+                    onClick={() => setShowAdvancedFilters(false)}
+                    className="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-xs text-neutral-400 transition-colors cursor-pointer"
+                  >
+                    Collapse
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Active Filter Chips & Live Lead Count Banner */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-2 border-t border-neutral-900">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-neutral-400">
+                Showing <strong className="text-white">{totalLeadsCount}</strong> matching record{totalLeadsCount === 1 ? '' : 's'}
+                {stats?.total !== undefined && stats.total !== totalLeadsCount && (
+                  <span className="text-neutral-500 text-[11px]"> (of {stats.total} total in database)</span>
+                )}
+              </span>
+
+              {/* Active Chips */}
+              {statusFilter !== 'All' && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-[11px] text-neutral-300">
+                  Status: {statusFilter}
+                  <button onClick={() => setStatusFilter('All')} className="hover:text-red-400 ml-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {priorityFilter !== 'All' && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-[11px] text-neutral-300">
+                  Priority: {priorityFilter}
+                  <button onClick={() => setPriorityFilter('All')} className="hover:text-red-400 ml-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {categoryFilter !== 'All' && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-[11px] text-neutral-300">
+                  Category: {categoryFilter}
+                  <button onClick={() => setCategoryFilter('All')} className="hover:text-red-400 ml-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {sourceFilter !== 'All' && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-[11px] text-neutral-300">
+                  Source: {sourceFilter}
+                  <button onClick={() => setSourceFilter('All')} className="hover:text-red-400 ml-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {serviceFilter !== 'All' && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-[11px] text-neutral-300">
+                  Service: {serviceFilter}
+                  <button onClick={() => setServiceFilter('All')} className="hover:text-red-400 ml-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {clientFilter && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-[11px] text-neutral-300">
+                  Client: "{clientFilter}"
+                  <button onClick={() => setClientFilter('')} className="hover:text-red-400 ml-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {(fromDate || toDate) && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-900 border border-neutral-800 text-[11px] text-[#F0D28F]">
+                  Date: {fromDate || 'Any'} to {toDate || 'Today'}
+                  <button onClick={() => handleDatePreset('all')} className="hover:text-red-400 ml-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+
+            {/* Results pagination info */}
+            <div className="text-[11px] text-neutral-500 font-mono self-end sm:self-auto">
+              Page {page} of {totalPages}
             </div>
           </div>
         </div>

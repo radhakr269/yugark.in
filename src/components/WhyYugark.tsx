@@ -10,35 +10,38 @@ export default function WhyYugark() {
   const gridCards = [
     {
       title: 'Website',
-      description: 'A premium digital foundation built around business goals.',
+      description: 'A premium digital foundation built around business conversion and buyer trust.',
       icon: Globe,
       category: 'Websites'
     },
     {
       title: 'Content',
-      description: 'Ideas, pillars and calendars that give you something to say.',
+      description: 'Strategic pillars, video hooks and calendars that give your brand continuous momentum.',
       icon: Sparkles,
       category: 'Social Media'
     },
     {
       title: 'Social Media',
-      description: 'Consistent presence with strategy behind every post.',
+      description: 'Consistent authority presence with commercial intent behind every post.',
       icon: BarChart3,
       category: 'Social Media'
     },
     {
-      title: 'AI',
-      description: 'AI-created video and visuals that scale your creative output.',
+      title: 'AI & Automation',
+      description: 'AI-assisted video and lead capture workflows that scale output without overhead.',
       icon: Bot,
       category: 'AI Creative'
     }
   ];
 
   return (
-    <section className="py-24 bg-[#080808] border-t border-b border-white/5 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 bg-[#080808] border-t border-b border-white/5 relative overflow-hidden bg-perspective-grid">
+      {/* Subtle Aurora Ambient Glow */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-violet-600/5 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Top Pills Bar matching Screenshot 3 */}
+        {/* Top Pills Bar */}
         <div className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto pb-4 mb-16 no-scrollbar border-b border-white/5">
           {tabs.map((tab) => (
             <button
@@ -61,23 +64,23 @@ export default function WhyYugark() {
           {/* Left Text Block */}
           <div className="lg:col-span-6 space-y-6">
             <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-[#D4B06A]">
-              WHY YUGARK
+              BUSINESS GROWTH SYSTEM
             </span>
 
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-white leading-[1.15]">
-              Your Business Deserves More Than Just a Website.
+              Not Just a Pretty Website.
             </h2>
 
             <p className="text-neutral-300 font-sans leading-relaxed text-base md:text-lg pt-2">
-              A website alone rarely grows a business. Yugark combines website, content, social media, AI and growth strategy into one connected digital system — so every part supports the next.
+              A website alone rarely grows a business. Yugark builds a complete digital growth system — uniting high-converting web architecture, engaging video content, organic social authority, and automated lead capture so every asset actively drives customer action.
             </p>
 
             <p className="text-neutral-400 font-sans text-sm leading-relaxed">
-              When your brand touchpoints operate in isolation, potential customers get confused. We build synchronized digital systems where your website converts paid ads, social media nurtures warm traffic, and AI scales content production without sacrificing luxury polish.
+              When your brand touchpoints operate in isolation, potential customers drop off. We engineer synchronized digital ecosystems where your website converts high-intent traffic, social media nurtures warm audiences, and automated workflows route leads straight to WhatsApp in real-time.
             </p>
           </div>
 
-          {/* Right 2x2 Feature Grid matching Screenshot 3 */}
+          {/* Right 2x2 Feature Grid */}
           <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {gridCards.map((card, idx) => {
               const Icon = card.icon;
@@ -113,3 +116,4 @@ export default function WhyYugark() {
     </section>
   );
 }
+

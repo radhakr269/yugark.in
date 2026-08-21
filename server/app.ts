@@ -15,7 +15,8 @@ import {
   getAdminStats,
   exportLeadsToExcelBuffer,
   exportLeadsToCSV,
-  updateLeadNotificationStatus
+  updateLeadNotificationStatus,
+  getDistinctFilterOptions
 } from './db';
 import { sendLeadNotificationEmail } from './email';
 import {
@@ -214,9 +215,22 @@ app.get('/api/admin/stats', requireAdminAuth, async (req: Request, res: Response
   try {
     const stats = await getAdminStats();
     res.json({ success: true, stats });
-  } catch (err) {
+  } catch (err: any) {
     console.error('[ADMIN STATS ERROR]', err);
-    res.status(500).json({ error: 'Failed to compute administrative statistics.' });
+    res.status(500).json({ success: false, error: err?.message || 'Failed to compute administrative statistics.' });
+  }
+});
+
+// ==========================================
+// ADMIN DASHBOARD: Filter Options (Dynamic)
+// ==========================================
+app.get('/api/admin/filter-options', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const options = await getDistinctFilterOptions();
+    res.json({ success: true, options });
+  } catch (err: any) {
+    console.error('[ADMIN FILTER OPTIONS ERROR]', err);
+    res.status(500).json({ success: false, error: err?.message || 'Failed to fetch filter options.' });
   }
 });
 
@@ -225,13 +239,32 @@ app.get('/api/admin/stats', requireAdminAuth, async (req: Request, res: Response
 // ==========================================
 app.get('/api/admin/leads', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { search, status, priority, category, page, limit, sortBy, sortOrder } = req.query;
+    const {
+      search,
+      client,
+      status,
+      priority,
+      category,
+      source,
+      service,
+      fromDate,
+      toDate,
+      page,
+      limit,
+      sortBy,
+      sortOrder
+    } = req.query;
 
     const result = await getLeads({
       search: search ? String(search) : undefined,
+      client: client ? String(client) : undefined,
       status: status ? String(status) : undefined,
       priority: priority ? String(priority) : undefined,
       category: category ? String(category) : undefined,
+      source: source ? String(source) : undefined,
+      service: service ? String(service) : undefined,
+      fromDate: fromDate ? String(fromDate) : undefined,
+      toDate: toDate ? String(toDate) : undefined,
       page: page ? Number(page) : 1,
       limit: limit ? Number(limit) : 20,
       sortBy: (sortBy as any) || 'created_at',
@@ -242,9 +275,9 @@ app.get('/api/admin/leads', requireAdminAuth, async (req: Request, res: Response
       success: true,
       ...result
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('[ADMIN GET LEADS ERROR]', err);
-    res.status(500).json({ error: 'Failed to fetch leads records.' });
+    res.status(500).json({ success: false, error: err?.message || 'Failed to fetch leads records.' });
   }
 });
 
@@ -253,7 +286,33 @@ app.get('/api/admin/leads', requireAdminAuth, async (req: Request, res: Response
 // ==========================================
 app.get('/api/admin/export', requireAdminAuth, async (req: Request, res: Response): Promise<void> => {
   try {
-    const excelBuffer = await exportLeadsToExcelBuffer();
+    const {
+      search,
+      client,
+      status,
+      priority,
+      category,
+      source,
+      service,
+      fromDate,
+      toDate,
+      sortBy,
+      sortOrder
+    } = req.query;
+
+    const excelBuffer = await exportLeadsToExcelBuffer({
+      search: search ? String(search) : undefined,
+      client: client ? String(client) : undefined,
+      status: status ? String(status) : undefined,
+      priority: priority ? String(priority) : undefined,
+      category: category ? String(category) : undefined,
+      source: source ? String(source) : undefined,
+      service: service ? String(service) : undefined,
+      fromDate: fromDate ? String(fromDate) : undefined,
+      toDate: toDate ? String(toDate) : undefined,
+      sortBy: (sortBy as any) || 'created_at',
+      sortOrder: sortOrder === 'asc' ? 'asc' : 'desc'
+    });
     const filename = `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
     res.setHeader(
       'Content-Type',
@@ -261,9 +320,11 @@ app.get('/api/admin/export', requireAdminAuth, async (req: Request, res: Respons
     );
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.send(excelBuffer);
-  } catch (err) {
+  } catch (err: any) {
     console.error('[ADMIN EXCEL EXPORT ERROR]', err);
-    res.status(500).json({ error: 'Failed to generate Excel export.' });
+    const message = err?.message || 'Failed to generate Excel export.';
+    const statusCode = message.includes('No matching live leads') ? 404 : 500;
+    res.status(statusCode).json({ success: false, error: message });
   }
 });
 

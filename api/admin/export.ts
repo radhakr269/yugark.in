@@ -12,7 +12,7 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const excelBuffer = await exportLeadsToExcelBuffer();
+    const excelBuffer = await exportLeadsToExcelBuffer(req.query || {});
     const filename = `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
     res.setHeader(
       'Content-Type',
@@ -22,10 +22,12 @@ export default async function handler(req: any, res: any) {
     return res.status(200).send(excelBuffer);
   } catch (err: any) {
     console.error('[API ADMIN EXPORT ERROR]', err);
+    const message = err?.message || 'Failed to generate Excel export.';
+    const statusCode = message.includes('No matching live leads') ? 404 : 500;
     res.setHeader('Content-Type', 'application/json');
-    return res.status(500).json({
+    return res.status(statusCode).json({
       success: false,
-      error: 'Failed to generate Excel export.'
+      error: message
     });
   }
 }

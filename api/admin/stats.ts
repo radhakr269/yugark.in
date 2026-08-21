@@ -19,7 +19,7 @@ export default async function handler(req: any, res: any) {
     console.error('[API ADMIN STATS ERROR]', err);
     return res.status(500).json({
       success: false,
-      error: 'Failed to compute administrative statistics.'
+      error: err?.message || 'Failed to compute administrative statistics.'
     });
   }
 }

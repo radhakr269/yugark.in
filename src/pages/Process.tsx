@@ -6,26 +6,82 @@ import { ShieldCheck, Clock, Award, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function Process() {
-  const timelinePhases = [
+  const deliveryDays = [
     {
-      phase: 'Weeks 1 — 2',
-      title: 'Strategic Alignment & Audit',
-      description: 'Discovery workshops, competitive intelligence analysis, user persona mapping, and technical architecture blueprint.'
+      day: 'DAY 1',
+      title: 'Discovery & Strategy',
+      items: [
+        'Project kickoff & requirement deep dive',
+        'Business goals alignment',
+        'Competitor & market research',
+        'Project roadmap'
+      ]
     },
     {
-      phase: 'Weeks 3 — 4',
-      title: 'Design & Generative Prototyping',
-      description: 'Framer/React wireframing, high-status UI design, AI video scriptwriting, and content pillar structure.'
+      day: 'DAY 2',
+      title: 'Planning & Wireframing',
+      items: [
+        'Information architecture',
+        'User flow',
+        'Website structure',
+        'Wireframes',
+        'Content structure planning'
+      ]
     },
     {
-      phase: 'Weeks 5 — 6',
-      title: 'Engineering & Ad Integration',
-      description: 'Full-stack development, mobile responsiveness optimization, Meta ad pixel setup, and SEO indexing.'
+      day: 'DAY 3',
+      title: 'Design & Prototyping',
+      items: [
+        'UI/UX design',
+        'Visual direction',
+        'Interactive prototype',
+        'Client review & approval'
+      ]
     },
     {
-      phase: 'Post-Launch',
-      title: 'Continuous Optimization',
-      description: 'Weekly campaign monitoring, A/B conversion testing, performance analytics, and organic content scaling.'
+      day: 'DAY 4',
+      title: 'Front-End Development',
+      items: [
+        'Responsive front-end development',
+        'Core website functionality',
+        'CMS integration where required',
+        'Cross-browser/device compatibility'
+      ]
+    },
+    {
+      day: 'DAY 5',
+      title: 'Back-End & Integrations',
+      items: [
+        'Backend development',
+        'Database integration',
+        'API integrations',
+        'Forms, CRM and third-party integrations',
+        'Security configuration'
+      ]
+    },
+    {
+      day: 'DAY 6',
+      title: 'Testing & Optimization',
+      items: [
+        'Functional testing',
+        'Mobile responsiveness testing',
+        'Bug fixing',
+        'Speed optimization',
+        'Basic technical SEO',
+        'Final quality assurance'
+      ]
+    },
+    {
+      day: 'DAY 7',
+      title: 'Launch & Handover',
+      items: [
+        'Website deployment',
+        'Domain/hosting configuration where applicable',
+        'Analytics/tracking setup',
+        'Final review',
+        'Client handover',
+        'Post-launch support'
+      ]
     }
   ];
 
@@ -53,7 +109,7 @@ export default function Process() {
         {/* 5 Step Timeline Section */}
         <ProcessTimeline />
 
-        {/* Detailed Timeline Breakdown */}
+        {/* 7-Day Delivery Timeline Breakdown */}
         <section className="py-24 bg-[#050505] relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
             <div className="text-center space-y-3">
@@ -61,29 +117,41 @@ export default function Process() {
                 DELIVERY TIMELINE
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl text-white">
-                How we execute in 6 weeks or less.
+                How we execute in 7 days or less.
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {timelinePhases.map((phase, idx) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {deliveryDays.map((dayPlan, idx) => (
                 <motion.div
-                  key={phase.phase}
+                  key={dayPlan.day}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
-                  className="p-8 rounded-2xl bg-[#0A0A0A] border border-white/10 hover:border-[#D4B06A]/30 transition-all space-y-4"
+                  transition={{ duration: 0.4, delay: idx * 0.07 }}
+                  className={`p-6 sm:p-7 rounded-2xl bg-[#0A0A0A] border border-white/10 hover:border-[#D4B06A]/40 transition-all space-y-4 flex flex-col justify-between group gold-border-glow ${
+                    idx === 6 ? 'md:col-span-2 lg:col-span-3 xl:col-span-1' : ''
+                  }`}
                 >
-                  <span className="text-xs uppercase tracking-widest text-[#F0D28F] font-semibold block">
-                    {phase.phase}
-                  </span>
-                  <h3 className="font-serif text-xl text-white">
-                    {phase.title}
-                  </h3>
-                  <p className="text-xs text-neutral-400 leading-relaxed">
-                    {phase.description}
-                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs uppercase tracking-widest text-[#F0D28F] font-bold px-2.5 py-1 rounded-md bg-[#D4B06A]/10 border border-[#D4B06A]/30">
+                        {dayPlan.day}
+                      </span>
+                    </div>
+                    <h3 className="font-serif text-xl font-medium text-white group-hover:text-[#F0D28F] transition-colors">
+                      {dayPlan.title}
+                    </h3>
+                  </div>
+
+                  <ul className="space-y-2 pt-3 border-t border-neutral-900/80">
+                    {dayPlan.items.map((item, iIdx) => (
+                      <li key={iIdx} className="flex items-start gap-2 text-xs text-neutral-400 font-sans font-light leading-relaxed">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#D4B06A] mt-0.5 shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </motion.div>
               ))}
             </div>

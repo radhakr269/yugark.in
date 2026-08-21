@@ -178,13 +178,40 @@ export async function fetchAdminStats() {
 
 export interface FetchLeadsParams {
   search?: string;
+  client?: string;
   status?: string;
   priority?: string;
   category?: string;
+  source?: string;
+  service?: string;
+  fromDate?: string;
+  toDate?: string;
   page?: number;
   limit?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+}
+
+export async function fetchAdminFilterOptions(): Promise<{
+  categories: string[];
+  sources: string[];
+  services: string[];
+}> {
+  const token = getAdminToken();
+  if (!token) return { categories: [], sources: [], services: [] };
+
+  try {
+    const res = await fetch('/api/admin/filter-options', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (res.ok) {
+      const json = await res.json();
+      return json.options || { categories: [], sources: [], services: [] };
+    }
+  } catch (err) {
+    console.warn('[FAILED TO FETCH FILTER OPTIONS]', err);
+  }
+  return { categories: [], sources: [], services: [] };
 }
 
 export async function fetchAdminLeads(params: FetchLeadsParams = {}) {
@@ -193,9 +220,14 @@ export async function fetchAdminLeads(params: FetchLeadsParams = {}) {
 
   const query = new URLSearchParams();
   if (params.search) query.set('search', params.search);
+  if (params.client) query.set('client', params.client);
   if (params.status && params.status !== 'All') query.set('status', params.status);
   if (params.priority && params.priority !== 'All') query.set('priority', params.priority);
   if (params.category && params.category !== 'All') query.set('category', params.category);
+  if (params.source && params.source !== 'All') query.set('source', params.source);
+  if (params.service && params.service !== 'All') query.set('service', params.service);
+  if (params.fromDate) query.set('fromDate', params.fromDate);
+  if (params.toDate) query.set('toDate', params.toDate);
   if (params.page) query.set('page', String(params.page));
   if (params.limit) query.set('limit', String(params.limit));
   if (params.sortBy) query.set('sortBy', params.sortBy);
@@ -270,103 +302,61 @@ export async function deleteAdminLead(id: string) {
   return res.json();
 }
 
-export async function downloadLeadsExcel() {
+export async function downloadLeadsExcel(params: FetchLeadsParams = {}) {
   const token = getAdminToken();
+  if (!token) throw new Error('Unauthenticated: Please log in to download leads.');
 
-  // 1. Primary Method: Call backend endpoint /api/admin/export (which queries and exports all leads in DB)
-  if (token) {
-    try {
-      const res = await fetch('/api/admin/export', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+  // 1. Primary Method: Fetch server-side streaming Excel export matching the exact active filters
+  const queryParams: FetchLeadsParams = {
+    limit: 10000,
+    sortBy: params.sortBy || 'created_at',
+    sortOrder: params.sortOrder || 'desc',
+    search: params.search,
+    client: params.client,
+    status: params.status && params.status !== 'All' ? params.status : undefined,
+    priority: params.priority && params.priority !== 'All' ? params.priority : undefined,
+    category: params.category && params.category !== 'All' ? params.category : undefined,
+    source: params.source && params.source !== 'All' ? params.source : undefined,
+    service: params.service && params.service !== 'All' ? params.service : undefined,
+    fromDate: params.fromDate,
+    toDate: params.toDate
+  };
 
-      if (res.ok) {
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        return;
-      }
-    } catch (err) {
-      console.warn('[API EXPORT NETWORK ISSUE, ATTEMPTING FALLBACK TO FULL FETCH]', err);
+  try {
+    const query = new URLSearchParams();
+    if (queryParams.search) query.set('search', queryParams.search);
+    if (queryParams.client) query.set('client', queryParams.client);
+    if (queryParams.status) query.set('status', queryParams.status);
+    if (queryParams.priority) query.set('priority', queryParams.priority);
+    if (queryParams.category) query.set('category', queryParams.category);
+    if (queryParams.source) query.set('source', queryParams.source);
+    if (queryParams.service) query.set('service', queryParams.service);
+    if (queryParams.fromDate) query.set('fromDate', queryParams.fromDate);
+    if (queryParams.toDate) query.set('toDate', queryParams.toDate);
+    if (queryParams.sortBy) query.set('sortBy', queryParams.sortBy);
+    if (queryParams.sortOrder) query.set('sortOrder', queryParams.sortOrder);
+
+    const res = await fetch(`/api/admin/export?${query.toString()}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      return;
     }
-  }
 
-  // 2. Client-side fallback only: Fetch ALL leads (never export only the current paginated page)
-  let allLeads: any[] | null = null;
-  if (token) {
-    try {
-      const allData = await fetchAdminLeads({ limit: 5000 });
-      if (allData?.leads && allData.leads.length > 0) {
-        allLeads = allData.leads;
-      }
-    } catch (fetchErr) {
-      console.warn('[FAILED TO FETCH ALL LEADS FOR FALLBACK]', fetchErr);
-    }
-  }
-
-  // If running in local client-only storage mode
-  if (!allLeads || allLeads.length === 0) {
-    try {
-      const { getStoredEnquiries } = await import('./enquiryStore');
-      const stored = getStoredEnquiries();
-      if (stored && stored.length > 0) {
-        allLeads = stored;
-      }
-    } catch {
-      // ignore
-    }
-  }
-
-  // If all leads were retrieved, generate .xlsx file
-  if (allLeads && allLeads.length > 0) {
-    const XLSX = await import('xlsx');
-    const rows = allLeads.map((lead: any) => ({
-      'Submission Date & Time': new Date(lead.created_at || lead.createdAt || Date.now()).toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      }),
-      'Full Name': lead.full_name || lead.fullName || '',
-      'Email Address': lead.email || '',
-      'Phone / WhatsApp Number': lead.whatsapp_number || lead.phone || '',
-      'Business / Company Name': lead.business_company_name || lead.businessName || '',
-      'Business Category': lead.other_category || lead.otherCategory
-        ? `${lead.category || lead.businessCategory} (${lead.other_category || lead.otherCategory})`
-        : (lead.category || lead.businessCategory || ''),
-      'Selected Service / Package': lead.selected_bundle || lead.selectedBundle || lead.service || lead.selectedService || '',
-      'Project Requirement': lead.project_requirement || lead.projectRequirement || '',
-      'Remarks / Notes': lead.remarks || ''
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(rows);
-    worksheet['!cols'] = [
-      { wch: 24 }, // Submission Date & Time
-      { wch: 22 }, // Full Name
-      { wch: 26 }, // Email Address
-      { wch: 22 }, // Phone / WhatsApp Number
-      { wch: 26 }, // Business / Company Name
-      { wch: 24 }, // Business Category
-      { wch: 38 }, // Selected Service / Package
-      { wch: 45 }, // Project Requirement
-      { wch: 30 }  // Remarks / Notes
-    ];
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Website Leads');
-    XLSX.writeFile(workbook, `YUGARK_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`);
-  } else {
-    // If fetching all leads fails, show an error instead of exporting partial paginated page
-    throw new Error('Failed to export leads. Could not retrieve full leads dataset from the server.');
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || `Failed to export leads (Server returned status ${res.status}).`);
+  } catch (err: any) {
+    throw new Error(err.message || 'Failed to download leads export.');
   }
 }
 
