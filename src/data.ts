@@ -4,11 +4,11 @@ import { Service, CaseStudy, PricingPackage, IndividualServiceItem, BusinessTemp
 export const ONE_TIME_SERVICES: Service[] = [
   {
     id: 'website-development',
-    title: 'Website Development',
-    shortDesc: 'Custom high-performance websites engineered around business goals and conversion.',
+    title: 'Frontend Website Development',
+    shortDesc: 'Custom high-performance responsive frontend website engineered around business goals and conversion.',
     iconName: 'Globe',
     modelType: 'one-time',
-    priceDisplay: 'Launch Offer: ₹12,999 (Reg. ₹14,999)',
+    priceDisplay: 'Launch Offer: ₹9,999 (Reg. ₹15,999)',
     deliveryTime: 'Typical Delivery: ~7 Days',
     features: [
       'Mobile-first responsive architecture',
@@ -31,6 +31,35 @@ export const ONE_TIME_SERVICES: Service[] = [
       'Elevate business status and build instant client trust',
       'Capture leads directly via WhatsApp & Email',
       'Delivered in approximately 7 days with zero bloat'
+    ]
+  },
+  {
+    id: 'fullstack-web',
+    title: 'Full Frontend + Backend Website',
+    shortDesc: 'End-to-end custom web system with frontend UI, backend server logic, database integration, and lead APIs.',
+    iconName: 'Layers',
+    modelType: 'one-time',
+    priceDisplay: 'Launch Offer: ₹14,999 (Reg. ₹19,999)',
+    deliveryTime: 'Typical Delivery: ~10–14 Days',
+    features: [
+      'Everything in Frontend Website package',
+      'Secure backend API & database architecture',
+      'Custom lead dashboard & CRM integrations',
+      'Dynamic content management capabilities'
+    ],
+    link: '/services/website-development',
+    category: 'web',
+    fullDescription: 'Complete end-to-end digital infrastructure for businesses requiring custom backend logic, secure databases, user authentication, or automated CRM workflows.',
+    deliverables: [
+      'Fullstack React + Node.js / Server Architecture',
+      'Cloud Database & API Route Setup',
+      'Lead Management & Automated Notifications',
+      'Custom Business Logic Implementation',
+      'Comprehensive Security & Speed Hardening'
+    ],
+    benefits: [
+      'Complete control over business workflows and data',
+      'Zero monthly platform subscriptions'
     ]
   },
   {
@@ -125,12 +154,161 @@ export const ONE_TIME_SERVICES: Service[] = [
 // MONTHLY GROWTH SERVICES
 export const MONTHLY_SERVICES: Service[] = [
   {
+    id: 'starter-plan',
+    title: 'STARTER Social Media Plan',
+    shortDesc: '4 High-Retention Reels + 8 Branded Graphic Posts per month with strategic captions & scheduling.',
+    iconName: 'BarChart3',
+    modelType: 'monthly',
+    priceDisplay: '₹9,999/month',
+    deliveryTime: 'Ongoing Monthly Service',
+    features: [
+      '4 Custom High-Impact Reels / Shorts',
+      '8 Branded Social Graphic Posts & Carousels',
+      'Content Calendar & Topic Ideation',
+      'Strategic Captions & Targeted Hashtags',
+      'Monthly Performance Summary'
+    ],
+    link: '/services/social-media-management',
+    category: 'social',
+    fullDescription: 'Essential monthly social presence designed for consistent brand visibility, weekly reel engagement, and steady follower conversion.',
+    deliverables: [
+      '4 Ready-to-Publish Vertical Reels (15–30s)',
+      '8 High-Resolution Branded Feed Graphics',
+      'Complete Post Captions & Hashtag Bundles',
+      'Monthly Content Publishing Calendar'
+    ],
+    benefits: [
+      'Consistent weekly social visibility',
+      'Save 30+ hours every month on creative production'
+    ]
+  },
+  {
+    id: 'growth-plan',
+    title: 'GROWTH Social Media Plan',
+    shortDesc: '8 High-Retention Reels + 12 Branded Graphic Posts per month + Strategic Content Calendar & Growth Review.',
+    iconName: 'Sparkles',
+    modelType: 'monthly',
+    priceDisplay: '₹14,999/month',
+    deliveryTime: 'Ongoing Monthly Service',
+    features: [
+      '8 Custom High-Impact Reels / Shorts (2/week)',
+      '12 Branded Social Graphic Posts & Carousels',
+      'Monthly Content Strategy & Editorial Calendar',
+      'Strategic Captions & Viral Hook Variations',
+      'Social Profile Optimization & Monthly Growth Review',
+      'WhatsApp Direct Studio Support'
+    ],
+    link: '/services/social-media-management',
+    category: 'social',
+    fullDescription: 'Our most popular comprehensive monthly social system, delivering high video volume, high-aesthetic graphics, and compounding reach.',
+    deliverables: [
+      '8 Short-Form Videos with Dynamic Subtitles',
+      '12 High-Converting Feed Posts & Multi-Slide Carousels',
+      'Editorial Calendar & Trend Research',
+      'Bi-Weekly Content Batches',
+      'Monthly Analytics & Optimization Review'
+    ],
+    benefits: [
+      '2 Reels published per week for compounding algorithm reach',
+      'Unquestioned category authority in your local market'
+    ]
+  },
+  {
+    id: 'pro-plan',
+    title: 'PRO Social Media Plan',
+    shortDesc: '12 High-Retention Reels + 16 Graphic Posts + 1 Long-Form YouTube Video per month + Dedicated Growth Strategy.',
+    iconName: 'Youtube',
+    modelType: 'monthly',
+    priceDisplay: '₹19,999/month',
+    deliveryTime: 'Ongoing Monthly Service',
+    features: [
+      '12 Custom High-Impact Reels / Shorts (3/week)',
+      '16 Branded Social Graphic Posts & Multi-Slide Carousels',
+      '1 Long-Form YouTube Video per Month (~3–5 min)',
+      'Complete Content Strategy & Competitor Benchmarking',
+      'Dedicated Creative Direction by Mr. Radha Krishna',
+      'Priority Turnaround & WhatsApp Support'
+    ],
+    link: '/services/social-media-management',
+    category: 'social',
+    fullDescription: 'Aggressive multi-channel dominance combining frequent short reels, long-form YouTube authority assets, and comprehensive brand storytelling.',
+    deliverables: [
+      '12 Edited Reels with Motion Graphics',
+      '16 Carousel & Graphic Assets',
+      '1 Long-Form 3–5 min YouTube Video with Thumbnail',
+      'Omni-Channel Content Repurposing',
+      'Priority Direct Communication'
+    ],
+    benefits: [
+      'Maximum organic reach across Instagram, YouTube & Facebook',
+      'Founder-level creative oversight'
+    ]
+  },
+  {
+    id: 'meta-ads',
+    title: 'Meta Ads Management',
+    shortDesc: 'High-converting Meta, Facebook & Instagram paid ads campaign setup, targeting & creative optimization.',
+    iconName: 'Megaphone',
+    modelType: 'monthly',
+    priceDisplay: '₹15,000/month',
+    deliveryTime: 'Setup in 3–5 Days',
+    features: [
+      'Targeted ad campaign architecture & custom audiences',
+      'High-converting ad creatives (reels & graphic carousels)',
+      'Meta Pixel, Conversion API & lead form integration',
+      'Weekly performance monitoring & budget optimization'
+    ],
+    link: '/services/social-media-advertising',
+    category: 'ads',
+    fullDescription: 'Targeted advertising campaigns built to acquire qualified leads and drive high-margin revenue with positive ROAS.',
+    deliverables: [
+      'High-Converting Ad Copywriting & Hook Variations',
+      'Vertical 9:16 Video Ad Creatives & Static Graphics',
+      'Meta Pixel & Conversion API Setup',
+      'Retargeting & Lookalike Audience Building',
+      'Weekly Spend & ROAS Reports'
+    ],
+    benefits: [
+      'Generate direct client inquiries and sales',
+      'Scale profitable ad funnels with predictable metrics'
+    ]
+  },
+  {
+    id: 'google-ads',
+    title: 'Google Ads Management',
+    shortDesc: 'High-intent Google Search, Performance Max, and YouTube Ads management to capture active customer demand.',
+    iconName: 'Megaphone',
+    modelType: 'monthly',
+    priceDisplay: '₹15,000/month',
+    deliveryTime: 'Setup in 3–5 Days',
+    features: [
+      'Search, Performance Max & YouTube Ads structure',
+      'High-intent keyword research & negative keyword filtering',
+      'Ad copy creation & conversion tracking setup',
+      'Bid strategy optimization & negative keyword maintenance',
+      'Weekly performance & conversion reporting'
+    ],
+    link: '/services/social-media-advertising',
+    category: 'ads',
+    fullDescription: 'Capture high-intent buyers the exact moment they search for your services with optimized Google Search and Performance Max campaigns.',
+    deliverables: [
+      'Keyword Research & Competitor Search Audit',
+      'Ad Copywriting with Dynamic Extensions',
+      'Conversion Tracking & Google Tag Manager Integration',
+      'Weekly Search Term & Budget Optimization'
+    ],
+    benefits: [
+      'Capture ready-to-buy customers actively searching for your service',
+      'Maximize click-to-lead conversion rates'
+    ]
+  },
+  {
     id: 'social-media-management',
     title: 'Social Media Management',
     shortDesc: 'Comprehensive monthly social presence, scheduling, and community oversight.',
     iconName: 'BarChart3',
     modelType: 'monthly',
-    priceDisplay: 'Custom Monthly Retainer',
+    priceDisplay: 'From ₹9,999/month',
     deliveryTime: 'Ongoing Monthly Service',
     features: [
       'Content pillars & strategic monthly calendar',
@@ -153,96 +331,17 @@ export const MONTHLY_SERVICES: Service[] = [
     ]
   },
   {
-    id: 'monthly-reels',
-    title: 'Monthly Reels Package',
-    shortDesc: '4 short-form promotional videos/reels scripted and edited every month.',
-    iconName: 'Sparkles',
-    modelType: 'monthly',
-    priceDisplay: 'Included in Growth Bundles',
-    deliveryTime: 'Weekly Staggered Delivery',
-    features: [
-      '4 custom short-form videos per month',
-      'Trend research & viral hook adaptation',
-      'AI visual enhancement and dynamic subtitles',
-      'Delivered weekly for steady social momentum'
-    ],
-    link: '/services/ai-content-video',
-    category: 'video',
-    fullDescription: 'Consistent short video is the fastest way to grow brand reach in India. We supply 4 premium reels per month, keeping your brand top-of-mind every single week.',
-    deliverables: [
-      '4 Ready-to-Publish Reels / Shorts / TikToks',
-      'Dynamic Subtitles & Sound Design',
-      'Scripting & Hook Variations'
-    ],
-    benefits: [
-      'Predictable weekly video cadence',
-      'Compound reach across Instagram & YouTube Shorts'
-    ]
-  },
-  {
-    id: 'youtube-content',
-    title: 'YouTube Content Creation',
-    shortDesc: '1 high-value long-form YouTube video (~3–5 min) produced every month.',
-    iconName: 'Youtube',
-    modelType: 'monthly',
-    priceDisplay: 'Included in Launch Bundle 3',
-    deliveryTime: 'Monthly Delivery (~15 Days Production)',
-    features: [
-      '1 long-form YouTube video (~3–5 min) per month',
-      'Topic research & high-CTR thumbnail design',
-      'Full video editing, graphics & YouTube SEO'
-    ],
-    link: '/services/content-strategy',
-    category: 'content',
-    fullDescription: 'Build long-term search equity on YouTube with 1 high-value video per month. We handle scripting, pacing, editing, and thumbnail design to maximize clicks and view retention.',
-    deliverables: [
-      '1 Edited 3–5 min Long-Form Video',
-      'Custom Clickable Thumbnail Design',
-      'SEO Optimized Title, Description & Chapters'
-    ],
-    benefits: [
-      'Rank in Google and YouTube search results',
-      'Establish deep client trust and thought leadership'
-    ]
-  },
-  {
-    id: 'monthly-posts',
-    title: 'Monthly Posts Package',
-    shortDesc: '10–12 branded social media graphic posts & carousels per month.',
-    iconName: 'Grid',
-    modelType: 'monthly',
-    priceDisplay: 'Included in Launch Bundle 3',
-    deliveryTime: 'Bi-Weekly Content Batches',
-    features: [
-      '10–12 custom designed posts per month',
-      'Educational carousels, testimonials & offer graphics',
-      'Written captions, call-to-actions & hashtags'
-    ],
-    link: '/services/social-media-management',
-    category: 'social',
-    fullDescription: 'Never let your social feed go stale. With 10–12 professionally designed posts each month, your brand maintains high aesthetic standards and active customer touchpoints.',
-    deliverables: [
-      '10–12 High-Resolution Graphic Assets',
-      'Carousel Multi-Slide Formats',
-      'Complete Captions & Strategic Hashtags'
-    ],
-    benefits: [
-      'Sustained brand activity without internal design staff',
-      'Consistent messaging across services and promotions'
-    ]
-  },
-  {
     id: 'social-media-advertising',
-    title: 'Social Media Advertising (Meta Ads)',
-    shortDesc: 'High-converting Meta, Facebook & Instagram paid ads setup, targeting & creative.',
+    title: 'Paid Advertising Management (Meta & Google)',
+    shortDesc: 'High-converting Meta, Facebook, Instagram & Google paid ads setup, targeting & creative.',
     iconName: 'Megaphone',
     modelType: 'monthly',
-    priceDisplay: 'Custom Campaign Retainer',
+    priceDisplay: '₹15,000/month',
     deliveryTime: 'Setup in 3–5 Days',
     features: [
       'Targeted ad campaign structure & custom audiences',
       'High-converting ad creatives (reels & graphic carousels)',
-      'Meta Pixel, Conversion API & lead form integration',
+      'Pixel, Conversion API & lead form integration',
       'Weekly performance monitoring & budget optimization'
     ],
     link: '/services/social-media-advertising',
@@ -251,7 +350,7 @@ export const MONTHLY_SERVICES: Service[] = [
     deliverables: [
       'High-Converting Ad Copywriting & Hook Variations',
       'Vertical 9:16 Video Ad Creatives & Static Graphics',
-      'Meta Pixel & Conversion API Setup',
+      'Conversion API & Pixel Tracking Setup',
       'Retargeting & Lookalike Audience Building',
       'Weekly Spend & ROAS Reports'
     ],
@@ -319,83 +418,150 @@ export const MONTHLY_SERVICES: Service[] = [
 // Combined for universal access
 export const SERVICES_DATA: Service[] = [...ONE_TIME_SERVICES, ...MONTHLY_SERVICES];
 
-// PRICING PACKAGES
+// PRICING PACKAGES (Synchronized with current approved packages)
 export const PRICING_PACKAGES: PricingPackage[] = [
   {
-    id: 'package-1-website',
-    name: 'Package 1 — Website Development',
-    tagline: 'Custom high-performance business website built for conversion & credibility.',
-    badge: 'GRAND OPENING OFFER',
-    regularPrice: 14999,
-    launchPrice: 12999,
+    id: 'frontend-website',
+    name: 'Frontend Website Development',
+    tagline: 'Custom high-performance responsive frontend website built for conversion & credibility.',
+    badge: 'LAUNCH OFFER',
+    regularPrice: 15999,
+    launchPrice: 9999,
     type: 'one-time',
     deliveryTime: 'Typical Delivery: ~7 Days',
     features: [
-      'Custom React / Vite Responsive Website (Up to 5 Pages)',
+      'Custom React / Modern Responsive Website (Up to 5 Pages)',
       'Ultra-Fast Loading & Mobile-First Design',
       'SEO-Ready Code & Google Indexing Setup',
-      'Direct WhatsApp Chat Integration',
+      'Direct WhatsApp Chat & Instant Lead Routing',
       'Enquiry Form with Instant Notification',
-      'Social Media & Map Links Integration',
       '30 Days Free Technical Support'
     ],
-    ctaText: 'Choose Package 1 — ₹12,999'
+    ctaText: 'Choose Frontend Website — ₹9,999'
   },
   {
-    id: 'package-2-website-reels',
-    name: 'Package 2 — Website + 5 Reels',
-    tagline: 'Complete launch kit combining custom website with 5 promotional short videos.',
-    badge: 'POPULAR CHOICE',
-    regularPrice: 24999,
-    launchPrice: 19999,
+    id: 'fullstack-website',
+    name: 'Full Frontend + Backend Website',
+    tagline: 'Complete custom web system with frontend UI, backend API server, database & lead flows.',
+    badge: 'COMPREHENSIVE',
+    regularPrice: 19999,
+    launchPrice: 14999,
     type: 'one-time',
-    deliveryTime: 'Website ~7 Days • Reels ~7 Days',
+    deliveryTime: 'Typical Delivery: ~10–14 Days',
     features: [
-      'Everything in Package 1 (Full Custom Website)',
-      '5 Short Promotional Videos / Reels (15–30s each)',
-      'Professional Hook Scripting & Motion Typography',
-      'Social Media Profile & Bio Optimization Guidance',
-      'Basic Content & Hashtag Guidance for Growth',
-      'Multi-Format Assets (9:16 Vertical & 1:1 Square)',
-      'Priority Delivery & WhatsApp Direct Support'
+      'Everything in Frontend Website package',
+      'Full Backend API Architecture & Database Setup',
+      'Custom Lead Management & CRM Integration',
+      'Dynamic Content & Administration Capabilities',
+      'Comprehensive Security & Speed Optimization',
+      'Priority Delivery & Extended Support'
     ],
-    ctaText: 'Choose Package 2 — ₹19,999',
+    ctaText: 'Choose Fullstack Website — ₹14,999',
     isPopular: true
   },
   {
-    id: 'package-3-growth-bundle',
-    name: 'Package 3 — Website + Complete Content System',
-    tagline: 'The ultimate business growth system: website launch plus comprehensive monthly content.',
-    badge: 'BEST VALUE COMBO',
-    regularPrice: 30000,
-    launchPrice: 24999,
-    type: 'one-time',
-    deliveryTime: 'Website ~7 Days • Monthly Content Cycles',
+    id: 'growth-social-plan',
+    name: 'GROWTH Social Media & Content Plan',
+    tagline: '8 High-Retention Reels + 12 Branded Graphic Posts per month + Strategic Content Calendar.',
+    badge: 'MOST POPULAR PLAN',
+    regularPrice: 19999,
+    launchPrice: 14999,
+    type: 'monthly',
+    deliveryTime: 'Ongoing Monthly Service',
     features: [
-      'Full Custom Responsive Website (Up to 7 Pages)',
-      '4 Custom Reels / Short Videos per Month',
-      '1 Long-Form YouTube Video per Month (~3–5 min)',
-      '10–12 Branded Social Media Posts per Month',
-      'Comprehensive Monthly Content Strategy',
-      'Social Media Profile Management & Optimization'
+      '8 Custom High-Impact Reels / Shorts (2 per week)',
+      '12 Branded Social Graphic Posts & Carousels',
+      'Monthly Content Strategy & Editorial Calendar',
+      'Strategic Captions & Viral Hook Variations',
+      'Social Profile Optimization & Monthly Growth Review',
+      'WhatsApp Direct Studio Support'
     ],
-    monthlyComponents: [
-      'Note: Includes one-time website build plus first month of full content suite. Ongoing monthly content can be renewed seamlessly.'
+    ctaText: 'Choose Growth Plan — ₹14,999/mo',
+    isPopular: true
+  },
+  {
+    id: 'paid-ads-management',
+    name: 'Meta / Google Paid Ads Management',
+    tagline: 'Targeted performance campaigns built for qualified leads, direct sales, and high ROAS.',
+    badge: 'HIGH ROAS',
+    regularPrice: 20000,
+    launchPrice: 15000,
+    type: 'monthly',
+    deliveryTime: 'Setup in 3–5 Days',
+    features: [
+      'Targeted campaign architecture & custom audience building',
+      'Ad creatives, hook variations & high-converting copy',
+      'Pixel, Conversion API & tracking setup',
+      'Weekly performance monitoring & budget optimization'
     ],
-    ctaText: 'Choose Package 3 — ₹24,999'
+    ctaText: 'Choose Ads Management — ₹15,000/mo'
   }
 ];
 
 // INDIVIDUAL SERVICES FOR CALCULATOR & A LA CARTE
 export const INDIVIDUAL_SERVICES: IndividualServiceItem[] = [
   {
-    id: 'calc-website',
-    title: 'Custom Website Development',
-    price: 12999,
+    id: 'calc-frontend-web',
+    title: 'Frontend Website Development',
+    price: 9999,
     unit: 'per website',
     deliveryTime: '~7 Days Delivery',
-    description: 'High-performance responsive website with WhatsApp & lead integration.',
+    description: 'High-performance responsive frontend website with WhatsApp & lead integration.',
     features: ['Mobile-first', 'SEO ready', 'WhatsApp chat', 'Sub-second speed']
+  },
+  {
+    id: 'calc-fullstack-web',
+    title: 'Full Frontend + Backend Website',
+    price: 14999,
+    unit: 'per website',
+    deliveryTime: '~10–14 Days Delivery',
+    description: 'Complete fullstack website with custom backend, database and lead management.',
+    features: ['Fullstack React + Node', 'Database setup', 'Custom APIs', 'CRM routing']
+  },
+  {
+    id: 'calc-starter-plan',
+    title: 'STARTER Social Media Plan',
+    price: 9999,
+    unit: 'per month',
+    deliveryTime: 'Ongoing Monthly Service',
+    description: '4 Reels + 8 Graphic Posts per month with strategic captions & scheduling.',
+    features: ['4 Reels/Shorts', '8 Graphic Posts', 'Content Calendar', 'Captions & Hashtags']
+  },
+  {
+    id: 'calc-growth-plan',
+    title: 'GROWTH Social Media Plan',
+    price: 14999,
+    unit: 'per month',
+    deliveryTime: 'Ongoing Monthly Service',
+    description: '8 Reels + 12 Graphic Posts per month + Strategy Calendar & Growth Review.',
+    features: ['8 Reels (2/week)', '12 Graphic Posts', 'Strategy Calendar', 'Profile Optimization']
+  },
+  {
+    id: 'calc-pro-plan',
+    title: 'PRO Social Media Plan',
+    price: 19999,
+    unit: 'per month',
+    deliveryTime: 'Ongoing Monthly Service',
+    description: '12 Reels + 16 Posts + 1 Long-Form YouTube Video per month.',
+    features: ['12 Reels (3/week)', '16 Posts/Carousels', '1 YouTube Video (~3–5 min)', 'Dedicated Strategy']
+  },
+  {
+    id: 'calc-meta-ads',
+    title: 'Meta Ads Management',
+    price: 15000,
+    unit: 'per month',
+    deliveryTime: 'Setup in 3–5 Days',
+    description: 'Targeted Meta/Facebook/Instagram campaign architecture, creatives & optimization.',
+    features: ['Targeted structure', 'Ad creatives', 'Pixel & CAPI', 'Weekly optimization']
+  },
+  {
+    id: 'calc-google-ads',
+    title: 'Google Ads Management',
+    price: 15000,
+    unit: 'per month',
+    deliveryTime: 'Setup in 3–5 Days',
+    description: 'High-intent Google Search, Performance Max & YouTube Ads management.',
+    features: ['Keyword research', 'Negative keywords', 'Search & PMax', 'Conversion tracking']
   },
   {
     id: 'calc-short-video',
@@ -426,54 +592,54 @@ export const INDIVIDUAL_SERVICES: IndividualServiceItem[] = [
   }
 ];
 
-// MONTHLY RETAINER PLANS
+// MONTHLY RETAINER PLANS (Synchronized with current approved plans)
 export const PRICING_PLANS: PricingPlan[] = [
   {
-    id: 'starter-growth',
-    name: 'Essential Growth Retainer',
-    tagline: 'Ideal for local businesses maintaining active social presence & reels.',
-    monthlyPrice: 5000,
-    annualPrice: 50000,
-    ctaText: 'Start Essential Plan',
+    id: 'starter-plan',
+    name: 'STARTER Social Media Plan',
+    tagline: 'Essential monthly presence: 4 reels & 8 posts with captions & scheduling.',
+    monthlyPrice: 9999,
+    annualPrice: 89991, // 25% OFF equivalent
+    ctaText: 'Start Starter Plan',
     features: [
-      '4 Custom Promotional Video Reels / Shorts per Month',
-      '8 High-Resolution Branded Social Media Posts',
-      'Strategic Captions, Trend Audio & Hashtags',
+      '4 Custom High-Impact Reels / Shorts (15–30s)',
+      '8 Branded Social Media Graphic Posts & Carousels',
+      'Strategic Captions & Targeted Hashtags',
       'Monthly Content Calendar & Topic Planning',
       'WhatsApp Direct Studio Support'
     ]
   },
   {
-    id: 'accelerator-growth',
-    name: 'Studio Accelerator Retainer',
-    tagline: 'Comprehensive video, graphic, and organic reach scaling.',
-    monthlyPrice: 8000,
-    annualPrice: 80000,
+    id: 'growth-plan',
+    name: 'GROWTH Social Media Plan',
+    tagline: 'Most popular growth engine: 8 reels & 12 posts + full strategy & analytics.',
+    monthlyPrice: 14999,
+    annualPrice: 134991,
     isPopular: true,
-    ctaText: 'Start Accelerator Plan',
+    ctaText: 'Start Growth Plan',
     features: [
-      '8 Custom High-Retention Reels per Month (2/week)',
-      '14 Branded Social Media Graphic Posts & Carousels',
-      '1 Long-Form YouTube Video per Month (~3–5 min)',
-      'Full Scripting, Voiceover & Motion Graphics',
-      'Google Profile & Bio Optimization',
-      'Priority Turnaround & WhatsApp Support'
+      '8 Custom High-Impact Reels / Shorts (2 per week)',
+      '12 Branded Social Media Graphic Posts & Carousels',
+      'Monthly Content Strategy & Editorial Calendar',
+      'Viral Hook Variations & Dynamic Subtitles',
+      'Social Profile Optimization & Monthly Growth Review',
+      'WhatsApp Direct Studio Support'
     ]
   },
   {
-    id: 'market-domination',
-    name: 'Market Authority Retainer',
-    tagline: 'Full-service digital dominance for scaling brands.',
-    monthlyPrice: 15000,
-    annualPrice: 150000,
-    ctaText: 'Start Authority Plan',
+    id: 'pro-plan',
+    name: 'PRO Social Media Plan',
+    tagline: 'Omni-channel dominance: 12 reels, 16 posts + 1 YouTube video + direct founder strategy.',
+    monthlyPrice: 19999,
+    annualPrice: 179991,
+    ctaText: 'Start Pro Plan',
     features: [
-      '12 Custom Video Reels / Shorts per Month (3/week)',
-      '20 Branded Social Posts & Carousel Graphics',
-      '2 Long-Form YouTube Brand Videos per Month',
-      'Website Content Updates & Landing Page Tweaks',
-      'Meta Ad Campaign Strategy & Copywriting',
-      'Dedicated Founder Oversight by Mr. Radha Krishna'
+      '12 Custom High-Impact Reels / Shorts (3 per week)',
+      '16 Branded Social Graphic Posts & Multi-Slide Carousels',
+      '1 Long-Form YouTube Video per Month (~3–5 min)',
+      'Complete Content Strategy & Competitor Benchmarking',
+      'Dedicated Creative Direction by Mr. Radha Krishna',
+      'Priority Turnaround & WhatsApp Support'
     ]
   }
 ];

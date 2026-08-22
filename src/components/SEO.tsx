@@ -84,7 +84,7 @@ export default function SEO({
           '@id': 'https://yugark.in/#service',
           'name': 'YUGARK Digital Studio',
           'url': 'https://yugark.in',
-          'priceRange': '₹12,999 - ₹24,999',
+          'priceRange': '₹3,000 - ₹19,999',
           'address': {
             '@type': 'PostalAddress',
             'addressCountry': 'IN'

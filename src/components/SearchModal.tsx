@@ -184,7 +184,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       items.push({
         id: `template-${tpl.id}`,
         title: `Template: ${tpl.industry} (${tpl.demoName || 'Demo'})`,
-        description: `${tpl.tagline} | Deliverables: ${tpl.websiteIncludes.join(', ')} | Launch Offer: ₹12,999`,
+        description: `${tpl.tagline} | Deliverables: ${tpl.websiteIncludes.join(', ')} | Launch Offer: ₹9,999`,
         category: 'Templates',
         link: `/templates/${tpl.id}`,
         tags: [
@@ -193,7 +193,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           'Template', 
           'Demo Template', 
           'Website Template', 
-          '₹12,999',
+          '₹9,999',
           'Restaurant',
           'Gym',
           'Fitness',
@@ -260,7 +260,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       {
         id: 'faq-delivery-time',
         title: 'FAQ: How fast will my website be delivered?',
-        description: 'Standard custom websites are delivered in ~7 days with full responsiveness, SEO optimization, and direct WhatsApp routing.',
+        description: 'Frontend websites are delivered in ~7 days; Full Frontend + Backend systems in ~10–14 days with full responsiveness, SEO optimization, and direct WhatsApp routing.',
         category: 'FAQ',
         link: '/pricing#faq',
         tags: ['Timeline', 'Delivery', '7 Days', 'Speed', 'FAQ'],
@@ -268,15 +268,15 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       {
         id: 'faq-video-production',
         title: 'FAQ: How are promotional short videos produced?',
-        description: 'We script, edit, and produce high-retention 15–30s reels tailored for Instagram, YouTube Shorts, and paid Meta ads.',
+        description: 'We script, edit, and produce high-retention 15–30s reels tailored for Instagram, YouTube Shorts, and paid Meta ads for ₹3,000/video.',
         category: 'FAQ',
         link: '/pricing#faq',
         tags: ['Video', 'Reels', 'Shorts', 'Promotional Video', 'FAQ'],
       },
       {
         id: 'faq-launch-offer',
-        title: 'FAQ: What are the Grand Opening launch prices?',
-        description: 'Package 1 Website: ₹12,999 (Regular ₹14,999) | Package 2 Website + 5 Reels: ₹19,999 | Package 3 Content Bundle: ₹24,999.',
+        title: 'FAQ: What are the current service prices and plans?',
+        description: 'Frontend Website: ₹9,999 | Full Frontend + Backend: ₹14,999 | Social Media Plans: Starter ₹9,999/mo, Growth ₹14,999/mo, Pro ₹19,999/mo | Meta/Google Ads: ₹15,000/mo | Short Video: ₹3,000.',
         category: 'FAQ',
         link: '/pricing',
         tags: ['Pricing', 'Cost', 'Launch Offer', 'Discount', 'INR', 'FAQ'],

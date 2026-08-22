@@ -40,7 +40,7 @@ export default function TemplatePreviewModal({
 
   if (!isOpen || !template) return null;
 
-  const orderWhatsAppUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20Radha%20Krishna%20Sir,%20I%20am%20interested%20in%20the%20${encodeURIComponent(template.industry)}%20Website%20Template%20(Launch%20Offer%20₹12,999).%20Please%20share%20next%20steps!`;
+  const orderWhatsAppUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20Radha%20Krishna%20Sir,%20I%20am%20interested%20in%20the%20${encodeURIComponent(template.industry)}%20Website%20Template%20(Launch%20Offer%20₹9,999).%20Please%20share%20next%20steps!`;
 
   return (
     <AnimatePresence>
@@ -203,14 +203,14 @@ export default function TemplatePreviewModal({
               <div className="p-4 rounded-xl bg-[#121212]/90 backdrop-blur-sm border border-[#D4B06A]/30 flex items-center justify-between shadow-md">
                 <div>
                   <span className="block text-[10px] text-neutral-400 uppercase font-medium">
-                    Grand Opening Price
+                    Launch Offer Price
                   </span>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-serif font-bold text-[#F0D28F]">
-                      ₹12,999
+                      ₹9,999
                     </span>
                     <span className="text-xs text-neutral-500 line-through">
-                      ₹14,999
+                      ₹15,999
                     </span>
                   </div>
                 </div>
@@ -258,7 +258,7 @@ export default function TemplatePreviewModal({
                   className="w-full py-3.5 rounded-xl bg-[#25D366] text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:brightness-110 active:scale-95 transition-all"
                 >
                   <WhatsAppIcon className="w-4 h-4" />
-                  <span>Order This Template (₹12,999)</span>
+                  <span>Order This Template (₹9,999)</span>
                 </a>
 
                 <button

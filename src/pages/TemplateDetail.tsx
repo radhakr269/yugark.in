@@ -108,7 +108,7 @@ export default function TemplateDetail() {
   const IconComponent = iconMap[currentTemplate.iconName] || Globe;
 
   const orderWhatsAppUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hi Radha Krishna Sir, I am interested in ordering the ${currentTemplate.industry} Website Template (${currentTemplate.demoName || 'Demo'}) for the Grand Opening launch price of ₹12,999. Please guide me through onboarding.`
+    `Hi Radha Krishna Sir, I am interested in ordering the ${currentTemplate.industry} Website Template (${currentTemplate.demoName || 'Demo'}) for the Launch Offer price of ₹9,999. Please guide me through onboarding.`
   )}`;
 
   const consultWhatsAppUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
@@ -369,7 +369,7 @@ export default function TemplateDetail() {
     <>
       <SEO
         title={`${currentTemplate.industry} Website Template (${currentTemplate.demoName || 'Demo'}) | YUGARK Digital Studio`}
-        description={`Explore our turnkey ${currentTemplate.industry} Website Template. Engineered with React 18, WhatsApp lead flow, and sub-second speed. Launch in ~7 days for ₹12,999.`}
+        description={`Explore our turnkey ${currentTemplate.industry} Website Template. Engineered with React 18, WhatsApp lead flow, and sub-second speed. Launch in ~7 days for ₹9,999.`}
       />
 
       <main className="min-h-screen bg-[#050505] text-[#EAEAEA] pt-24 pb-28 relative overflow-hidden">
@@ -458,12 +458,12 @@ export default function TemplateDetail() {
                 {/* Pricing & Key Package Matrix */}
                 <div className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-neutral-300">
                   <div className="p-3.5 rounded-xl bg-[#121212]/90 border border-[#D4B06A]/35 backdrop-blur-sm">
-                    <span className="block text-[10px] text-neutral-400 uppercase font-medium">Grand Opening Price</span>
+                    <span className="block text-[10px] text-neutral-400 uppercase font-medium">Launch Offer Price</span>
                     <div className="flex items-baseline gap-2 mt-0.5">
-                      <span className="text-xl font-bold text-white font-serif">₹12,999</span>
-                      <span className="text-xs line-through text-neutral-500">₹14,999</span>
+                      <span className="text-xl font-bold text-white font-serif">₹9,999</span>
+                      <span className="text-xs line-through text-neutral-500">₹15,999</span>
                       <span className="text-[10px] text-emerald-400 font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-800">
-                        SAVE ₹2,000
+                        SAVE ₹6,000
                       </span>
                     </div>
                   </div>
@@ -485,7 +485,7 @@ export default function TemplateDetail() {
                     className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#25D366] to-[#1EBE5D] hover:brightness-110 text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
                   >
                     <WhatsAppIcon className="w-4 h-4" />
-                    <span>Order This Template (₹12,999)</span>
+                    <span>Order This Template (₹9,999)</span>
                   </a>
 
                   <Link
@@ -1011,21 +1011,21 @@ export default function TemplateDetail() {
 
             <div className="space-y-4 max-w-3xl mx-auto">
               <span className="text-xs uppercase tracking-[0.25em] font-bold text-[#D4B06A] px-3.5 py-1.5 rounded-full bg-[#D4B06A]/10 border border-[#D4B06A]/20 inline-block">
-                GRAND OPENING OFFER • LIMITED AVAILABILITY
+                LAUNCH OFFER • LIMITED AVAILABILITY
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl text-white font-medium leading-tight">
                 Launch Your {currentTemplate.industry} Platform in 7 Days.
               </h2>
               <p className="text-sm sm:text-base text-neutral-300 font-sans font-light leading-relaxed">
-                Receive the complete {currentTemplate.demoName} architecture customized with your branding, photos, services, and direct WhatsApp lead generation for just ₹12,999.
+                Receive the complete {currentTemplate.demoName} architecture customized with your branding, photos, services, and direct WhatsApp lead generation for just ₹9,999.
               </p>
             </div>
 
             {/* Price Badge */}
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#141414] border border-[#D4B06A]/40 shadow-inner">
               <span className="text-sm text-neutral-400">All-Inclusive Package:</span>
-              <span className="text-2xl font-bold text-white font-serif">₹12,999</span>
-              <span className="text-xs line-through text-neutral-500">₹14,999</span>
+              <span className="text-2xl font-bold text-white font-serif">₹9,999</span>
+              <span className="text-xs line-through text-neutral-500">₹15,999</span>
             </div>
 
             {/* CTA Buttons */}
@@ -1037,7 +1037,7 @@ export default function TemplateDetail() {
                 className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#1EBE5D] hover:brightness-110 text-black font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
               >
                 <WhatsAppIcon className="w-4 h-4" />
-                <span>Order on WhatsApp (₹12,999)</span>
+                <span>Order on WhatsApp (₹9,999)</span>
               </a>
 
               <Link
