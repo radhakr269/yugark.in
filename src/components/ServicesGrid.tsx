@@ -110,7 +110,7 @@ export function ThreePillarsSection() {
         </div>
 
         {/* 3 Large Service Pillar Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {pillars.map((pillar) => {
             const PillarIcon = pillar.icon;
 
@@ -121,24 +121,24 @@ export function ThreePillarsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className={`group relative p-6 sm:p-8 rounded-3xl bg-[#09090E]/90 backdrop-blur-2xl border ${pillar.glowBorder} transition-all duration-300 flex flex-col justify-between hover:-translate-y-2 shadow-[0_25px_60px_rgba(0,0,0,0.95)]`}
+                className={`group relative p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-[#09090E]/90 backdrop-blur-2xl border ${pillar.glowBorder} transition-all duration-300 flex flex-col justify-between hover:-translate-y-2 shadow-[0_25px_60px_rgba(0,0,0,0.95)]`}
               >
                 {/* Top Edge Metallic Accent */}
                 <div className={`absolute top-0 left-8 right-8 h-[1.5px] bg-gradient-to-r from-transparent ${pillar.topShimmer} to-transparent opacity-80`} />
                 
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {/* 3D Visual Stage at Card Top */}
                   <div className="w-full">
                     {pillar.visual}
                   </div>
 
                   {/* Pillar Badge & Icon */}
-                  <div className="flex items-center justify-between pt-2">
-                    <span className={`text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${pillar.badgeClass}`}>
+                  <div className="flex items-center justify-between pt-1 sm:pt-2">
+                    <span className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-widest px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border ${pillar.badgeClass}`}>
                       {pillar.pillarNumber}
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#14141A] border border-white/10 flex items-center justify-center text-neutral-300 group-hover:border-[#D4B06A] group-hover:text-[#F0D28F] group-hover:scale-105 transition-all duration-300 shadow-inner">
-                      <PillarIcon className="w-5 h-5" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#14141A] border border-white/10 flex items-center justify-center text-neutral-300 group-hover:border-[#D4B06A] group-hover:text-[#F0D28F] group-hover:scale-105 transition-all duration-300 shadow-inner">
+                      <PillarIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                   </div>
 
@@ -311,8 +311,8 @@ export function PremiumServicesSection() {
           </h2>
         </div>
 
-        {/* Compact Futuristic Neon Cards Grid (5-column / responsive grid matching reference) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-5">
+        {/* Compact Futuristic Neon Cards Grid (2-column on mobile / responsive grid) */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 sm:gap-5">
           {premiumServices.map((service, index) => {
             const ServiceIcon = service.icon;
 
@@ -323,37 +323,37 @@ export function PremiumServicesSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.35, delay: index * 0.03 }}
-                className={`group relative p-5 rounded-2xl bg-[#09090E]/85 backdrop-blur-xl border ${service.borderClass} transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 hover:bg-[#0F0F16]`}
+                className={`group relative p-3 sm:p-5 rounded-xl sm:rounded-2xl bg-[#09090E]/85 backdrop-blur-xl border ${service.borderClass} transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 hover:bg-[#0F0F16]`}
               >
                 <div>
                   {/* Icon & Arrow Header */}
-                  <div className="flex items-center justify-between mb-3.5">
-                    <div className={`w-9 h-9 rounded-xl border flex items-center justify-center ${service.iconBoxClass} group-hover:scale-105 transition-transform`}>
-                      <ServiceIcon className="w-4 h-4" />
+                  <div className="flex items-center justify-between mb-2 sm:mb-3.5">
+                    <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl border flex items-center justify-center ${service.iconBoxClass} group-hover:scale-105 transition-transform`}>
+                      <ServiceIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                     <Link
                       to={service.link}
-                      className="text-neutral-500 group-hover:text-[#F0D28F] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all p-1"
+                      className="text-neutral-500 group-hover:text-[#F0D28F] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all p-0.5 sm:p-1"
                       aria-label={`View ${service.title}`}
                     >
-                      <ArrowUpRight className="w-4 h-4" />
+                      <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </Link>
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-serif text-base font-bold text-white mb-1.5 group-hover:text-[#F0D28F] transition-colors leading-snug">
+                  <h3 className="font-serif text-xs sm:text-base font-bold text-white mb-1 sm:mb-1.5 group-hover:text-[#F0D28F] transition-colors leading-snug">
                     {service.title}
                   </h3>
 
                   {/* Short Description */}
-                  <p className="text-xs text-neutral-400 font-light leading-relaxed">
+                  <p className="text-[10px] sm:text-xs text-neutral-400 font-light leading-relaxed line-clamp-2 sm:line-clamp-none">
                     {service.desc}
                   </p>
                 </div>
 
                 {/* Bottom subtle indicator line */}
-                <div className="pt-3 mt-3 border-t border-white/5 flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-wider font-semibold text-neutral-500 group-hover:text-neutral-300 transition-colors">
+                <div className="pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-white/5 flex items-center justify-between">
+                  <span className="text-[9px] sm:text-[10px] uppercase tracking-wider font-semibold text-neutral-500 group-hover:text-neutral-300 transition-colors">
                     Details
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-[#D4B06A] transition-colors" />

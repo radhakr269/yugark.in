@@ -994,10 +994,6 @@ function formatSubmissionDateTime(dateStr: string | Date): string {
 export async function getLiveLeads(query: GetLeadsQuery): Promise<LeadRecord[]> {
   const supabase = getSupabase();
 
-  if (!supabase) {
-    throw new Error('Database connection failed: Supabase client is not configured or unavailable.');
-  }
-
   let fromIso: string | undefined;
   let toIso: string | undefined;
 
@@ -1009,6 +1005,14 @@ export async function getLiveLeads(query: GetLeadsQuery): Promise<LeadRecord[]> 
   if (query.toDate && query.toDate.trim()) {
     const raw = query.toDate.trim();
     toIso = raw.includes('T') ? new Date(raw).toISOString() : new Date(`${raw}T23:59:59.999+05:30`).toISOString();
+  }
+
+  if (!supabase) {
+    if (IS_PRODUCTION) {
+      throw new Error('Database connection failed: Supabase client is not configured or unavailable.');
+    }
+    const { data } = getFallbackLeads(query, 1, 10000, 0, fromIso, toIso);
+    return data;
   }
 
   let sbQuery = supabase.from('leads').select('*');

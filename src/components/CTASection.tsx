@@ -66,34 +66,34 @@ export default function CTASection() {
           </div>
 
           {/* Center: 3 Feature Badges with Dual Lines */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 relative z-10">
-            <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#121218]/90 border border-white/10 hover:border-[#D4B06A]/40 transition-colors">
-              <div className="w-9 h-9 rounded-xl bg-[#1A1A24] border border-[#D4B06A]/30 flex items-center justify-center text-[#D4B06A] shrink-0">
-                <Clock className="w-4 h-4" />
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-6 relative z-10">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[#121218]/90 border border-white/10 hover:border-[#D4B06A]/40 transition-colors">
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#1A1A24] border border-[#D4B06A]/30 flex items-center justify-center text-[#D4B06A] shrink-0">
+                <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-white tracking-wide">7-Day Delivery</div>
-                <div className="text-[11px] text-neutral-400 font-mono">Timeline</div>
+                <div className="text-[10px] sm:text-xs font-bold text-white tracking-wide leading-tight">7-Day Delivery</div>
+                <div className="text-[8px] sm:text-[11px] text-neutral-400 font-mono">Timeline</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#121218]/90 border border-white/10 hover:border-[#D4B06A]/40 transition-colors">
-              <div className="w-9 h-9 rounded-xl bg-[#1A1A24] border border-[#D4B06A]/30 flex items-center justify-center text-[#D4B06A] shrink-0">
-                <ShieldCheck className="w-4 h-4" />
+            <div className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[#121218]/90 border border-white/10 hover:border-[#D4B06A]/40 transition-colors">
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#1A1A24] border border-[#D4B06A]/30 flex items-center justify-center text-[#D4B06A] shrink-0">
+                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-white tracking-wide">Dedicated Support</div>
-                <div className="text-[11px] text-neutral-400 font-mono">Direct Communication</div>
+                <div className="text-[10px] sm:text-xs font-bold text-white tracking-wide leading-tight">Dedicated Support</div>
+                <div className="text-[8px] sm:text-[11px] text-neutral-400 font-mono">Direct Chat</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#121218]/90 border border-white/10 hover:border-[#D4B06A]/40 transition-colors">
-              <div className="w-9 h-9 rounded-xl bg-[#1A1A24] border border-[#D4B06A]/30 flex items-center justify-center text-[#D4B06A] shrink-0">
-                <TrendingUp className="w-4 h-4" />
+            <div className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[#121218]/90 border border-white/10 hover:border-[#D4B06A]/40 transition-colors">
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#1A1A24] border border-[#D4B06A]/30 flex items-center justify-center text-[#D4B06A] shrink-0">
+                <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-white tracking-wide">Result Driven</div>
-                <div className="text-[11px] text-neutral-400 font-mono">Growth Focused</div>
+                <div className="text-[10px] sm:text-xs font-bold text-white tracking-wide leading-tight">Result Driven</div>
+                <div className="text-[8px] sm:text-[11px] text-neutral-400 font-mono">Growth Focused</div>
               </div>
             </div>
           </div>

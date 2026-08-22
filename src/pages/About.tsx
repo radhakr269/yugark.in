@@ -172,18 +172,18 @@ export default function About() {
                 </div>
 
                 {/* Core Expertise Grid */}
-                <div className="pt-6 border-t border-neutral-800 space-y-4">
+                <div className="pt-4 sm:pt-6 border-t border-neutral-800 space-y-3 sm:space-y-4">
                   <h4 className="text-xs uppercase font-bold text-[#F0D28F] tracking-[0.2em]">
                     Core Studio Capabilities:
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
                     {coreFocusAreas.map((area, idx) => (
-                      <div key={idx} className="p-4 rounded-xl bg-[#121212]/70 border border-neutral-800 space-y-1.5 hover:border-[#D4B06A]/40 transition-colors">
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle2 className="w-4 h-4 text-[#D4B06A] shrink-0" />
-                          <h5 className="text-xs font-bold text-white">{area.title}</h5>
+                      <div key={idx} className="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-[#121212]/70 border border-neutral-800 space-y-1 sm:space-y-1.5 hover:border-[#D4B06A]/40 transition-colors">
+                        <div className="flex items-center space-x-1.5 sm:space-x-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4B06A] shrink-0" />
+                          <h5 className="text-[11px] sm:text-xs font-bold text-white leading-snug">{area.title}</h5>
                         </div>
-                        <p className="text-[11px] text-neutral-400 pl-6 leading-relaxed font-light">{area.desc}</p>
+                        <p className="text-[10px] sm:text-[11px] text-neutral-400 pl-5 sm:pl-6 leading-relaxed font-light line-clamp-2 sm:line-clamp-none">{area.desc}</p>
                       </div>
                     ))}
                   </div>
@@ -195,37 +195,37 @@ export default function About() {
         </section>
 
         {/* Guiding Principles */}
-        <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
+        <section className="py-14 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-16">
+          <div className="text-center space-y-2 sm:space-y-3 max-w-3xl mx-auto">
             <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-[#D4B06A]">
               OUR COMMITMENT
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl text-white font-bold">
+            <h2 className="font-serif text-2xl sm:text-5xl text-white font-bold">
               Built on craftsmanship and speed.
             </h2>
-            <p className="text-sm text-neutral-300 font-light">
+            <p className="text-xs sm:text-sm text-neutral-300 font-light">
               Four principles guiding every strategy, line of code, and creative video delivered by YUGARK Digital Studio.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-2.5 sm:gap-8">
             {studioValues.map((value, idx) => {
               const Icon = value.icon;
               return (
                 <div 
                   key={idx}
-                  className="p-8 rounded-2xl bg-[#0B0B0B]/85 backdrop-blur-xl border border-neutral-800 hover:border-[#D4B06A]/40 transition-all space-y-4 shadow-xl group"
+                  className="p-3.5 sm:p-8 rounded-xl sm:rounded-2xl bg-[#0B0B0B]/85 backdrop-blur-xl border border-neutral-800 hover:border-[#D4B06A]/40 transition-all space-y-2 sm:space-y-4 shadow-xl group"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-xl bg-[#D4B06A]/10 border border-[#D4B06A]/30 flex items-center justify-center text-[#F0D28F] group-hover:bg-[#D4B06A]/20 transition-colors">
-                      <Icon className="w-6 h-6" />
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#D4B06A]/10 border border-[#D4B06A]/30 flex items-center justify-center text-[#F0D28F] group-hover:bg-[#D4B06A]/20 transition-colors">
+                      <Icon className="w-4 h-4 sm:w-6 sm:h-6" />
                     </div>
-                    <span className="text-[10px] font-mono font-bold tracking-widest text-[#D4B06A] border border-[#D4B06A]/30 px-2.5 py-1 rounded-md">
+                    <span className="text-[8px] sm:text-[10px] font-mono font-bold tracking-widest text-[#D4B06A] border border-[#D4B06A]/30 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md">
                       {value.badge}
                     </span>
                   </div>
-                  <h3 className="font-serif text-xl font-medium text-white group-hover:text-[#F0D28F] transition-colors">{value.title}</h3>
-                  <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed font-sans font-light">
+                  <h3 className="font-serif text-xs sm:text-xl font-medium text-white group-hover:text-[#F0D28F] transition-colors leading-snug">{value.title}</h3>
+                  <p className="text-[10px] sm:text-sm text-neutral-300 leading-relaxed font-sans font-light line-clamp-3 sm:line-clamp-none">
                     {value.desc}
                   </p>
                 </div>
@@ -235,26 +235,26 @@ export default function About() {
         </section>
 
         {/* Testimonials */}
-        <section id="testimonials" className="py-20 bg-[#080808]/90 border-t border-b border-[#D4B06A]/15">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            <div className="text-center space-y-3">
+        <section id="testimonials" className="py-14 sm:py-20 bg-[#080808]/90 border-t border-b border-[#D4B06A]/15">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-16">
+            <div className="text-center space-y-2 sm:space-y-3">
               <span className="font-sans text-xs uppercase tracking-[0.25em] font-bold text-[#D4B06A]">
                 CLIENT OUTCOMES
               </span>
-              <h2 className="font-serif text-3xl sm:text-5xl text-white font-bold">
+              <h2 className="font-serif text-2xl sm:text-5xl text-white font-bold">
                 Trusted by growing businesses.
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 min-[600px]:grid-cols-3 gap-3 sm:gap-8">
               {testimonials.map((t, idx) => (
-                <div key={idx} className="p-8 rounded-2xl bg-[#0C0C0C]/85 backdrop-blur-xl border border-neutral-800 space-y-6 flex flex-col justify-between hover:border-[#D4B06A]/30 transition-colors shadow-lg">
-                  <p className="font-serif italic text-sm text-neutral-200 leading-relaxed">
+                <div key={idx} className="p-4 sm:p-8 rounded-xl sm:rounded-2xl bg-[#0C0C0C]/85 backdrop-blur-xl border border-neutral-800 space-y-4 sm:space-y-6 flex flex-col justify-between hover:border-[#D4B06A]/30 transition-colors shadow-lg">
+                  <p className="font-serif italic text-xs sm:text-sm text-neutral-200 leading-relaxed">
                     "{t.quote}"
                   </p>
-                  <div className="pt-4 border-t border-neutral-800">
-                    <span className="block font-semibold text-white text-sm">{t.author}</span>
-                    <span className="text-xs text-neutral-400">{t.role}</span>
+                  <div className="pt-3 sm:pt-4 border-t border-neutral-800">
+                    <span className="block font-semibold text-white text-xs sm:text-sm">{t.author}</span>
+                    <span className="text-[10px] sm:text-xs text-neutral-400">{t.role}</span>
                   </div>
                 </div>
               ))}

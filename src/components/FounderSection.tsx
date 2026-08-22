@@ -64,17 +64,17 @@ export default function FounderSection() {
               </p>
             </div>
 
-            {/* Core Execution Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {/* Core Execution Highlights (2-column on mobile) */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 sm:gap-3 pt-2">
               {[
-                'Custom Website Development (~7 Days)',
-                'Promotional Short Videos & Reels',
-                'Social Media Management & Strategy',
-                'Direct Founder Strategic Oversight'
+                'Custom Websites (~7 Days)',
+                'Promotional Videos & Reels',
+                'Social Media Management',
+                'Direct Founder Oversight'
               ].map((point, idx) => (
-                <div key={idx} className="flex items-center space-x-2.5 bg-[#0D0D0D]/80 backdrop-blur-sm p-3 rounded-xl border border-neutral-800/90 hover:border-[#D4B06A]/40 transition-colors">
-                  <CheckCircle2 className="w-4 h-4 text-[#D4B06A] flex-shrink-0" />
-                  <span className="text-xs text-neutral-300 font-medium">{point}</span>
+                <div key={idx} className="flex items-center space-x-1.5 sm:space-x-2.5 bg-[#0D0D0D]/80 backdrop-blur-sm p-2 sm:p-3 rounded-lg sm:rounded-xl border border-neutral-800/90 hover:border-[#D4B06A]/40 transition-colors">
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4B06A] flex-shrink-0" />
+                  <span className="text-[11px] sm:text-xs text-neutral-300 font-medium leading-snug">{point}</span>
                 </div>
               ))}
             </div>

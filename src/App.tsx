@@ -50,7 +50,12 @@ function PageRoutes() {
           <Route path="/services" element={<Services />} />
           <Route path="/services/website-development" element={<WebsiteDev />} />
           <Route path="/services/social-media-management" element={<SocialMedia />} />
+          <Route path="/services/individual-post" element={<SocialMedia />} />
+          <Route path="/services/monthly-posts" element={<SocialMedia />} />
+          <Route path="/services/monthly-reels" element={<AiContent />} />
+          <Route path="/services/youtube-content" element={<AiContent />} />
           <Route path="/services/ai-content-video" element={<AiContent />} />
+          <Route path="/services/ai-creative-strategy" element={<AiContent />} />
           <Route path="/services/social-media-advertising" element={<Advertising />} />
           <Route path="/services/content-strategy" element={<ContentStrategy />} />
           <Route path="/services/digital-growth-strategy" element={<GrowthStrategy />} />

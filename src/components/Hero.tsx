@@ -269,9 +269,9 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.1 }}
               className="font-serif text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-bold leading-[1.08] text-white tracking-tight"
             >
-              Websites that make <br />
+              We Build. We Create. <br />
               <span className="bg-gradient-to-r from-[#D4B06A] via-[#F0D28F] to-[#C9A35E] bg-clip-text text-transparent font-serif">
-                people stop, trust & act.
+                We Grow Brands.
               </span>
             </motion.h1>
 
@@ -282,7 +282,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-neutral-300 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed font-sans font-light"
             >
-              Premium websites, compelling content and digital growth solutions built to move your business forward.
+              Websites, videos, social media, Meta Ads and digital strategies designed to help your business grow.
             </motion.p>
 
             {/* Tactile CTA Buttons */}
@@ -294,17 +294,16 @@ export default function Hero() {
             >
               <Link
                 to="/contact"
-                className="bg-gradient-to-r from-[#D4B06A] via-[#E2C17A] to-[#C9A35E] text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2.5 hover:brightness-110 hover:-translate-y-0.5 active:scale-98 active:translate-y-0 transition-all duration-300 shadow-[0_10px_25px_rgba(212,176,106,0.3)] group cursor-pointer text-center"
+                className="bg-gradient-to-r from-[#D4B06A] via-[#E2C17A] to-[#C9A35E] text-black px-7 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-110 hover:-translate-y-0.5 active:scale-98 active:translate-y-0 transition-all duration-300 shadow-[0_10px_25px_rgba(212,176,106,0.3)] group cursor-pointer text-center"
               >
-                <span>Get my free website plan</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <span>GET A FREE WEBSITE DEMO →</span>
               </Link>
 
               <Link
                 to="/work"
                 className="px-7 sm:px-8 py-3.5 sm:py-4 rounded-full border border-white/20 bg-white/[0.03] backdrop-blur-sm text-white hover:border-[#D4B06A] hover:text-[#D4B06A] hover:bg-white/[0.06] hover:-translate-y-0.5 active:scale-98 active:translate-y-0 text-xs uppercase tracking-widest font-semibold text-center transition-all duration-200 cursor-pointer"
               >
-                See our work
+                VIEW OUR WORK →
               </Link>
             </motion.div>
 

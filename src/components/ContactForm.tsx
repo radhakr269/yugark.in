@@ -1,9 +1,18 @@
-import { useState, FormEvent } from 'react';
-import { Send, CheckCircle2, Sparkles, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useMemo, FormEvent } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Send, CheckCircle2, Sparkles, AlertCircle, Clock, Tag, Edit3, ArrowRight } from 'lucide-react';
 import { ContactFormData } from '../types';
 import { submitLead } from '../lib/api';
 import { addEnquiry } from '../lib/enquiryStore';
 import { WhatsAppIcon } from './WhatsAppButton';
+import { 
+  ALL_PRICING_SERVICES, 
+  DURATION_DETAILS, 
+  BillingDuration, 
+  calculatePricingState,
+  getSelectionFromSession,
+  ServiceItem 
+} from '../lib/pricingSelection';
 
 interface ContactFormProps {
   defaultService?: string;
@@ -13,11 +22,121 @@ interface ContactFormProps {
 }
 
 export default function ContactForm({
-  defaultService = 'Website Development',
-  defaultBundle = 'Package 1 — Website Development',
+  defaultService = '',
+  defaultBundle = '',
   pageSource = 'Contact Page',
   formSource = 'Project Inquiry Form'
 }: ContactFormProps) {
+  const [searchParams] = useSearchParams();
+
+  // Extract query parameters from Pricing calculator navigation
+  const paramServices = searchParams.get('services');
+  const paramServiceIds = searchParams.get('serviceIds');
+  const paramDuration = searchParams.get('duration') as BillingDuration | null;
+  const paramSubtotal = searchParams.get('subtotal');
+  const paramDiscount = searchParams.get('discount');
+  const paramAmount = searchParams.get('amount');
+  const paramPlan = searchParams.get('plan');
+  const paramService = searchParams.get('service');
+
+  // Check if we have incoming selection data ONLY via explicit query params from Pricing
+  const pricingData = useMemo(() => {
+    // 1. Check URL parameters
+    if (paramServiceIds || paramServices) {
+      const ids = paramServiceIds ? paramServiceIds.split(',').filter(Boolean) : [];
+      const duration: BillingDuration = (paramDuration && ['one-time', '1month', '6months', '1year'].includes(paramDuration))
+        ? paramDuration
+        : (paramDuration === 'none' ? 'one-time' : 'one-time');
+      
+      const calc = calculatePricingState(ids, duration);
+      return {
+        hasPricingSelection: ids.length > 0,
+        selectedIds: ids,
+        selectedServices: calc.selectedServices,
+        selectedServicesDetails: calc.selectedServicesDetails,
+        duration,
+        durationInfo: calc.durationInfo,
+        subtotal: calc.subtotal,
+        discountAmount: calc.discountAmount,
+        finalAmount: calc.finalAmount,
+        servicesNamesList: paramServices || calc.servicesNamesList
+      };
+    }
+
+    return {
+      hasPricingSelection: false,
+      selectedIds: [],
+      selectedServices: [] as ServiceItem[],
+      selectedServicesDetails: [],
+      duration: 'one-time' as BillingDuration,
+      durationInfo: DURATION_DETAILS['one-time'],
+      subtotal: 0,
+      discountAmount: 0,
+      finalAmount: 0,
+      servicesNamesList: ''
+    };
+  }, [paramServices, paramServiceIds, paramDuration, paramSubtotal, paramDiscount, paramAmount]);
+
+  // Derive initial Service and Bundle
+  const initialSelectedService = useMemo(() => {
+    if (pricingData.hasPricingSelection && pricingData.selectedServices.length > 0) {
+      if (pricingData.selectedServices.length === 1) {
+        const single = pricingData.selectedServices[0];
+        if (single.category === 'website') return single.name;
+        if (single.category === 'social') return 'Social Media & Reels Growth';
+        if (single.category === 'ads') return single.name;
+      }
+      return 'Custom Multi-Service Package';
+    }
+    if (paramService) return paramService;
+    return defaultService || '';
+  }, [pricingData, paramService, defaultService]);
+
+  const DEFAULT_BUNDLE_PLACEHOLDER = '-- Select a Package / Bundle (Optional) --';
+
+  const initialSelectedBundle = useMemo(() => {
+    if (pricingData.hasPricingSelection && pricingData.selectedServices.length > 0) {
+      if (pricingData.selectedServices.length === 1) {
+        const s = pricingData.selectedServices[0];
+        const suffix = s.billingType === 'monthly' ? '/mo' : '';
+        return `${s.name} (Estimated: ₹${pricingData.finalAmount.toLocaleString('en-IN')}${suffix})`;
+      }
+      return `Custom Bundle (${pricingData.selectedServices.length} Services - Estimated: ₹${pricingData.finalAmount.toLocaleString('en-IN')})`;
+    }
+    if (paramPlan) {
+      return `${paramPlan} Plan`;
+    }
+    return defaultBundle || DEFAULT_BUNDLE_PLACEHOLDER;
+  }, [pricingData, paramPlan, defaultBundle]);
+
+  const initialRequirement = () => {
+    if (pricingData.hasPricingSelection && pricingData.selectedServices.length > 0) {
+      const servicesDetailLines = pricingData.selectedServicesDetails.map(item => {
+        if (item.billingType === 'monthly') {
+          return `• ${item.name}: ₹${item.unitPrice.toLocaleString('en-IN')}/mo × ${item.months} month(s) = ₹${item.subtotal.toLocaleString('en-IN')}`;
+        }
+        return `• ${item.name}: ₹${item.unitPrice.toLocaleString('en-IN')} (One-Time)`;
+      }).join('\n');
+
+      const durationLine = pricingData.duration === 'one-time'
+        ? '• Commitment Duration: ONE-TIME (No duration discount)'
+        : `• Commitment Duration: ${pricingData.durationInfo.label} (${pricingData.durationInfo.discountPct}% OFF)`;
+      
+      const discountLine = pricingData.discountAmount > 0 
+        ? `• Duration Discount: -₹${pricingData.discountAmount.toLocaleString('en-IN')} (${pricingData.durationInfo.discountPct}% OFF)\n`
+        : '';
+
+      return `Custom Package from Calculator:\n${servicesDetailLines}\n${durationLine}\n• Base Subtotal: ₹${pricingData.subtotal.toLocaleString('en-IN')}\n${discountLine}• Estimated Total: ₹${pricingData.finalAmount.toLocaleString('en-IN')}\n\n[Please add any specific business requirements or targets here]`;
+    }
+    if (paramPlan) {
+      return `Interested in ${paramPlan} Plan (${paramDuration || 'monthly'})`;
+    }
+    if (paramService) {
+      return `Inquiry regarding ${paramService}`;
+    }
+    return '';
+  };
+
   const [formData, setFormData] = useState<ContactFormData>({
     fullName: '',
     email: '',
@@ -25,9 +144,9 @@ export default function ContactForm({
     businessName: '',
     businessCategory: 'Restaurant & Café',
     otherCategory: '',
-    selectedService: defaultService,
-    selectedBundle: defaultBundle,
-    projectRequirement: '',
+    selectedService: initialSelectedService,
+    selectedBundle: initialSelectedBundle,
+    projectRequirement: initialRequirement(),
     remarks: '',
     pageSource,
     formSource,
@@ -39,6 +158,18 @@ export default function ContactForm({
   const [submittedEnquiryId, setSubmittedEnquiryId] = useState<string>('');
   const [serverError, setServerError] = useState<string>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Sync state if pricingData changes
+  useEffect(() => {
+    if (pricingData.hasPricingSelection && pricingData.selectedServices.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        selectedService: initialSelectedService,
+        selectedBundle: initialSelectedBundle,
+        projectRequirement: prev.projectRequirement || initialRequirement()
+      }));
+    }
+  }, [pricingData, initialSelectedService, initialSelectedBundle]);
 
   const businessCategories = [
     'Restaurant & Café',
@@ -53,15 +184,44 @@ export default function ContactForm({
     'Local Business / Other'
   ];
 
-  const bundleOptions = [
-    'Package 1 — Website Development (₹12,999 / ~7 Days)',
-    'Package 2 — Website + 5 Reels Bundle (₹19,999)',
-    'Package 3 — Website + Complete Content (₹24,999)',
-    'Short Advertisement Video (₹3,000 / ~7 Days)',
-    'Long-Form Brand Video (₹5,000 / ~15 Days)',
-    'Monthly Social Media Management',
-    'Custom Project / Consultation'
+  const serviceOptions = [
+    '-- Select a Service (Optional) --',
+    'Custom Multi-Service Package',
+    'Website Development',
+    'Frontend Website',
+    'Full Frontend + Backend Website',
+    'Social Media & Reels Growth',
+    'STARTER Plan',
+    'GROWTH Plan',
+    'PRO Plan',
+    'Paid Advertising (Meta & Google Ads)',
+    'Meta Ads Management',
+    'Google Ads Management',
+    'Short Advertisement Video',
+    'Long-Form Brand Video',
+    'Other / Custom Project'
   ];
+
+  const bundleOptions = useMemo(() => {
+    const list: string[] = [DEFAULT_BUNDLE_PLACEHOLDER];
+
+    // If pre-selected custom package from pricing calculator
+    if (pricingData.hasPricingSelection && initialSelectedBundle && initialSelectedBundle !== DEFAULT_BUNDLE_PLACEHOLDER) {
+      list.push(initialSelectedBundle);
+    }
+
+    // Centralized options from ALL_PRICING_SERVICES
+    ALL_PRICING_SERVICES.forEach((s) => {
+      const label = s.billingType === 'monthly'
+        ? `${s.name} (₹${s.basePrice.toLocaleString('en-IN')}/mo)`
+        : `${s.name} (₹${s.basePrice.toLocaleString('en-IN')})`;
+      list.push(label);
+    });
+
+    list.push('Custom Project / Consultation');
+
+    return Array.from(new Set(list));
+  }, [pricingData, initialSelectedBundle]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -91,7 +251,6 @@ export default function ContactForm({
 
       if (response.success && response.leadId) {
         setSubmittedEnquiryId(response.leadId);
-        // Also update local store for instant client cache
         try {
           addEnquiry({
             ...formData,
@@ -112,7 +271,6 @@ export default function ContactForm({
       }
     } catch (err: any) {
       console.error('Submission error', err);
-      // Fallback
       const record = addEnquiry(formData);
       setSubmittedEnquiryId(record.id);
       setIsLoading(false);
@@ -126,11 +284,14 @@ export default function ContactForm({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-8 sm:p-12 rounded-3xl bg-[#090909] border border-[#D4B06A]/20 shadow-2xl gold-border-glow relative overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto p-7 sm:p-10 lg:p-12 rounded-3xl bg-[#09090D] border border-[#D4B06A]/30 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(212,176,106,0.15)] gold-border-glow relative overflow-hidden">
       
+      {/* Top Metallic Accent Bar */}
+      <div className="absolute top-0 left-8 right-8 h-[1.5px] bg-gradient-to-r from-transparent via-[#F0D28F] to-transparent" />
+
       {isSubmitted ? (
         <div className="text-center py-16 space-y-6">
-          <div className="w-20 h-20 mx-auto rounded-full bg-[#D4B06A]/20 border border-[#D4B06A] flex items-center justify-center text-[#F0D28F] animate-bounce">
+          <div className="w-20 h-20 mx-auto rounded-full bg-[#D4B06A]/20 border border-[#D4B06A] flex items-center justify-center text-[#F0D28F] animate-bounce shadow-[0_0_30px_rgba(212,176,106,0.3)]">
             <CheckCircle2 className="w-10 h-10" />
           </div>
 
@@ -182,18 +343,80 @@ export default function ContactForm({
       ) : (
         <form onSubmit={handleSubmit} className="space-y-8">
           
+          {/* Header Title Block */}
           <div className="space-y-2 border-b border-neutral-800 pb-6">
             <div className="flex items-center gap-2 text-[#D4B06A] text-xs font-semibold uppercase tracking-[0.25em]">
               <Sparkles className="w-3.5 h-3.5 text-[#F0D28F]" />
-              <span>START YOUR PROJECT</span>
+              <span>START YOUR PROJECT INQUIRY</span>
             </div>
-            <h3 className="font-serif text-3xl sm:text-4xl text-white font-medium">
+            <h2 className="font-serif text-3xl sm:text-4xl text-white font-medium">
               Tell us about your business goals.
-            </h3>
+            </h2>
             <p className="text-xs text-neutral-400 font-sans">
-              Fill in your project requirements below. Founder Mr. Radha Krishna will review your inquiry and provide a tailored plan.
+              Founder Mr. Radha Krishna personally reviews every project inquiry to propose the most effective growth strategy.
             </p>
           </div>
+
+          {/* ========================================================================= */}
+          {/* PRE-SELECTED CUSTOM PACKAGE SUMMARY BADGE / CARD */}
+          {/* ========================================================================= */}
+          {pricingData.hasPricingSelection && pricingData.selectedServices.length > 0 && (
+            <div className="p-6 rounded-2xl bg-gradient-to-b from-[#14120C] to-[#0A0A0F] border-2 border-[#D4B06A]/70 shadow-[0_10px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(212,176,106,0.2)] space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D4B06A]/20 pb-3">
+                <div className="flex items-center gap-2 text-[#D4B06A] text-xs font-bold uppercase tracking-wider">
+                  <Tag className="w-4 h-4 text-[#F0D28F]" />
+                  <span>PRE-SELECTED CUSTOM PACKAGE (AUTO-LOADED FROM CALCULATOR)</span>
+                </div>
+                <Link
+                  to="/pricing#calculator"
+                  className="text-[11px] text-[#D4B06A] hover:text-[#F0D28F] flex items-center gap-1 font-semibold underline"
+                >
+                  <Edit3 className="w-3 h-3" />
+                  <span>Modify Selection in Pricing</span>
+                </Link>
+              </div>
+
+              {/* Selected Services Tags */}
+              <div className="space-y-2">
+                <div className="text-[11px] font-bold uppercase text-neutral-400">
+                  Included Services ({pricingData.selectedServices.length}):
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {pricingData.selectedServices.map(svc => (
+                    <span 
+                      key={svc.id}
+                      className="px-3 py-1 rounded-lg bg-[#18160E] border border-[#D4B06A]/40 text-[#F0D28F] text-xs font-medium flex items-center gap-1.5"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D4B06A]" />
+                      <span>{svc.name}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Summary Financials Row */}
+              <div className="pt-3 border-t border-[#D4B06A]/20 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                <div>
+                  <span className="block text-[10px] text-neutral-400 uppercase">Commitment:</span>
+                  <span className="font-bold text-white">{pricingData.durationInfo.label}</span>
+                </div>
+                <div>
+                  <span className="block text-[10px] text-neutral-400 uppercase">Base Subtotal:</span>
+                  <span className="font-medium text-neutral-300">₹{pricingData.subtotal.toLocaleString('en-IN')}</span>
+                </div>
+                <div>
+                  <span className="block text-[10px] text-[#F0D28F] uppercase">Discount ({pricingData.durationInfo.discountPct}%):</span>
+                  <span className="font-bold text-[#F0D28F]">-₹{pricingData.discountAmount.toLocaleString('en-IN')}</span>
+                </div>
+                <div>
+                  <span className="block text-[10px] text-[#D4B06A] uppercase font-bold">Estimated Total:</span>
+                  <span className="font-serif font-bold text-base text-white gold-gradient-text">
+                    ₹{pricingData.finalAmount.toLocaleString('en-IN')}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Hidden Honeypot Field for anti-bot spam protection */}
           <div className="hidden absolute -left-[9999px]" aria-hidden="true">
@@ -301,22 +524,38 @@ export default function ContactForm({
               </select>
             </div>
 
-            {/* Selected Package / Service Bundle */}
+            {/* Selected Service / Primary Focus */}
             <div>
               <label className="block text-xs uppercase tracking-wider text-neutral-300 mb-2 font-medium">
-                Selected Service / Bundle
+                Primary Service Required
               </label>
               <select
-                value={formData.selectedBundle}
-                onChange={(e) => setFormData({ ...formData, selectedBundle: e.target.value })}
+                value={formData.selectedService}
+                onChange={(e) => setFormData({ ...formData, selectedService: e.target.value })}
                 className="w-full px-4 py-3.5 bg-[#121212] border border-neutral-800 focus:border-[#D4B06A] rounded-xl text-sm text-white focus:outline-none transition-colors"
               >
-                {bundleOptions.map((b) => (
-                  <option key={b} value={b}>{b}</option>
+                {serviceOptions.map((s) => (
+                  <option key={s} value={s}>{s}</option>
                 ))}
               </select>
             </div>
 
+          </div>
+
+          {/* Selected Package / Service Bundle Dropdown */}
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-neutral-300 mb-2 font-medium">
+              Selected Service / Package Bundle
+            </label>
+            <select
+              value={formData.selectedBundle}
+              onChange={(e) => setFormData({ ...formData, selectedBundle: e.target.value })}
+              className="w-full px-4 py-3.5 bg-[#121212] border border-neutral-800 focus:border-[#D4B06A] rounded-xl text-sm text-white focus:outline-none transition-colors font-medium text-[#F0D28F]"
+            >
+              {bundleOptions.map((b, idx) => (
+                <option key={idx} value={b}>{b}</option>
+              ))}
+            </select>
           </div>
 
           {/* Other Category Specification if selected */}
@@ -344,7 +583,7 @@ export default function ContactForm({
               rows={4}
               value={formData.projectRequirement}
               onChange={(e) => setFormData({ ...formData, projectRequirement: e.target.value })}
-              placeholder="Tell us what you want to achieve (e.g. need a 5-page responsive website, 5 reels for launch, WhatsApp order integration, target launch in 2 weeks)..."
+              placeholder="Tell us what you want to achieve (e.g. need a 5-page responsive website, 4 reels for Instagram launch, WhatsApp order integration, target launch in 2 weeks)..."
               className={`w-full px-4 py-3.5 bg-[#121212] border rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none transition-colors ${
                 errors.projectRequirement ? 'border-red-500' : 'border-neutral-800 focus:border-[#D4B06A]'
               }`}
@@ -361,7 +600,7 @@ export default function ContactForm({
               type="text"
               value={formData.remarks || ''}
               onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
-              placeholder="e.g. Best time to call: Afternoon. Already have domain name."
+              placeholder="e.g. Best time to call: 4 PM - 7 PM. Already have domain name registered."
               className="w-full px-4 py-3.5 bg-[#121212] border border-neutral-800 focus:border-[#D4B06A] rounded-xl text-sm text-white placeholder-neutral-600 focus:outline-none transition-colors"
             />
           </div>
@@ -371,7 +610,7 @@ export default function ContactForm({
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 rounded-xl gold-gradient-bg text-black font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-xl"
+              className="w-full py-4 rounded-xl gold-gradient-bg text-black font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-[0_10px_30px_rgba(212,176,106,0.35)]"
             >
               {isLoading ? (
                 <span className="inline-block w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
@@ -382,8 +621,8 @@ export default function ContactForm({
                 </>
               )}
             </button>
-            <p className="text-center text-[11px] text-neutral-500 mt-3">
-              Direct review by Founder Mr. Radha Krishna. Confidential & secure.
+            <p className="text-center text-[11px] text-neutral-400 mt-3">
+              Direct review by Founder Mr. Radha Krishna. Guaranteed confidential and responded within 24 hours.
             </p>
           </div>
 

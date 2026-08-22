@@ -100,7 +100,7 @@ export default function WhyYugark() {
           </div>
 
           {/* Right 2x2 Feature Grid */}
-          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-2 gap-2.5 sm:gap-5">
             {gridCards.map((card, idx) => {
               const Icon = card.icon;
               return (
@@ -110,24 +110,26 @@ export default function WhyYugark() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: idx * 0.08 }}
-                  className="p-7 rounded-3xl bg-[#09090D]/85 backdrop-blur-xl border border-white/10 hover:border-[#D4B06A]/45 transition-all duration-300 group hover:-translate-y-1.5 shadow-[0_20px_40px_rgba(0,0,0,0.85)] relative overflow-hidden"
+                  className="p-3.5 sm:p-7 rounded-2xl sm:rounded-3xl bg-[#09090D]/85 backdrop-blur-xl border border-white/10 hover:border-[#D4B06A]/45 transition-all duration-300 group hover:-translate-y-1.5 shadow-[0_20px_40px_rgba(0,0,0,0.85)] relative overflow-hidden flex flex-col justify-between"
                 >
                   {/* Subtle Top Glow */}
                   <div className={`absolute top-0 left-0 right-0 h-20 bg-gradient-to-b ${card.glow} via-transparent to-transparent pointer-events-none opacity-20 group-hover:opacity-70 transition-opacity`} />
-                  <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-[#F0D28F]/30 to-transparent" />
+                  <div className="absolute top-0 left-3 sm:left-6 right-3 sm:right-6 h-[1px] bg-gradient-to-r from-transparent via-[#F0D28F]/30 to-transparent" />
 
-                  <div className="flex items-center justify-between mb-4 relative z-10">
-                    <h3 className="font-serif text-2xl font-bold text-white group-hover:text-[#F0D28F] transition-colors">
-                      {card.title}
-                    </h3>
-                    <div className="w-10 h-10 rounded-2xl bg-[#14141C] border border-[#D4B06A]/20 flex items-center justify-center text-[#D4B06A] group-hover:bg-[#D4B06A] group-hover:text-black transition-all shadow-inner">
-                      <Icon className="w-4 h-4" />
+                  <div>
+                    <div className="flex items-center justify-between mb-2 sm:mb-4 relative z-10">
+                      <h3 className="font-serif text-base sm:text-2xl font-bold text-white group-hover:text-[#F0D28F] transition-colors">
+                        {card.title}
+                      </h3>
+                      <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#14141C] border border-[#D4B06A]/20 flex items-center justify-center text-[#D4B06A] group-hover:bg-[#D4B06A] group-hover:text-black transition-all shadow-inner shrink-0">
+                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </div>
                     </div>
-                  </div>
 
-                  <p className="text-sm text-neutral-300 leading-relaxed font-light relative z-10">
-                    {card.description}
-                  </p>
+                    <p className="text-[11px] sm:text-sm text-neutral-300 leading-snug sm:leading-relaxed font-light relative z-10">
+                      {card.description}
+                    </p>
+                  </div>
                 </motion.div>
               );
             })}

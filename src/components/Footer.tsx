@@ -18,10 +18,10 @@ export default function Footer() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-64 bg-[#D4B06A]/5 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12 pb-16 border-b border-[#D4B06A]/15">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 pb-12 sm:pb-16 border-b border-[#D4B06A]/15">
           
           {/* Brand & Studio Column */}
-          <div className="lg:col-span-2 space-y-5">
+          <div className="col-span-2 md:col-span-2 lg:col-span-2 space-y-5">
             <Link to="/" className="inline-block">
               <Logo size="lg" variant="default" />
             </Link>
@@ -134,11 +134,11 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'Website Development (₹12,999)', path: '/services/website-development' },
+                { name: 'Website Development (From ₹9,999)', path: '/services/website-development' },
                 { name: 'Short Ad Video (₹3,000)', path: '/services/ai-content-video' },
-                { name: 'Long Brand Video (₹5,000)', path: '/services/content-strategy' },
-                { name: 'Social Media Management', path: '/services/social-media-management' },
-                { name: 'Social Media Advertising', path: '/services/social-media-advertising' },
+                { name: 'Long Brand Video (₹5,000)', path: '/services/ai-content-video' },
+                { name: 'Social Media Management (From ₹9,999/mo)', path: '/services/social-media-management' },
+                { name: 'Social Media Advertising (₹15,000/mo)', path: '/services/social-media-advertising' },
                 { name: 'Digital Growth Strategy', path: '/services/digital-growth-strategy' },
               ].map((item) => (
                 <li key={item.name}>
@@ -154,7 +154,7 @@ export default function Footer() {
           </div>
 
           {/* Headquarters & Legal */}
-          <div className="space-y-4">
+          <div className="col-span-2 md:col-span-1 lg:col-span-1 space-y-4 pt-4 sm:pt-0 border-t sm:border-t-0 border-neutral-900">
             <h3 className="font-serif text-[#D4B06A] font-semibold text-sm tracking-wider uppercase">
               Contact & Studio
             </h3>

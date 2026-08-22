@@ -95,18 +95,18 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       },
       {
         id: 'page-pricing',
-        title: 'Pricing & Grand Opening Packages',
-        description: 'Transparent fixed pricing: Package 1 Website at ₹12,999, Package 2 Website + 5 Reels at ₹19,999, Package 3 at ₹24,999, and Interactive Calculator.',
+        title: 'Pricing & Custom Package Builder',
+        description: 'Transparent pricing: Frontend Website at ₹9,999, Full Website at ₹14,999, Social Media Plans from ₹9,999/mo, and Interactive Calculator with duration discounts.',
         category: 'Pricing',
         link: '/pricing',
-        tags: ['Pricing', 'Cost', 'Packages', 'Plans', 'Fees', 'Rates', 'Calculator', 'Offer', '₹12,999', '₹19,999', '₹24,999'],
+        tags: ['Pricing', 'Cost', 'Packages', 'Plans', 'Fees', 'Rates', 'Calculator', 'Offer', '₹9,999', '₹14,999', '₹19,999', 'Frontend', 'Fullstack'],
       },
       {
         id: 'page-templates',
         title: 'Website Templates Showcase (10 Industries)',
         description: 'Production-ready website templates for Restaurants, Gyms, Dental Clinics, Luxury Real Estate, Cafes, Salons, Law Firms, and E-commerce.',
         category: 'Templates',
-        link: '/#templates',
+        link: '/templates',
         tags: ['Templates', 'Demo', 'Demo Template', 'Restaurant', 'Gym', 'Fitness', 'Clinic', 'Dental', 'Real Estate', 'Cafe', 'Salon', 'Law', 'Ecommerce'],
       },
       {

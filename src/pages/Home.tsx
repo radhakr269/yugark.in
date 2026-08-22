@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import SEO from '../components/SEO';
 import Hero from '../components/Hero';
+import ServiceCategories from '../components/ServiceCategories';
 import StudioTicker from '../components/StudioTicker';
 import FounderSection from '../components/FounderSection';
 import WhyYugark from '../components/WhyYugark';
@@ -64,6 +65,9 @@ export default function Home() {
       <main className="bg-[#050505]">
         {/* 1. Header is in Navbar.tsx; Hero with 4 Statistics & Volumetric Core */}
         <Hero />
+
+        {/* Four Main Service Categories */}
+        <ServiceCategories />
 
         {/* 2. Three Pillars of Digital Growth (Pillars 01, 02, 03) */}
         <ThreePillarsSection />

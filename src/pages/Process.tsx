@@ -121,7 +121,7 @@ export default function Process() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
               {deliveryDays.map((dayPlan, idx) => (
                 <motion.div
                   key={dayPlan.day}
@@ -129,26 +129,26 @@ export default function Process() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: idx * 0.07 }}
-                  className={`p-6 sm:p-7 rounded-2xl bg-[#0A0A0A] border border-white/10 hover:border-[#D4B06A]/40 transition-all space-y-4 flex flex-col justify-between group gold-border-glow ${
-                    idx === 6 ? 'md:col-span-2 lg:col-span-3 xl:col-span-1' : ''
+                  className={`p-3.5 sm:p-7 rounded-xl sm:rounded-2xl bg-[#0A0A0A] border border-white/10 hover:border-[#D4B06A]/40 transition-all space-y-2.5 sm:space-y-4 flex flex-col justify-between group gold-border-glow ${
+                    idx === 6 ? 'col-span-2 md:col-span-2 lg:col-span-3 xl:col-span-1' : ''
                   }`}
                 >
-                  <div className="space-y-3">
+                  <div className="space-y-1.5 sm:space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs uppercase tracking-widest text-[#F0D28F] font-bold px-2.5 py-1 rounded-md bg-[#D4B06A]/10 border border-[#D4B06A]/30">
+                      <span className="text-[10px] sm:text-xs uppercase tracking-widest text-[#F0D28F] font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-[#D4B06A]/10 border border-[#D4B06A]/30">
                         {dayPlan.day}
                       </span>
                     </div>
-                    <h3 className="font-serif text-xl font-medium text-white group-hover:text-[#F0D28F] transition-colors">
+                    <h3 className="font-serif text-xs sm:text-xl font-medium text-white group-hover:text-[#F0D28F] transition-colors leading-snug">
                       {dayPlan.title}
                     </h3>
                   </div>
 
-                  <ul className="space-y-2 pt-3 border-t border-neutral-900/80">
+                  <ul className="space-y-1 sm:space-y-2 pt-2 sm:pt-3 border-t border-neutral-900/80">
                     {dayPlan.items.map((item, iIdx) => (
-                      <li key={iIdx} className="flex items-start gap-2 text-xs text-neutral-400 font-sans font-light leading-relaxed">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#D4B06A] mt-0.5 shrink-0" />
-                        <span>{item}</span>
+                      <li key={iIdx} className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-neutral-400 font-sans font-light leading-relaxed">
+                        <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#D4B06A] mt-0.5 shrink-0" />
+                        <span className="leading-snug">{item}</span>
                       </li>
                     ))}
                   </ul>

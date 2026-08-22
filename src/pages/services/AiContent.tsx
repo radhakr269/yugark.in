@@ -5,7 +5,17 @@ import { Bot, Sparkles, Video, ArrowRight } from 'lucide-react';
 import CTASection from '../../components/CTASection';
 
 export default function AiContent() {
-  const service = SERVICES_DATA.find(s => s.id === 'ai-content-video')!;
+  const service = SERVICES_DATA.find(
+    s => s.id === 'ai-content-video' || s.id === 'short-ad-video' || s.link === '/services/ai-content-video'
+  );
+
+  const deliverables = service?.deliverables || [
+    'Strategic 3-Second Hook & Scripting',
+    'Professional Motion Graphics & Typography',
+    'Voiceover & Background Music Licensing',
+    'Vertical 9:16 Format for Reels & TikTok',
+    'AI-Assisted Visual Enhancements & Subtitles'
+  ];
 
   return (
     <>
@@ -47,7 +57,7 @@ export default function AiContent() {
               <div className="p-8 rounded-2xl bg-[#090909] border border-white/10 space-y-6">
                 <h2 className="font-serif text-2xl text-white">AI Video Capabilities</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-neutral-200">
-                  {service.deliverables?.map((del, idx) => (
+                  {deliverables.map((del, idx) => (
                     <div key={idx} className="p-4 rounded-xl bg-[#111111] border border-white/5 flex items-center space-x-3">
                       <Video className="w-4 h-4 text-[#D4B06A] shrink-0" />
                       <span>{del}</span>

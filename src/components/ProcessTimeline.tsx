@@ -97,7 +97,7 @@ export default function ProcessTimeline() {
         </div>
 
         {/* 4 Step Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {fourSteps.map((step, idx) => {
             const Icon = step.icon;
             return (
@@ -107,53 +107,53 @@ export default function ProcessTimeline() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.08 }}
-                className="relative p-7 rounded-3xl bg-[#09090E]/85 backdrop-blur-xl border border-white/10 hover:border-[#D4B06A]/50 transition-all duration-300 flex flex-col justify-between group shadow-[0_20px_45px_rgba(0,0,0,0.85)] hover:-translate-y-2 overflow-hidden"
+                className="relative p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-[#09090E]/85 backdrop-blur-xl border border-white/10 hover:border-[#D4B06A]/50 transition-all duration-300 flex flex-col justify-between group shadow-[0_20px_45px_rgba(0,0,0,0.85)] hover:-translate-y-2 overflow-hidden"
               >
                 {/* Top Subtle Glow */}
                 <div className={`absolute top-0 left-0 right-0 h-28 bg-gradient-to-b ${step.glowColor} pointer-events-none opacity-30 group-hover:opacity-80 transition-opacity`} />
                 <div className="absolute top-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-[#F0D28F]/40 to-transparent" />
 
-                <div className="space-y-4 relative z-10">
+                <div className="space-y-3 sm:space-y-4 relative z-10">
                   {/* Step Number & Icon */}
                   <div className="flex items-center justify-between">
-                    <span className={`font-mono text-[11px] font-bold px-3 py-1 rounded-full border ${step.badgeColor}`}>
+                    <span className={`font-mono text-[10px] sm:text-[11px] font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border ${step.badgeColor}`}>
                       STEP {step.number}
                     </span>
-                    <div className="w-10 h-10 rounded-2xl bg-[#14141C] border border-white/10 flex items-center justify-center text-neutral-300 group-hover:text-[#F0D28F] group-hover:border-[#D4B06A]/50 transition-all shadow-inner">
-                      <Icon className="w-4 h-4" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-[#14141C] border border-white/10 flex items-center justify-center text-neutral-300 group-hover:text-[#F0D28F] group-hover:border-[#D4B06A]/50 transition-all shadow-inner">
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   </div>
 
                   {/* Step Title */}
                   <div>
-                    <h3 className="font-serif text-2xl font-bold text-white group-hover:text-[#F0D28F] transition-colors mb-1.5">
+                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-white group-hover:text-[#F0D28F] transition-colors mb-1">
                       {step.title}
                     </h3>
-                    <p className="text-xs text-[#F0D28F] font-medium leading-snug">
+                    <p className="text-[11px] sm:text-xs text-[#F0D28F] font-medium leading-snug">
                       {step.tagline}
                     </p>
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs text-neutral-300 leading-relaxed font-sans font-light">
+                  <p className="text-[11px] sm:text-xs text-neutral-300 leading-relaxed font-sans font-light">
                     {step.description}
                   </p>
 
                   {/* Deliverables Checklist */}
-                  <div className="pt-3 border-t border-white/5 space-y-2">
+                  <div className="pt-2 sm:pt-3 border-t border-white/5 space-y-1.5 sm:space-y-2">
                     {step.deliverables.map((item, dIdx) => (
-                      <div key={dIdx} className="flex items-center gap-2 text-xs text-neutral-300">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4B06A] shadow-[0_0_5px_#D4B06A]" />
-                        <span>{item}</span>
+                      <div key={dIdx} className="flex items-center gap-2 text-[11px] sm:text-xs text-neutral-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4B06A] shadow-[0_0_5px_#D4B06A] shrink-0" />
+                        <span className="truncate">{item}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-4 mt-6 border-t border-white/10 relative z-10">
+                <div className="pt-3 sm:pt-4 mt-4 sm:mt-6 border-t border-white/10 relative z-10">
                   <Link
                     to="/process"
-                    className="text-xs uppercase tracking-wider text-neutral-400 group-hover:text-[#F0D28F] flex items-center justify-between transition-colors font-semibold"
+                    className="text-[11px] sm:text-xs uppercase tracking-wider text-neutral-400 group-hover:text-[#F0D28F] flex items-center justify-between transition-colors font-semibold"
                   >
                     <span>View Timeline Details</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />

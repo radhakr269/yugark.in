@@ -7,9 +7,13 @@ export const WHATSAPP_DISPLAY = '+91 9125205132';
 export const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
 export { WhatsAppIcon };
 
-export default function WhatsAppButton() {
+interface WhatsAppButtonProps {
+  className?: string;
+}
+
+export default function WhatsAppButton({ className = 'bottom-6 right-6' }: WhatsAppButtonProps) {
   return (
-    <div className="fixed bottom-6 right-6 z-50 pointer-events-auto">
+    <div className={`fixed ${className} z-50 pointer-events-auto transition-all duration-300`}>
       <motion.a
         href={WHATSAPP_LINK}
         target="_blank"

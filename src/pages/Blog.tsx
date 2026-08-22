@@ -72,58 +72,58 @@ export default function Blog() {
         </section>
 
         {/* Blog Post Grid */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
             {filteredPosts.map((post, idx) => (
               <motion.article
                 key={post.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="rounded-2xl bg-[#0A0A0A] border border-white/10 overflow-hidden hover:border-[#D4B06A]/40 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
+                className="rounded-xl sm:rounded-2xl bg-[#0A0A0A] border border-white/10 overflow-hidden hover:border-[#D4B06A]/40 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
               >
                 <div>
-                  <div className="relative h-56 overflow-hidden">
+                  <div className="relative h-28 sm:h-56 overflow-hidden">
                     <img 
                       src={post.coverImage} 
                       alt={post.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       referrerPolicy="no-referrer"
                     />
-                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md text-[10px] uppercase tracking-wider text-[#F0D28F] border border-[#D4B06A]/30">
+                    <div className="absolute top-2 left-2 sm:top-4 sm:left-4 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/80 backdrop-blur-md text-[8px] sm:text-[10px] uppercase tracking-wider text-[#F0D28F] border border-[#D4B06A]/30">
                       {post.category}
                     </div>
                   </div>
 
-                  <div className="p-6 space-y-3">
-                    <div className="flex items-center space-x-4 text-[10px] text-neutral-500">
+                  <div className="p-3 sm:p-6 space-y-1.5 sm:space-y-3">
+                    <div className="flex items-center space-x-2 sm:space-x-4 text-[9px] sm:text-[10px] text-neutral-500">
                       <span className="flex items-center space-x-1">
-                        <Calendar className="w-3 h-3 text-[#D4B06A]" />
-                        <span>{post.date}</span>
+                        <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#D4B06A]" />
+                        <span className="truncate">{post.date}</span>
                       </span>
-                      <span className="flex items-center space-x-1">
+                      <span className="hidden sm:flex items-center space-x-1">
                         <Clock className="w-3 h-3 text-[#D4B06A]" />
                         <span>{post.readTime}</span>
                       </span>
                     </div>
 
-                    <h3 className="font-serif text-xl font-medium text-white group-hover:text-[#F0D28F] transition-colors leading-snug">
+                    <h3 className="font-serif text-xs sm:text-xl font-medium text-white group-hover:text-[#F0D28F] transition-colors leading-snug">
                       {post.title}
                     </h3>
 
-                    <p className="text-xs text-neutral-400 line-clamp-3 leading-relaxed">
+                    <p className="text-[10px] sm:text-xs text-neutral-400 line-clamp-2 sm:line-clamp-3 leading-relaxed font-light">
                       {post.excerpt}
                     </p>
                   </div>
                 </div>
 
-                <div className="p-6 pt-0">
+                <div className="p-3 sm:p-6 pt-0">
                   <button
                     onClick={() => setActiveArticle(post)}
-                    className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-widest text-[#D4B06A] group-hover:text-[#F0D28F] font-semibold pt-4 border-t border-white/5 w-full justify-between cursor-pointer"
+                    className="inline-flex items-center space-x-1 text-[10px] sm:text-xs uppercase tracking-widest text-[#D4B06A] group-hover:text-[#F0D28F] font-semibold pt-2 sm:pt-4 border-t border-white/5 w-full justify-between cursor-pointer"
                   >
-                    <span>Read Article</span>
-                    <ArrowUpRight className="w-4 h-4" />
+                    <span>Read</span>
+                    <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </motion.article>
